@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Tiện Ích - Lumora Resort' if lang == 'vi' else 'Amenities - Lumora Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px]">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1920" alt="Amenities" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
+    </div>
+    <div class="relative h-full flex items-center justify-center text-center">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                {{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}
+            </h1>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                {{ 'Khám phá các tiện ích đẳng cấp tại Lumora Resort' if lang == 'vi' else 'Explore premium amenities at Lumora Resort' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for key, amenity in amenities.items() %}
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                <div class="relative overflow-hidden">
+                    <img src="{{ amenity.images[0] }}" alt="{{ amenity.name[lang] }}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-60"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <h3 class="text-2xl font-display font-bold text-white">{{ amenity.name[lang] }}</h3>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">{{ amenity.description[lang] }}</p>
+                    <button onclick="openVideo('{{ amenity.video }}')" class="flex items-center text-primary font-medium hover:text-accent transition">
+                        <i class="fas fa-play-circle mr-2 text-xl"></i>
+                        {{ 'Xem Video' if lang == 'vi' else 'Watch Video' }}
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-display font-bold">{{ 'Tiện Ích Khác' if lang == 'vi' else 'Other Amenities' }}</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-accent rounded-full flex items-center justify-center">
+                    <i class="fas fa-child text-2xl text-dark"></i>
+                </div>
+                <h4 class="font-semibold">{{ 'Khu Vui Chơi Trẻ Em' if lang == 'vi' else 'Kids Playground' }}</h4>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-accent rounded-full flex items-center justify-center">
+                    <i class="fas fa-spa text-2xl text-dark"></i>
+                </div>
+                <h4 class="font-semibold">{{ 'Spa & Massage' if lang == 'vi' else 'Spa & Massage' }}</h4>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-accent rounded-full flex items-center justify-center">
+                    <i class="fas fa-dumbbell text-2xl text-dark"></i>
+                </div>
+                <h4 class="font-semibold">{{ 'Phòng Gym' if lang == 'vi' else 'Gym' }}</h4>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-accent rounded-full flex items-center justify-center">
+                    <i class="fas fa-bicycle text-2xl text-dark"></i>
+                </div>
+                <h4 class="font-semibold">{{ 'Xe Đạp' if lang == 'vi' else 'Bicycle' }}</h4>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="video-modal" class="fixed inset-0 bg-dark bg-opacity-90 z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-4xl">
+        <button onclick="closeVideo()" class="absolute -top-12 right-0 text-white text-3xl hover:text-accent">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="aspect-video">
+            <iframe id="video-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openVideo(url) {
+        document.getElementById('video-iframe').src = url;
+        document.getElementById('video-modal').classList.remove('hidden');
+        document.getElementById('video-modal').classList.add('flex');
+    }
+
+    function closeVideo() {
+        document.getElementById('video-iframe').src = '';
+        document.getElementById('video-modal').classList.add('hidden');
+        document.getElementById('video-modal').classList.remove('flex');
+    }
+</script>
+{% endblock %}

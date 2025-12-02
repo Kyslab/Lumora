@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Trải Nghiệm - Lumora Resort' if lang == 'vi' else 'Experiences - Lumora Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px]">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920" alt="Experiences" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
+    </div>
+    <div class="relative h-full flex items-center justify-center text-center">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                {{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}
+            </h1>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                {{ 'Khám phá những hoạt động thú vị tại Lumora Resort' if lang == 'vi' else 'Discover exciting activities at Lumora Resort' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for key, exp in experiences.items() %}
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                <div class="relative overflow-hidden h-72">
+                    <img src="{{ exp.images[0] }}" alt="{{ exp.name[lang] }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-70"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h3 class="text-2xl font-display font-bold text-white mb-2">{{ exp.name[lang] }}</h3>
+                        <p class="text-gray-200">{{ exp.description[lang] }}</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <a href="/contact?lang={{ lang }}" class="block w-full bg-primary text-white text-center py-3 rounded-full hover:bg-opacity-90 transition">
+                        {{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register Now' }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Hoạt Động' if lang == 'vi' else 'Activities' }}</span>
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-dark mt-2">{{ 'Hoạt Động Khác' if lang == 'vi' else 'Other Activities' }}</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center p-6 bg-light rounded-xl hover:bg-primary hover:text-white transition group">
+                <i class="fas fa-hiking text-4xl text-primary group-hover:text-white mb-4"></i>
+                <h4 class="font-semibold">{{ 'Đi Bộ Đường Dài' if lang == 'vi' else 'Hiking' }}</h4>
+            </div>
+            <div class="text-center p-6 bg-light rounded-xl hover:bg-primary hover:text-white transition group">
+                <i class="fas fa-bicycle text-4xl text-primary group-hover:text-white mb-4"></i>
+                <h4 class="font-semibold">{{ 'Đạp Xe' if lang == 'vi' else 'Cycling' }}</h4>
+            </div>
+            <div class="text-center p-6 bg-light rounded-xl hover:bg-primary hover:text-white transition group">
+                <i class="fas fa-camera text-4xl text-primary group-hover:text-white mb-4"></i>
+                <h4 class="font-semibold">{{ 'Chụp Ảnh' if lang == 'vi' else 'Photography' }}</h4>
+            </div>
+            <div class="text-center p-6 bg-light rounded-xl hover:bg-primary hover:text-white transition group">
+                <i class="fas fa-fire text-4xl text-primary group-hover:text-white mb-4"></i>
+                <h4 class="font-semibold">{{ 'Lửa Trại' if lang == 'vi' else 'Campfire' }}</h4>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ restaurant.name[lang] }} - Lumora Resort{% endblock %}
+
+{% block content %}
+<section class="py-8 bg-white">
+    <div class="container mx-auto px-4">
+        <nav class="text-sm text-gray-500 mb-4">
+            <a href="/?lang={{ lang }}" class="hover:text-primary">{{ 'Trang chủ' if lang == 'vi' else 'Home' }}</a>
+            <span class="mx-2">/</span>
+            <a href="/dining?lang={{ lang }}" class="hover:text-primary">{{ 'Ẩm thực' if lang == 'vi' else 'Dining' }}</a>
+            <span class="mx-2">/</span>
+            <span class="text-dark">{{ restaurant.name[lang] }}</span>
+        </nav>
+    </div>
+</section>
+
+<section class="pb-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div>
+                <img src="{{ restaurant.images[0] }}" alt="{{ restaurant.name[lang] }}" class="w-full h-[400px] object-cover rounded-2xl mb-4">
+                <div class="grid grid-cols-3 gap-2">
+                    {% for img in restaurant.images[1:] %}
+                    <img src="{{ img }}" alt="" class="w-full h-24 object-cover rounded-lg">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <span class="text-accent font-medium uppercase tracking-wider">{{ restaurant.category[lang] }}</span>
+                <h1 class="text-3xl md:text-4xl font-display font-bold text-dark mt-2 mb-4">{{ restaurant.name[lang] }}</h1>
+                <p class="text-gray-600 text-lg mb-6">{{ restaurant.description[lang] }}</p>
+
+                <div class="flex items-center text-gray-500 mb-8">
+                    <i class="fas fa-clock mr-2 text-primary text-xl"></i>
+                    <span class="text-lg">{{ restaurant.hours }}</span>
+                </div>
+
+                <div class="bg-light rounded-xl p-6">
+                    <h3 class="font-display font-bold text-xl mb-4">{{ 'Thực Đơn' if lang == 'vi' else 'Menu' }}</h3>
+                    <div class="space-y-4">
+                        {% for item in restaurant.menu %}
+                        <div class="flex justify-between items-center pb-4 border-b last:border-0">
+                            <div>
+                                <p class="font-semibold text-dark">{{ item.name[lang] }}</p>
+                            </div>
+                            <span class="text-xl font-bold text-primary">{{ '{:,.0f}'.format(item.price) }}đ</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

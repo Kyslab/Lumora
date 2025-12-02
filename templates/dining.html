@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Nhà Hàng & Ẩm Thực - Lumora Resort' if lang == 'vi' else 'Dining - Lumora Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px]">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920" alt="Dining" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
+    </div>
+    <div class="relative h-full flex items-center justify-center text-center">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                {{ 'Nhà Hàng & Ẩm Thực' if lang == 'vi' else 'Dining' }}
+            </h1>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                {{ 'Trải nghiệm ẩm thực đa dạng từ Việt Nam đến quốc tế' if lang == 'vi' else 'Experience diverse cuisine from Vietnamese to international' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        {% for key, restaurant in restaurants.items() %}
+        <div id="{{ key }}" class="mb-16 last:mb-0">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center {{ 'lg:flex-row-reverse' if loop.index % 2 == 0 else '' }}">
+                <div class="{{ 'order-2 lg:order-1' if loop.index % 2 == 0 else '' }}">
+                    <span class="text-accent font-medium uppercase tracking-wider">{{ restaurant.category[lang] }}</span>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-dark mt-2 mb-4">{{ restaurant.name[lang] }}</h2>
+                    <p class="text-gray-600 text-lg mb-4">{{ restaurant.description[lang] }}</p>
+                    <div class="flex items-center text-gray-500 mb-6">
+                        <i class="fas fa-clock mr-2 text-primary"></i>
+                        <span>{{ restaurant.hours }}</span>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg mb-6">
+                        <h3 class="font-display font-semibold text-lg mb-4">{{ 'Món Nổi Bật' if lang == 'vi' else 'Featured Dishes' }}</h3>
+                        <div class="space-y-3">
+                            {% for item in restaurant.menu %}
+                            <div class="flex justify-between items-center pb-3 border-b last:border-0">
+                                <span class="text-dark">{{ item.name[lang] }}</span>
+                                <span class="font-semibold text-primary">{{ '{:,.0f}'.format(item.price) }}đ</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <a href="/dining/{{ key }}?lang={{ lang }}" class="inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition">
+                        {{ 'Xem Menu Đầy Đủ' if lang == 'vi' else 'View Full Menu' }}
+                    </a>
+                </div>
+                <div class="{{ 'order-1 lg:order-2' if loop.index % 2 == 0 else '' }}">
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for img in restaurant.images %}
+                        <img src="{{ img }}" alt="{{ restaurant.name[lang] }}" class="w-full h-48 object-cover rounded-xl {{ 'col-span-2' if loop.first else '' }}">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

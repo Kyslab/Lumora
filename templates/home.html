@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Lumora Resort - {{ 'Khu Nghỉ Dưỡng Cao Cấp' if lang == 'vi' else 'Premium Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-screen">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920" alt="Lumora Resort" class="w-full h-full object-cover">
+        <div class="absolute inset-0 hero-gradient"></div>
+    </div>
+    <div class="relative h-full flex items-center">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl text-white">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-6 leading-tight">
+                    {{ 'Khám Phá Thiên Đường Nghỉ Dưỡng' if lang == 'vi' else 'Discover Paradise Resort' }}
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-200">
+                    {{ 'Trải nghiệm kỳ nghỉ hoàn hảo với không gian xanh mát, tiện nghi sang trọng và dịch vụ tận tâm tại Lumora Resort.' if lang == 'vi' else 'Experience the perfect vacation with green space, luxury amenities and dedicated service at Lumora Resort.' }}
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/contact?lang={{ lang }}#booking" class="bg-accent text-dark px-8 py-4 rounded-full font-semibold text-lg hover:bg-opacity-90 transition text-center">
+                        {{ 'Đặt Phòng Ngay' if lang == 'vi' else 'Book Now' }}
+                    </a>
+                    <a href="/accommodation?lang={{ lang }}" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-dark transition text-center">
+                        {{ 'Xem Các Phòng' if lang == 'vi' else 'View Rooms' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <a href="#intro" class="text-white text-3xl">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+<section id="intro" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <span class="text-accent font-medium uppercase tracking-wider">{{ 'Chào mừng đến với' if lang == 'vi' else 'Welcome to' }}</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-dark mt-2 mb-6">Lumora Resort</h2>
+                <p class="text-gray-600 text-lg mb-6 leading-relaxed">
+                    {{ 'Lumora Resort là điểm đến lý tưởng cho những ai tìm kiếm sự yên bình giữa thiên nhiên kết hợp với tiện nghi hiện đại. Với không gian xanh mát rộng lớn, chúng tôi mang đến trải nghiệm nghỉ dưỡng đẳng cấp cho mọi du khách.' if lang == 'vi' else 'Lumora Resort is the ideal destination for those seeking peace in nature combined with modern amenities. With vast green space, we bring premium resort experience for all guests.' }}
+                </p>
+                <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                    {{ 'Từ các phòng nghỉ sang trọng, nhà hàng ẩm thực đa dạng đến các hoạt động giải trí phong phú, Lumora Resort hứa hẹn mang đến kỳ nghỉ đáng nhớ cho bạn và gia đình.' if lang == 'vi' else 'From luxury rooms, diverse dining options to rich entertainment activities, Lumora Resort promises a memorable vacation for you and your family.' }}
+                </p>
+                <div class="flex flex-wrap gap-8">
+                    <div class="text-center">
+                        <span class="text-4xl font-bold text-primary">50+</span>
+                        <p class="text-gray-500">{{ 'Phòng nghỉ' if lang == 'vi' else 'Rooms' }}</p>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-4xl font-bold text-primary">3</span>
+                        <p class="text-gray-500">{{ 'Nhà hàng' if lang == 'vi' else 'Restaurants' }}</p>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-4xl font-bold text-primary">10+</span>
+                        <p class="text-gray-500">{{ 'Tiện ích' if lang == 'vi' else 'Amenities' }}</p>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-4xl font-bold text-primary">5★</span>
+                        <p class="text-gray-500">{{ 'Đánh giá' if lang == 'vi' else 'Rating' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                    <iframe 
+                        class="w-full h-full"
+                        src="https://www.youtube.com/embed/LXb3EKWsInQ" 
+                        title="Lumora Resort Video"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="absolute -bottom-6 -left-6 bg-accent text-dark p-6 rounded-xl shadow-lg hidden md:block">
+                    <p class="text-2xl font-bold">15+</p>
+                    <p class="text-sm">{{ 'Năm kinh nghiệm' if lang == 'vi' else 'Years of experience' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}</span>
+            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ 'Phòng Nghỉ Của Chúng Tôi' if lang == 'vi' else 'Our Rooms' }}</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for key, room in rooms.items() %}
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                <div class="relative overflow-hidden">
+                    <img src="{{ room.images[0] }}" alt="{{ room.name[lang] }}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 right-4 bg-accent text-dark px-4 py-2 rounded-full font-semibold">
+                        {{ '{:,.0f}'.format(room.price) }}đ/{{ 'đêm' if lang == 'vi' else 'night' }}
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-display font-bold text-dark mb-2">{{ room.name[lang] }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ room.description[lang] }}</p>
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <span><i class="fas fa-ruler-combined mr-1"></i> {{ room.area }}m²</span>
+                        <span><i class="fas fa-user mr-1"></i> {{ room.capacity }} {{ 'người' if lang == 'vi' else 'guests' }}</span>
+                    </div>
+                    <a href="/accommodation/{{ room.id }}?lang={{ lang }}" class="block w-full bg-primary text-white text-center py-3 rounded-full hover:bg-opacity-90 transition">
+                        {{ 'Xem Chi Tiết' if lang == 'vi' else 'View Details' }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-10">
+            <a href="/accommodation?lang={{ lang }}" class="inline-block border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition">
+                {{ 'Xem Tất Cả Phòng' if lang == 'vi' else 'View All Rooms' }}
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-primary text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}</span>
+            <h2 class="text-4xl font-display font-bold mt-2">{{ 'Tiện Ích Nổi Bật' if lang == 'vi' else 'Featured Amenities' }}</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for key, amenity in amenities.items() %}
+            <div class="bg-white bg-opacity-10 rounded-2xl p-8 text-center hover:bg-opacity-20 transition">
+                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-accent flex items-center justify-center">
+                    {% if key == 'zoo' %}
+                    <i class="fas fa-paw text-3xl text-dark"></i>
+                    {% elif key == 'garden' %}
+                    <i class="fas fa-leaf text-3xl text-dark"></i>
+                    {% else %}
+                    <i class="fas fa-swimming-pool text-3xl text-dark"></i>
+                    {% endif %}
+                </div>
+                <h3 class="text-xl font-display font-bold mb-3">{{ amenity.name[lang] }}</h3>
+                <p class="text-gray-300">{{ amenity.description[lang] }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-10">
+            <a href="/amenities?lang={{ lang }}" class="inline-block bg-accent text-dark px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition">
+                {{ 'Khám Phá Thêm' if lang == 'vi' else 'Explore More' }}
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Tin Tức' if lang == 'vi' else 'News' }}</span>
+            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ 'Tin Tức & Ưu Đãi' if lang == 'vi' else 'News & Offers' }}</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for article in news %}
+            <div class="bg-light rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                <div class="relative overflow-hidden">
+                    <img src="{{ article.image }}" alt="{{ article.title[lang] }}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 left-4 bg-accent text-dark px-3 py-1 rounded-full text-sm font-medium">
+                        {{ article.category[lang] }}
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-500 text-sm mb-2"><i class="far fa-calendar mr-1"></i> {{ article.date }}</p>
+                    <h3 class="text-lg font-display font-bold text-dark mb-2 line-clamp-2">{{ article.title[lang] }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ article.excerpt[lang] }}</p>
+                    <a href="/news/{{ article.id }}?lang={{ lang }}" class="text-primary font-medium hover:text-accent transition">
+                        {{ 'Đọc thêm' if lang == 'vi' else 'Read more' }} <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-10">
+            <a href="/news?lang={{ lang }}" class="inline-block border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition">
+                {{ 'Xem Tất Cả Tin Tức' if lang == 'vi' else 'View All News' }}
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-secondary text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                {{ 'Sẵn Sàng Cho Kỳ Nghỉ Hoàn Hảo?' if lang == 'vi' else 'Ready For A Perfect Vacation?' }}
+            </h2>
+            <p class="text-xl text-gray-200 mb-8">
+                {{ 'Liên hệ ngay với chúng tôi để đặt phòng và nhận ưu đãi đặc biệt.' if lang == 'vi' else 'Contact us now to book and receive special offers.' }}
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact?lang={{ lang }}#booking" class="bg-accent text-dark px-8 py-4 rounded-full font-semibold text-lg hover:bg-opacity-90 transition">
+                    {{ 'Đặt Phòng Ngay' if lang == 'vi' else 'Book Now' }}
+                </a>
+                <a href="tel:19001234" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-dark transition">
+                    <i class="fas fa-phone mr-2"></i> 1900 1234
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

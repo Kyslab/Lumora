@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Thư Viện - Lumora Resort' if lang == 'vi' else 'Gallery - Lumora Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[40vh] min-h-[300px]">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920" alt="Gallery" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
+    </div>
+    <div class="relative h-full flex items-center justify-center text-center">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                {{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}
+            </h1>
+            <p class="text-xl text-gray-200">
+                {{ 'Hình ảnh & Video về Lumora Resort' if lang == 'vi' else 'Photos & Videos of Lumora Resort' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-center gap-4 mb-12">
+            <button id="btn-images" onclick="showTab('images')" class="px-8 py-3 rounded-full bg-primary text-white font-semibold transition">
+                <i class="fas fa-images mr-2"></i>{{ 'Hình Ảnh' if lang == 'vi' else 'Images' }}
+            </button>
+            <button id="btn-videos" onclick="showTab('videos')" class="px-8 py-3 rounded-full bg-white text-dark font-semibold hover:bg-primary hover:text-white transition">
+                <i class="fas fa-video mr-2"></i>{{ 'Video' if lang == 'vi' else 'Videos' }}
+            </button>
+        </div>
+
+        <div id="tab-images" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for image in gallery.images %}
+            <div class="group relative overflow-hidden rounded-xl cursor-pointer" onclick="openLightbox('{{ image.url }}')">
+                <img src="{{ image.url }}" alt="{{ image.title[lang] }}" class="w-full h-48 md:h-56 object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-dark bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition"></i>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-dark to-transparent p-4">
+                    <p class="text-white text-sm font-medium">{{ image.title[lang] }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="tab-videos" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for video in gallery.videos %}
+            <div class="bg-white rounded-xl overflow-hidden shadow-lg">
+                <div class="aspect-video">
+                    <iframe 
+                        class="w-full h-full"
+                        src="{{ video.url }}" 
+                        title="{{ video.title[lang] }}"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-display font-semibold text-lg">{{ video.title[lang] }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div id="lightbox" class="fixed inset-0 bg-dark bg-opacity-95 z-50 hidden items-center justify-center p-4">
+    <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-accent">
+        <i class="fas fa-times"></i>
+    </button>
+    <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[90vh] rounded-lg">
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function showTab(tab) {
+        const imagesTab = document.getElementById('tab-images');
+        const videosTab = document.getElementById('tab-videos');
+        const btnImages = document.getElementById('btn-images');
+        const btnVideos = document.getElementById('btn-videos');
+
+        if (tab === 'images') {
+            imagesTab.classList.remove('hidden');
+            videosTab.classList.add('hidden');
+            btnImages.classList.add('bg-primary', 'text-white');
+            btnImages.classList.remove('bg-white', 'text-dark');
+            btnVideos.classList.remove('bg-primary', 'text-white');
+            btnVideos.classList.add('bg-white', 'text-dark');
+        } else {
+            imagesTab.classList.add('hidden');
+            videosTab.classList.remove('hidden');
+            videosTab.classList.add('grid');
+            btnVideos.classList.add('bg-primary', 'text-white');
+            btnVideos.classList.remove('bg-white', 'text-dark');
+            btnImages.classList.remove('bg-primary', 'text-white');
+            btnImages.classList.add('bg-white', 'text-dark');
+        }
+    }
+
+    function openLightbox(url) {
+        document.getElementById('lightbox-image').src = url;
+        document.getElementById('lightbox').classList.remove('hidden');
+        document.getElementById('lightbox').classList.add('flex');
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.add('hidden');
+        document.getElementById('lightbox').classList.remove('flex');
+    }
+
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLightbox();
+        }
+    });
+</script>
+{% endblock %}

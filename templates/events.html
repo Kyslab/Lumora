@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Sự Kiện - Lumora Resort' if lang == 'vi' else 'Events - Lumora Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px]">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920" alt="Events" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
+    </div>
+    <div class="relative h-full flex items-center justify-center text-center">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                {{ 'Sự Kiện' if lang == 'vi' else 'Events' }}
+            </h1>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                {{ 'Không gian lý tưởng cho mọi sự kiện của bạn' if lang == 'vi' else 'Ideal space for all your events' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        {% for key, event in events.items() %}
+        <div class="mb-16 last:mb-0">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="{{ 'order-2' if loop.index % 2 == 0 else '' }}">
+                    <img src="{{ event.images[0] }}" alt="{{ event.name[lang] }}" class="w-full h-[400px] object-cover rounded-2xl shadow-lg">
+                </div>
+                <div class="{{ 'order-1' if loop.index % 2 == 0 else '' }}">
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-dark mb-4">{{ event.name[lang] }}</h2>
+                    <p class="text-gray-600 text-lg mb-6">{{ event.description[lang] }}</p>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-users text-primary text-2xl mr-4"></i>
+                            <div>
+                                <p class="text-sm text-gray-500">{{ 'Sức chứa' if lang == 'vi' else 'Capacity' }}</p>
+                                <p class="font-bold text-dark text-xl">{{ event.capacity }} {{ 'người' if lang == 'vi' else 'people' }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-primary text-2xl mr-4"></i>
+                            <div>
+                                <p class="text-sm text-gray-500">{{ 'Trang thiết bị' if lang == 'vi' else 'Equipment' }}</p>
+                                <p class="font-bold text-dark">{{ 'Đầy đủ âm thanh, ánh sáng' if lang == 'vi' else 'Full sound & lighting' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/contact?lang={{ lang }}" class="inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition">
+                        {{ 'Yêu Cầu Báo Giá' if lang == 'vi' else 'Request Quote' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-display font-bold text-dark">{{ 'Các Loại Sự Kiện' if lang == 'vi' else 'Event Types' }}</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center p-6 bg-light rounded-xl">
+                <i class="fas fa-ring text-4xl text-primary mb-4"></i>
+                <h4 class="font-semibold">{{ 'Đám Cưới' if lang == 'vi' else 'Wedding' }}</h4>
+            </div>
+            <div class="text-center p-6 bg-light rounded-xl">
+                <i class="fas fa-briefcase text-4xl text-primary mb-4"></i>
+                <h4 class="font-semibold">{{ 'Hội Nghị' if lang == 'vi' else 'Conference' }}</h4>
+            </div>
+            <div class="text-center p-6 bg-light rounded-xl">
+                <i class="fas fa-users text-4xl text-primary mb-4"></i>
+                <h4 class="font-semibold">{{ 'Team Building' if lang == 'vi' else 'Team Building' }}</h4>
+            </div>
+            <div class="text-center p-6 bg-light rounded-xl">
+                <i class="fas fa-birthday-cake text-4xl text-primary mb-4"></i>
+                <h4 class="font-semibold">{{ 'Tiệc Sinh Nhật' if lang == 'vi' else 'Birthday Party' }}</h4>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

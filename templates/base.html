@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Lumora Resort - Khu nghỉ dưỡng cao cấp với đầy đủ tiện nghi{% endblock %}">
+    <meta name="keywords" content="resort, nghỉ dưỡng, khách sạn, glamping, Lumora">
+    <title>{% block title %}Lumora Resort{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2D5A27',
+                        secondary: '#8B7355',
+                        accent: '#D4AF37',
+                        dark: '#1A1A1A',
+                        light: '#F5F5F0'
+                    },
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        body: ['Open Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(45, 90, 39, 0.8) 0%, rgba(139, 115, 85, 0.6) 100%);
+        }
+        .swiper-slide {
+            transition: transform 0.3s ease;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #D4AF37;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 200px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            z-index: 50;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-light text-dark">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+                <a href="/?lang={{ lang }}" class="flex items-center space-x-2">
+                    <span class="text-3xl font-display font-bold text-primary">Lumora</span>
+                    <span class="text-sm text-secondary">Resort</span>
+                </a>
+
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="/?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                        {{ 'Trang Chủ' if lang == 'vi' else 'Home' }}
+                    </a>
+                    
+                    <div class="dropdown relative">
+                        <a href="/accommodation?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium flex items-center">
+                            {{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </a>
+                        <div class="dropdown-menu py-2">
+                            <a href="/accommodation?lang={{ lang }}&type=deluxe" class="block px-4 py-2 hover:bg-light">{{ 'Phòng Deluxe' if lang == 'vi' else 'Deluxe Room' }}</a>
+                            <a href="/accommodation?lang={{ lang }}&type=glamping" class="block px-4 py-2 hover:bg-light">{{ 'Glamping / Cabin' if lang == 'vi' else 'Glamping / Cabin' }}</a>
+                            <a href="/accommodation?lang={{ lang }}&type=bungalow" class="block px-4 py-2 hover:bg-light">{{ 'Bungalow' if lang == 'vi' else 'Bungalow' }}</a>
+                        </div>
+                    </div>
+
+                    <div class="dropdown relative">
+                        <a href="/dining?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium flex items-center">
+                            {{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </a>
+                        <div class="dropdown-menu py-2">
+                            <a href="/dining?lang={{ lang }}#restaurant1" class="block px-4 py-2 hover:bg-light">{{ 'Nhà Hàng' if lang == 'vi' else 'Restaurant' }}</a>
+                            <a href="/dining?lang={{ lang }}#restaurant2" class="block px-4 py-2 hover:bg-light">{{ 'BBQ Garden' if lang == 'vi' else 'BBQ Garden' }}</a>
+                            <a href="/dining?lang={{ lang }}#cafe" class="block px-4 py-2 hover:bg-light">{{ 'Café & Bar' if lang == 'vi' else 'Café & Bar' }}</a>
+                        </div>
+                    </div>
+
+                    <a href="/amenities?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                        {{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}
+                    </a>
+
+                    <div class="dropdown relative">
+                        <span class="nav-link text-dark hover:text-primary font-medium flex items-center cursor-pointer">
+                            {{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </span>
+                        <div class="dropdown-menu py-2">
+                            <a href="/experiences?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Tham Quan' if lang == 'vi' else 'Tours' }}</a>
+                            <a href="/steam?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</a>
+                            <a href="/events?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Sự Kiện' if lang == 'vi' else 'Events' }}</a>
+                        </div>
+                    </div>
+
+                    <a href="/news?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                        {{ 'Tin Tức' if lang == 'vi' else 'News' }}
+                    </a>
+
+                    <a href="/gallery?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                        {{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}
+                    </a>
+
+                    <a href="/contact?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                        {{ 'Liên Hệ' if lang == 'vi' else 'Contact' }}
+                    </a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 border rounded-full px-3 py-1">
+                        <a href="?lang=vi" class="text-sm {{ 'font-bold text-primary' if lang == 'vi' else 'text-gray-500' }}">VI</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="?lang=en" class="text-sm {{ 'font-bold text-primary' if lang == 'en' else 'text-gray-500' }}">EN</a>
+                    </div>
+
+                    <a href="/contact?lang={{ lang }}#booking" class="hidden md:block bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition font-medium">
+                        {{ 'Đặt Phòng' if lang == 'vi' else 'Book Now' }}
+                    </a>
+
+                    <button id="mobile-menu-btn" class="lg:hidden text-2xl text-primary">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 w-80 h-full bg-white shadow-xl z-50 overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-8">
+                    <span class="text-2xl font-display font-bold text-primary">Lumora</span>
+                    <button id="close-menu" class="text-2xl text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <nav class="space-y-4">
+                    <a href="/?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Trang Chủ' if lang == 'vi' else 'Home' }}</a>
+                    <a href="/accommodation?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}</a>
+                    <a href="/dining?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}</a>
+                    <a href="/amenities?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}</a>
+                    <a href="/experiences?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}</a>
+                    <a href="/steam?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</a>
+                    <a href="/events?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Sự Kiện' if lang == 'vi' else 'Events' }}</a>
+                    <a href="/news?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Tin Tức' if lang == 'vi' else 'News' }}</a>
+                    <a href="/gallery?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}</a>
+                    <a href="/contact?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Liên Hệ' if lang == 'vi' else 'Contact' }}</a>
+                </nav>
+                <div class="mt-8">
+                    <a href="/contact?lang={{ lang }}#booking" class="block w-full bg-primary text-white text-center px-6 py-3 rounded-full hover:bg-opacity-90 transition font-medium">
+                        {{ 'Đặt Phòng Ngay' if lang == 'vi' else 'Book Now' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-2xl font-display font-bold text-accent mb-4">Lumora Resort</h3>
+                    <p class="text-gray-400 mb-4">
+                        {{ 'Khu nghỉ dưỡng cao cấp với không gian xanh mát, tiện nghi hiện đại và dịch vụ tận tâm.' if lang == 'vi' else 'Premium resort with green space, modern amenities and dedicated service.' }}
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-display font-semibold mb-4">{{ 'Liên Kết Nhanh' if lang == 'vi' else 'Quick Links' }}</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/accommodation?lang={{ lang }}" class="text-gray-400 hover:text-accent transition">{{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}</a></li>
+                        <li><a href="/dining?lang={{ lang }}" class="text-gray-400 hover:text-accent transition">{{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}</a></li>
+                        <li><a href="/amenities?lang={{ lang }}" class="text-gray-400 hover:text-accent transition">{{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}</a></li>
+                        <li><a href="/news?lang={{ lang }}" class="text-gray-400 hover:text-accent transition">{{ 'Tin Tức & Ưu Đãi' if lang == 'vi' else 'News & Offers' }}</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-display font-semibold mb-4">{{ 'Thông Tin Liên Hệ' if lang == 'vi' else 'Contact Info' }}</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-accent"></i>
+                            <span>123 Đường Resort, Phường ABC, Quận XYZ, TP. Hồ Chí Minh</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i class="fas fa-phone text-accent"></i>
+                            <span>1900 1234</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i class="fas fa-envelope text-accent"></i>
+                            <span>info@lumoraresort.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-display font-semibold mb-4">{{ 'Giờ Làm Việc' if lang == 'vi' else 'Working Hours' }}</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>{{ 'Lễ tân: 24/7' if lang == 'vi' else 'Reception: 24/7' }}</li>
+                        <li>{{ 'Nhà hàng: 06:00 - 22:00' if lang == 'vi' else 'Restaurant: 06:00 - 22:00' }}</li>
+                        <li>{{ 'Bể bơi: 06:00 - 22:00' if lang == 'vi' else 'Pool: 06:00 - 22:00' }}</li>
+                        <li>{{ 'Spa: 09:00 - 21:00' if lang == 'vi' else 'Spa: 09:00 - 21:00' }}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Lumora Resort. {{ 'Tất cả quyền được bảo lưu.' if lang == 'vi' else 'All rights reserved.' }}</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        function switchLang(lang) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', lang);
+            window.location.href = url.toString();
+        }
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

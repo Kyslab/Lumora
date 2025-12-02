@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Giáo Dục STEAM - Lumora Resort' if lang == 'vi' else 'STEAM Education - Lumora Resort' }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px]">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920" alt="STEAM Education" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
+    </div>
+    <div class="relative h-full flex items-center justify-center text-center">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                {{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}
+            </h1>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                {{ 'Chương trình giáo dục sáng tạo cho trẻ em và người lớn' if lang == 'vi' else 'Creative education programs for children and adults' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-display font-bold text-dark">{{ 'STEAM là gì?' if lang == 'vi' else 'What is STEAM?' }}</h2>
+            <p class="text-gray-600 mt-4 max-w-3xl mx-auto">
+                {{ 'STEAM là phương pháp giáo dục kết hợp 5 lĩnh vực: Khoa học (Science), Công nghệ (Technology), Kỹ thuật (Engineering), Nghệ thuật (Arts) và Toán học (Mathematics).' if lang == 'vi' else 'STEAM is an educational approach combining 5 fields: Science, Technology, Engineering, Arts and Mathematics.' }}
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+            <div class="bg-white p-6 rounded-xl text-center shadow-lg">
+                <div class="w-16 h-16 mx-auto mb-4 bg-blue-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-flask text-2xl text-white"></i>
+                </div>
+                <h4 class="font-bold text-dark">Science</h4>
+                <p class="text-sm text-gray-500">{{ 'Khoa học' if lang == 'vi' else 'Science' }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl text-center shadow-lg">
+                <div class="w-16 h-16 mx-auto mb-4 bg-green-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-laptop-code text-2xl text-white"></i>
+                </div>
+                <h4 class="font-bold text-dark">Technology</h4>
+                <p class="text-sm text-gray-500">{{ 'Công nghệ' if lang == 'vi' else 'Technology' }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl text-center shadow-lg">
+                <div class="w-16 h-16 mx-auto mb-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-cogs text-2xl text-white"></i>
+                </div>
+                <h4 class="font-bold text-dark">Engineering</h4>
+                <p class="text-sm text-gray-500">{{ 'Kỹ thuật' if lang == 'vi' else 'Engineering' }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl text-center shadow-lg">
+                <div class="w-16 h-16 mx-auto mb-4 bg-purple-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-palette text-2xl text-white"></i>
+                </div>
+                <h4 class="font-bold text-dark">Arts</h4>
+                <p class="text-sm text-gray-500">{{ 'Nghệ thuật' if lang == 'vi' else 'Arts' }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl text-center shadow-lg">
+                <div class="w-16 h-16 mx-auto mb-4 bg-red-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-calculator text-2xl text-white"></i>
+                </div>
+                <h4 class="font-bold text-dark">Mathematics</h4>
+                <p class="text-sm text-gray-500">{{ 'Toán học' if lang == 'vi' else 'Mathematics' }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for key, item in steam.items() %}
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                <img src="{{ item.images[0] }}" alt="{{ item.name[lang] }}" class="w-full h-64 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-display font-bold text-dark mb-3">{{ item.name[lang] }}</h3>
+                    <p class="text-gray-600 mb-4">{{ item.description[lang] }}</p>
+                    <a href="/contact?lang={{ lang }}" class="inline-block bg-primary text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition">
+                        {{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register Now' }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-display font-bold mb-6">{{ 'Đăng Ký Workshop' if lang == 'vi' else 'Register for Workshop' }}</h2>
+        <p class="text-gray-200 mb-8 max-w-2xl mx-auto">
+            {{ 'Liên hệ với chúng tôi để đăng ký tham gia các workshop STEAM dành cho trẻ em và người lớn.' if lang == 'vi' else 'Contact us to register for STEAM workshops for children and adults.' }}
+        </p>
+        <a href="/contact?lang={{ lang }}" class="inline-block bg-accent text-dark px-8 py-4 rounded-full font-semibold text-lg hover:bg-opacity-90 transition">
+            {{ 'Liên Hệ Ngay' if lang == 'vi' else 'Contact Now' }}
+        </a>
+    </div>
+</section>
+{% endblock %}
