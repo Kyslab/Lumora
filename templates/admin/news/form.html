@@ -4,7 +4,7 @@
 {% block page_title %}{{ 'Sửa Tin Tức' if news else 'Thêm Tin Tức' }}{% endblock %}
 
 {% block content %}
-<form method="POST" class="space-y-6">
+<form method="POST" enctype="multipart/form-data" class="space-y-6">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="bg-white rounded-xl shadow-sm p-6">
         <h2 class="text-lg font-semibold mb-6">Thông Tin Tin Tức</h2>
@@ -29,7 +29,40 @@
             <div><label class="block text-sm font-medium text-gray-700 mb-2">Tiêu Đề (VI) *</label><input type="text" name="title_vi" value="{{ news.title_vi if news else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
             <div><label class="block text-sm font-medium text-gray-700 mb-2">Tiêu Đề (EN) *</label><input type="text" name="title_en" value="{{ news.title_en if news else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
         </div>
-        <div class="mt-6"><label class="block text-sm font-medium text-gray-700 mb-2">Hình Ảnh Đại Diện (URL)</label><input type="url" name="image_url" value="{{ news.image_url if news else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+        
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-4">Hình Ảnh Đại Diện</h3>
+            
+            {% if news and news.image_url %}
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Hình ảnh hiện tại:</p>
+                <img src="{{ news.image_url }}" alt="Current" class="w-48 h-32 object-cover rounded-lg">
+            </div>
+            {% endif %}
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-upload mr-2 text-primary"></i>Upload hình ảnh từ máy tính
+                </label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition" id="upload-zone">
+                    <input type="file" name="image_file" id="file-input" accept="image/*" class="hidden">
+                    <label for="file-input" class="cursor-pointer">
+                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-1"></i>
+                        <p class="text-gray-600 text-sm">Kéo thả hoặc <span class="text-primary font-medium">click để chọn</span></p>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF, WEBP (tối đa 16MB)</p>
+                    </label>
+                </div>
+                <div id="file-preview" class="mt-2"></div>
+            </div>
+            
+            <div class="border-t pt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-link mr-2 text-primary"></i>Hoặc nhập URL hình ảnh
+                </label>
+                <input type="url" name="image_url" value="{{ news.image_url if news else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="https://example.com/image.jpg">
+            </div>
+        </div>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div><label class="block text-sm font-medium text-gray-700 mb-2">Tóm Tắt (VI)</label><textarea name="excerpt_vi" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg">{{ news.excerpt_vi if news else '' }}</textarea></div>
             <div><label class="block text-sm font-medium text-gray-700 mb-2">Tóm Tắt (EN)</label><textarea name="excerpt_en" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg">{{ news.excerpt_en if news else '' }}</textarea></div>
@@ -44,4 +77,38 @@
         <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg"><i class="fas fa-save mr-2"></i>{{ 'Cập Nhật' if news else 'Tạo Mới' }}</button>
     </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const fileInput = document.getElementById('file-input');
+const preview = document.getElementById('file-preview');
+const uploadZone = document.getElementById('upload-zone');
+
+fileInput.addEventListener('change', function() {
+    preview.innerHTML = '';
+    if (this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-48 h-32 object-cover rounded-lg">`;
+        };
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+uploadZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('border-primary', 'bg-primary/5');
+});
+uploadZone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-primary', 'bg-primary/5');
+});
+uploadZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-primary', 'bg-primary/5');
+    fileInput.files = e.dataTransfer.files;
+    fileInput.dispatchEvent(new Event('change'));
+});
+</script>
 {% endblock %}

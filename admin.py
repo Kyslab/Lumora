@@ -222,13 +222,25 @@ def restaurants_create():
         db.session.add(restaurant)
         db.session.commit()
         
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                rest_img = RestaurantImage(restaurant_id=restaurant.id, url=img_url, sort_order=i)
-                db.session.add(rest_img)
-        db.session.commit()
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        sort_order = 0
         
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'restaurants')
+                if url:
+                    rest_img = RestaurantImage(restaurant_id=restaurant.id, url=url, sort_order=sort_order)
+                    db.session.add(rest_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                rest_img = RestaurantImage(restaurant_id=restaurant.id, url=img_url.strip(), sort_order=sort_order)
+                db.session.add(rest_img)
+                sort_order += 1
+        
+        db.session.commit()
         flash('Đã tạo nhà hàng mới thành công!', 'success')
         return redirect(url_for('admin.restaurants_list'))
     
@@ -250,12 +262,27 @@ def restaurants_edit(id):
         restaurant.hours = request.form.get('hours')
         restaurant.is_active = request.form.get('is_active') == 'on'
         
-        RestaurantImage.query.filter_by(restaurant_id=restaurant.id).delete()
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                rest_img = RestaurantImage(restaurant_id=restaurant.id, url=img_url, sort_order=i)
+        keep_images = request.form.getlist('keep_images[]')
+        RestaurantImage.query.filter(RestaurantImage.restaurant_id == restaurant.id, ~RestaurantImage.id.in_([int(x) for x in keep_images if x])).delete(synchronize_session=False)
+        
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        max_order = db.session.query(db.func.max(RestaurantImage.sort_order)).filter_by(restaurant_id=restaurant.id).scalar() or -1
+        sort_order = max_order + 1
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'restaurants')
+                if url:
+                    rest_img = RestaurantImage(restaurant_id=restaurant.id, url=url, sort_order=sort_order)
+                    db.session.add(rest_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                rest_img = RestaurantImage(restaurant_id=restaurant.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(rest_img)
+                sort_order += 1
         
         db.session.commit()
         flash('Đã cập nhật nhà hàng thành công!', 'success')
@@ -295,13 +322,25 @@ def amenities_create():
         db.session.add(amenity)
         db.session.commit()
         
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                am_img = AmenityImage(amenity_id=amenity.id, url=img_url, sort_order=i)
-                db.session.add(am_img)
-        db.session.commit()
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        sort_order = 0
         
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'amenities')
+                if url:
+                    am_img = AmenityImage(amenity_id=amenity.id, url=url, sort_order=sort_order)
+                    db.session.add(am_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                am_img = AmenityImage(amenity_id=amenity.id, url=img_url.strip(), sort_order=sort_order)
+                db.session.add(am_img)
+                sort_order += 1
+        
+        db.session.commit()
         flash('Đã tạo tiện ích mới thành công!', 'success')
         return redirect(url_for('admin.amenities_list'))
     
@@ -322,12 +361,27 @@ def amenities_edit(id):
         amenity.video_url = request.form.get('video_url')
         amenity.is_active = request.form.get('is_active') == 'on'
         
-        AmenityImage.query.filter_by(amenity_id=amenity.id).delete()
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                am_img = AmenityImage(amenity_id=amenity.id, url=img_url, sort_order=i)
+        keep_images = request.form.getlist('keep_images[]')
+        AmenityImage.query.filter(AmenityImage.amenity_id == amenity.id, ~AmenityImage.id.in_([int(x) for x in keep_images if x])).delete(synchronize_session=False)
+        
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        max_order = db.session.query(db.func.max(AmenityImage.sort_order)).filter_by(amenity_id=amenity.id).scalar() or -1
+        sort_order = max_order + 1
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'amenities')
+                if url:
+                    am_img = AmenityImage(amenity_id=amenity.id, url=url, sort_order=sort_order)
+                    db.session.add(am_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                am_img = AmenityImage(amenity_id=amenity.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(am_img)
+                sort_order += 1
         
         db.session.commit()
         flash('Đã cập nhật tiện ích thành công!', 'success')
@@ -367,11 +421,23 @@ def experiences_create():
         db.session.add(experience)
         db.session.commit()
         
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                exp_img = ExperienceImage(experience_id=experience.id, url=img_url, sort_order=i)
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        sort_order = 0
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'experiences')
+                if url:
+                    exp_img = ExperienceImage(experience_id=experience.id, url=url, sort_order=sort_order)
+                    db.session.add(exp_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                exp_img = ExperienceImage(experience_id=experience.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(exp_img)
+                sort_order += 1
         
         video_urls = request.form.getlist('video_urls[]')
         video_titles_vi = request.form.getlist('video_titles_vi[]')
@@ -408,12 +474,27 @@ def experiences_edit(id):
         experience.content_en = request.form.get('content_en')
         experience.is_active = request.form.get('is_active') == 'on'
         
-        ExperienceImage.query.filter_by(experience_id=experience.id).delete()
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                exp_img = ExperienceImage(experience_id=experience.id, url=img_url, sort_order=i)
+        keep_images = request.form.getlist('keep_images[]')
+        ExperienceImage.query.filter(ExperienceImage.experience_id == experience.id, ~ExperienceImage.id.in_([int(x) for x in keep_images if x])).delete(synchronize_session=False)
+        
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        max_order = db.session.query(db.func.max(ExperienceImage.sort_order)).filter_by(experience_id=experience.id).scalar() or -1
+        sort_order = max_order + 1
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'experiences')
+                if url:
+                    exp_img = ExperienceImage(experience_id=experience.id, url=url, sort_order=sort_order)
+                    db.session.add(exp_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                exp_img = ExperienceImage(experience_id=experience.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(exp_img)
+                sort_order += 1
         
         ExperienceVideo.query.filter_by(experience_id=experience.id).delete()
         video_urls = request.form.getlist('video_urls[]')
@@ -468,11 +549,23 @@ def steam_create():
         db.session.add(program)
         db.session.commit()
         
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                st_img = SteamImage(steam_id=program.id, url=img_url, sort_order=i)
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        sort_order = 0
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'steam')
+                if url:
+                    st_img = SteamImage(steam_id=program.id, url=url, sort_order=sort_order)
+                    db.session.add(st_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                st_img = SteamImage(steam_id=program.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(st_img)
+                sort_order += 1
         
         video_urls = request.form.getlist('video_urls[]')
         video_titles_vi = request.form.getlist('video_titles_vi[]')
@@ -509,12 +602,27 @@ def steam_edit(id):
         program.content_en = request.form.get('content_en')
         program.is_active = request.form.get('is_active') == 'on'
         
-        SteamImage.query.filter_by(steam_id=program.id).delete()
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                st_img = SteamImage(steam_id=program.id, url=img_url, sort_order=i)
+        keep_images = request.form.getlist('keep_images[]')
+        SteamImage.query.filter(SteamImage.steam_id == program.id, ~SteamImage.id.in_([int(x) for x in keep_images if x])).delete(synchronize_session=False)
+        
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        max_order = db.session.query(db.func.max(SteamImage.sort_order)).filter_by(steam_id=program.id).scalar() or -1
+        sort_order = max_order + 1
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'steam')
+                if url:
+                    st_img = SteamImage(steam_id=program.id, url=url, sort_order=sort_order)
+                    db.session.add(st_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                st_img = SteamImage(steam_id=program.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(st_img)
+                sort_order += 1
         
         SteamVideo.query.filter_by(steam_id=program.id).delete()
         video_urls = request.form.getlist('video_urls[]')
@@ -570,13 +678,25 @@ def events_create():
         db.session.add(event)
         db.session.commit()
         
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                ev_img = EventImage(event_id=event.id, url=img_url, sort_order=i)
-                db.session.add(ev_img)
-        db.session.commit()
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        sort_order = 0
         
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'events')
+                if url:
+                    ev_img = EventImage(event_id=event.id, url=url, sort_order=sort_order)
+                    db.session.add(ev_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                ev_img = EventImage(event_id=event.id, url=img_url.strip(), sort_order=sort_order)
+                db.session.add(ev_img)
+                sort_order += 1
+        
+        db.session.commit()
         flash('Đã tạo sự kiện mới thành công!', 'success')
         return redirect(url_for('admin.events_list'))
     
@@ -598,12 +718,27 @@ def events_edit(id):
         event.features = request.form.get('features')
         event.is_active = request.form.get('is_active') == 'on'
         
-        EventImage.query.filter_by(event_id=event.id).delete()
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                ev_img = EventImage(event_id=event.id, url=img_url, sort_order=i)
+        keep_images = request.form.getlist('keep_images[]')
+        EventImage.query.filter(EventImage.event_id == event.id, ~EventImage.id.in_([int(x) for x in keep_images if x])).delete(synchronize_session=False)
+        
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        max_order = db.session.query(db.func.max(EventImage.sort_order)).filter_by(event_id=event.id).scalar() or -1
+        sort_order = max_order + 1
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'events')
+                if url:
+                    ev_img = EventImage(event_id=event.id, url=url, sort_order=sort_order)
+                    db.session.add(ev_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                ev_img = EventImage(event_id=event.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(ev_img)
+                sort_order += 1
         
         db.session.commit()
         flash('Đã cập nhật sự kiện thành công!', 'success')
@@ -630,6 +765,14 @@ def news_list():
 @admin_required
 def news_create():
     if request.method == 'POST':
+        image_url = request.form.get('image_url', '')
+        
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            url = save_uploaded_file(uploaded_file, 'news')
+            if url:
+                image_url = url
+        
         news = News(
             slug=request.form.get('slug'),
             title_vi=request.form.get('title_vi'),
@@ -639,7 +782,7 @@ def news_create():
             content_vi=request.form.get('content_vi'),
             content_en=request.form.get('content_en'),
             category=request.form.get('category'),
-            image_url=request.form.get('image_url'),
+            image_url=image_url,
             status=request.form.get('status', 'draft'),
             published_at=datetime.utcnow() if request.form.get('status') == 'published' else None
         )
@@ -665,7 +808,15 @@ def news_edit(id):
         news.content_vi = request.form.get('content_vi')
         news.content_en = request.form.get('content_en')
         news.category = request.form.get('category')
-        news.image_url = request.form.get('image_url')
+        
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            url = save_uploaded_file(uploaded_file, 'news')
+            if url:
+                news.image_url = url
+        elif request.form.get('image_url'):
+            news.image_url = request.form.get('image_url')
+        
         news.status = request.form.get('status', 'draft')
         if news.status == 'published' and not news.published_at:
             news.published_at = datetime.utcnow()
@@ -695,12 +846,24 @@ def gallery_list():
 @admin_required
 def gallery_create():
     if request.method == 'POST':
+        item_type = request.form.get('type')
+        url = request.form.get('url', '')
+        thumb_url = request.form.get('thumb_url', '')
+        
+        if item_type == 'image':
+            uploaded_file = request.files.get('image_file')
+            if uploaded_file and uploaded_file.filename:
+                uploaded_url = save_uploaded_file(uploaded_file, 'gallery')
+                if uploaded_url:
+                    url = uploaded_url
+                    thumb_url = uploaded_url
+        
         item = GalleryItem(
-            type=request.form.get('type'),
+            type=item_type,
             title_vi=request.form.get('title_vi'),
             title_en=request.form.get('title_en'),
-            url=request.form.get('url'),
-            thumb_url=request.form.get('thumb_url'),
+            url=url,
+            thumb_url=thumb_url,
             category=request.form.get('category'),
             sort_order=int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0,
             is_active=request.form.get('is_active') == 'on'
@@ -722,11 +885,23 @@ def gallery_edit(id):
         item.type = request.form.get('type')
         item.title_vi = request.form.get('title_vi')
         item.title_en = request.form.get('title_en')
-        item.url = request.form.get('url')
-        item.thumb_url = request.form.get('thumb_url')
         item.category = request.form.get('category')
         item.sort_order = int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0
         item.is_active = request.form.get('is_active') == 'on'
+        
+        if item.type == 'image':
+            uploaded_file = request.files.get('image_file')
+            if uploaded_file and uploaded_file.filename:
+                uploaded_url = save_uploaded_file(uploaded_file, 'gallery')
+                if uploaded_url:
+                    item.url = uploaded_url
+                    item.thumb_url = uploaded_url
+            elif request.form.get('url'):
+                item.url = request.form.get('url')
+                item.thumb_url = request.form.get('thumb_url') or request.form.get('url')
+        else:
+            item.url = request.form.get('url')
+            item.thumb_url = request.form.get('thumb_url')
         
         db.session.commit()
         flash('Đã cập nhật mục gallery thành công!', 'success')
