@@ -37,8 +37,13 @@ Website resort đa ngôn ngữ (Việt/Anh) cho Lumora Resort với đầy đủ
 2. **Lưu Trú**: Danh sách phòng (Deluxe, Glamping, Bungalow), filter theo loại, chi tiết phòng
 3. **Ẩm Thực**: 3 nhà hàng (Restaurant, BBQ Garden, Café & Bar), menu món ăn
 4. **Tiện Ích**: Vườn thú, vườn cây, bể bơi vô cực
-5. **Trải Nghiệm**: Tham quan check-in, khu mạo hiểm
-6. **Giáo Dục STEAM**: Chương trình STEAM, workshop kỹ năng
+5. **Trải Nghiệm**: 
+   - Tham Quan Check-in: Bài viết với hình ảnh và video
+   - Khu Trò Chơi Mạo Hiểm: Bài viết với hình ảnh và video
+6. **Giáo Dục STEAM** (Menu riêng):
+   - Giới Thiệu Chương Trình: Bài viết chi tiết về STEAM
+   - Workshop Kỹ Năng: Các workshop thực hành
+   - Đăng Ký Tham Gia: Form đăng ký với validation
 7. **Sự Kiện**: Hội trường, sân team building
 8. **Tin Tức**: Blog, ưu đãi, sự kiện
 9. **Thư Viện**: Gallery hình ảnh và video
