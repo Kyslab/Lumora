@@ -122,7 +122,15 @@ Server chạy trên port 5000.
 - CSRF protection enabled via Flask-WTF
 - Password hashing with Werkzeug
 
+## Data Management
+- Tất cả dữ liệu được lưu trong PostgreSQL database
+- Dữ liệu ban đầu được seed từ script `seed_data.py`
+- Admin có thể thêm/sửa/xóa tất cả nội dung qua admin panel
+- Hỗ trợ song ngữ (Việt/Anh) cho tất cả các trường nội dung
+
 ## Recent Changes
+- 2024-12-03: Migrated all content to database, public routes now read from database
+- 2024-12-03: Added seed_data.py script for initial data population
 - 2024-12-03: Added admin panel with full CRUD for all content types
 - 2024-12-03: Integrated PostgreSQL database with SQLAlchemy ORM
 - 2024-12-03: Contact/Booking forms now save to database
