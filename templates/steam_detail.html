@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}{{ steam.name[lang] }} - Lumora Resort{% endblock %}
+
+{% block meta_description %}{{ steam.short_desc[lang] }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px] flex items-center justify-center">
+    <div class="absolute inset-0">
+        <img src="{{ steam.images[0] }}" alt="{{ steam.name[lang] }}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    </div>
+    <div class="relative z-10 text-center text-white px-4">
+        <p class="text-accent font-medium mb-2">STEAM EDUCATION</p>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">{{ steam.name[lang] }}</h1>
+        <p class="text-lg md:text-xl max-w-2xl mx-auto">{{ steam.short_desc[lang] }}</p>
+    </div>
+</section>
+
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-8">
+                <a href="/?lang={{ lang }}" class="hover:text-primary">{{ 'Trang Chủ' if lang == 'vi' else 'Home' }}</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-primary">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</span>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-primary">{{ steam.name[lang] }}</span>
+            </nav>
+
+            <div class="prose prose-lg max-w-none article-content">
+                {{ steam.content[lang]|safe }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-display font-bold text-center mb-12">{{ 'Hình Ảnh Hoạt Động' if lang == 'vi' else 'Activity Photos' }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+            {% for image in steam.images %}
+            <div class="relative group overflow-hidden rounded-lg shadow-lg">
+                <img src="{{ image }}" alt="{{ steam.name[lang] }}" class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% if steam.videos %}
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-display font-bold text-center mb-12">{{ 'Video Giới Thiệu' if lang == 'vi' else 'Introduction Videos' }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {% for video in steam.videos %}
+            <div class="bg-light rounded-lg overflow-hidden shadow-lg">
+                <div class="relative pb-[56.25%]">
+                    <iframe src="{{ video.url }}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-display font-semibold text-lg">{{ video.title[lang] }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-display font-bold mb-4">{{ 'Đăng Ký Tham Gia Ngay!' if lang == 'vi' else 'Register Now!' }}</h2>
+        <p class="text-lg mb-8 max-w-2xl mx-auto">{{ 'Cho con bạn một trải nghiệm học tập thú vị và bổ ích tại Lumora Resort.' if lang == 'vi' else 'Give your child an exciting and educational learning experience at Lumora Resort.' }}</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/steam/register?lang={{ lang }}" class="bg-accent text-dark px-8 py-3 rounded-full font-semibold hover:bg-white transition">
+                {{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register Now' }}
+            </a>
+            <a href="/contact?lang={{ lang }}" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-primary transition">
+                {{ 'Liên Hệ Tư Vấn' if lang == 'vi' else 'Contact Us' }}
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-display font-bold text-center mb-12">{{ 'Khám Phá Thêm' if lang == 'vi' else 'Explore More' }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <a href="/steam/intro?lang={{ lang }}" class="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition text-center group">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent transition">
+                    <i class="fas fa-lightbulb text-white text-2xl"></i>
+                </div>
+                <h3 class="font-display font-semibold text-lg mb-2">{{ 'Giới Thiệu STEAM' if lang == 'vi' else 'STEAM Introduction' }}</h3>
+            </a>
+            <a href="/steam/workshop?lang={{ lang }}" class="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition text-center group">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent transition">
+                    <i class="fas fa-tools text-white text-2xl"></i>
+                </div>
+                <h3 class="font-display font-semibold text-lg mb-2">{{ 'Workshop Kỹ Năng' if lang == 'vi' else 'Skills Workshop' }}</h3>
+            </a>
+            <a href="/steam/register?lang={{ lang }}" class="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition text-center group">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent transition">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                </div>
+                <h3 class="font-display font-semibold text-lg mb-2">{{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register' }}</h3>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .article-content h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2D5A27;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .article-content h4 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1A1A1A;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .article-content p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+        color: #4A4A4A;
+    }
+    .article-content ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .article-content li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+    .article-content strong {
+        color: #2D5A27;
+    }
+</style>
+{% endblock %}

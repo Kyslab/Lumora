@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ experience.name[lang] }} - Lumora Resort{% endblock %}
+
+{% block meta_description %}{{ experience.short_desc[lang] }}{% endblock %}
+
+{% block content %}
+<section class="relative h-[50vh] min-h-[400px] flex items-center justify-center">
+    <div class="absolute inset-0">
+        <img src="{{ experience.images[0] }}" alt="{{ experience.name[lang] }}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    </div>
+    <div class="relative z-10 text-center text-white px-4">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4">{{ experience.name[lang] }}</h1>
+        <p class="text-lg md:text-xl max-w-2xl mx-auto">{{ experience.short_desc[lang] }}</p>
+    </div>
+</section>
+
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-8">
+                <a href="/?lang={{ lang }}" class="hover:text-primary">{{ 'Trang Chủ' if lang == 'vi' else 'Home' }}</a>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-primary">{{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}</span>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-primary">{{ experience.name[lang] }}</span>
+            </nav>
+
+            <div class="prose prose-lg max-w-none article-content">
+                {{ experience.content[lang]|safe }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-display font-bold text-center mb-12">{{ 'Hình Ảnh' if lang == 'vi' else 'Gallery' }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            {% for image in experience.images %}
+            <div class="relative group overflow-hidden rounded-lg shadow-lg">
+                <img src="{{ image }}" alt="{{ experience.name[lang] }}" class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <i class="fas fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% if experience.videos %}
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-display font-bold text-center mb-12">{{ 'Video' if lang == 'vi' else 'Videos' }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {% for video in experience.videos %}
+            <div class="bg-light rounded-lg overflow-hidden shadow-lg">
+                <div class="relative pb-[56.25%]">
+                    <iframe src="{{ video.url }}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-display font-semibold text-lg">{{ video.title[lang] }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-display font-bold mb-4">{{ 'Sẵn Sàng Trải Nghiệm?' if lang == 'vi' else 'Ready to Experience?' }}</h2>
+        <p class="text-lg mb-8 max-w-2xl mx-auto">{{ 'Liên hệ với chúng tôi để đặt lịch và nhận thêm thông tin chi tiết.' if lang == 'vi' else 'Contact us to book and get more detailed information.' }}</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/contact?lang={{ lang }}#booking" class="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-accent hover:text-white transition">
+                {{ 'Đặt Phòng Ngay' if lang == 'vi' else 'Book Now' }}
+            </a>
+            <a href="/contact?lang={{ lang }}" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-primary transition">
+                {{ 'Liên Hệ Tư Vấn' if lang == 'vi' else 'Contact Us' }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .article-content h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2D5A27;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .article-content h4 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1A1A1A;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .article-content p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+        color: #4A4A4A;
+    }
+    .article-content ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .article-content li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+    .article-content strong {
+        color: #2D5A27;
+    }
+</style>
+{% endblock %}

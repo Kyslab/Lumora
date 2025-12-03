@@ -129,11 +129,26 @@
                             <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </span>
                         <div class="dropdown-menu py-2">
-                            <a href="/experiences?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Tham Quan' if lang == 'vi' else 'Tours' }}</a>
-                            <a href="/steam?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</a>
-                            <a href="/events?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Sự Kiện' if lang == 'vi' else 'Events' }}</a>
+                            <a href="/experiences/checkin?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Tham Quan Check-in' if lang == 'vi' else 'Check-in Tour' }}</a>
+                            <a href="/experiences/adventure?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Khu Trò Chơi Mạo Hiểm' if lang == 'vi' else 'Adventure Playground' }}</a>
                         </div>
                     </div>
+
+                    <div class="dropdown relative">
+                        <span class="nav-link text-dark hover:text-primary font-medium flex items-center cursor-pointer">
+                            {{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </span>
+                        <div class="dropdown-menu py-2">
+                            <a href="/steam/intro?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Giới Thiệu Chương Trình' if lang == 'vi' else 'Program Introduction' }}</a>
+                            <a href="/steam/workshop?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Workshop Kỹ Năng' if lang == 'vi' else 'Skills Workshop' }}</a>
+                            <a href="/steam/register?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register' }}</a>
+                        </div>
+                    </div>
+
+                    <a href="/events?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                        {{ 'Sự Kiện' if lang == 'vi' else 'Events' }}
+                    </a>
 
                     <a href="/news?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
                         {{ 'Tin Tức' if lang == 'vi' else 'News' }}
@@ -179,8 +194,24 @@
                     <a href="/accommodation?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}</a>
                     <a href="/dining?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}</a>
                     <a href="/amenities?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}</a>
-                    <a href="/experiences?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}</a>
-                    <a href="/steam?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</a>
+                    
+                    <div class="border-b pb-2">
+                        <p class="py-2 text-dark font-medium">{{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}</p>
+                        <div class="pl-4 space-y-2">
+                            <a href="/experiences/checkin?lang={{ lang }}" class="block py-1 text-gray-600 hover:text-primary">{{ 'Tham Quan Check-in' if lang == 'vi' else 'Check-in Tour' }}</a>
+                            <a href="/experiences/adventure?lang={{ lang }}" class="block py-1 text-gray-600 hover:text-primary">{{ 'Khu Trò Chơi Mạo Hiểm' if lang == 'vi' else 'Adventure Playground' }}</a>
+                        </div>
+                    </div>
+                    
+                    <div class="border-b pb-2">
+                        <p class="py-2 text-dark font-medium">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</p>
+                        <div class="pl-4 space-y-2">
+                            <a href="/steam/intro?lang={{ lang }}" class="block py-1 text-gray-600 hover:text-primary">{{ 'Giới Thiệu Chương Trình' if lang == 'vi' else 'Program Introduction' }}</a>
+                            <a href="/steam/workshop?lang={{ lang }}" class="block py-1 text-gray-600 hover:text-primary">{{ 'Workshop Kỹ Năng' if lang == 'vi' else 'Skills Workshop' }}</a>
+                            <a href="/steam/register?lang={{ lang }}" class="block py-1 text-gray-600 hover:text-primary">{{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register' }}</a>
+                        </div>
+                    </div>
+                    
                     <a href="/events?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Sự Kiện' if lang == 'vi' else 'Events' }}</a>
                     <a href="/news?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Tin Tức' if lang == 'vi' else 'News' }}</a>
                     <a href="/gallery?lang={{ lang }}" class="block py-2 border-b text-dark hover:text-primary">{{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}</a>
