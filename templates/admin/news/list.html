@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Quản Lý Tin Tức{% endblock %}
+{% block page_title %}Quản Lý Tin Tức{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm">
+    <div class="p-6 border-b flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Danh Sách Tin Tức</h2>
+        <a href="{{ url_for('admin.news_create') }}" class="bg-primary text-white px-4 py-2 rounded-lg"><i class="fas fa-plus mr-2"></i>Thêm Tin Tức</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hình</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tiêu Đề</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Danh Mục</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng Thái</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for news in news_items %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        {% if news.image_url %}<img src="{{ news.image_url }}" class="w-16 h-12 object-cover rounded">{% else %}<div class="w-16 h-12 bg-gray-200 rounded flex items-center justify-center"><i class="fas fa-newspaper text-gray-400"></i></div>{% endif %}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="font-medium">{{ news.title_vi }}</div>
+                        <div class="text-sm text-gray-500">{{ news.title_en }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ news.category or '-' }}</td>
+                    <td class="px-6 py-4">
+                        {% if news.status == 'published' %}<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Đã đăng</span>{% else %}<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Nháp</span>{% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ news.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ url_for('admin.news_edit', id=news.id) }}" class="text-blue-600 mr-3"><i class="fas fa-edit"></i></a>
+                        <form action="{{ url_for('admin.news_delete', id=news.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa?')"><button type="submit" class="text-red-600"><i class="fas fa-trash"></i></button></form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Chưa có tin tức nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

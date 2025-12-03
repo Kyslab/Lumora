@@ -1,0 +1,138 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Sửa Phòng' if room else 'Thêm Phòng Mới' }}{% endblock %}
+{% block page_title %}{{ 'Sửa Phòng' if room else 'Thêm Phòng Mới' }}{% endblock %}
+
+{% block content %}
+<form method="POST" class="space-y-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Thông Tin Cơ Bản</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Slug (URL)</label>
+                <input type="text" name="slug" value="{{ room.slug if room else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="deluxe-room-1">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Loại Phòng</label>
+                <select name="room_type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="">-- Chọn loại --</option>
+                    <option value="deluxe" {% if room and room.room_type == 'deluxe' %}selected{% endif %}>Deluxe</option>
+                    <option value="glamping" {% if room and room.room_type == 'glamping' %}selected{% endif %}>Glamping</option>
+                    <option value="bungalow" {% if room and room.room_type == 'bungalow' %}selected{% endif %}>Bungalow</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tên Phòng (Tiếng Việt) *</label>
+                <input type="text" name="name_vi" value="{{ room.name_vi if room else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tên Phòng (Tiếng Anh) *</label>
+                <input type="text" name="name_en" value="{{ room.name_en if room else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô Tả (Tiếng Việt)</label>
+                <textarea name="description_vi" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">{{ room.description_vi if room else '' }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô Tả (Tiếng Anh)</label>
+                <textarea name="description_en" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">{{ room.description_en if room else '' }}</textarea>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Giá (VND)</label>
+                <input type="number" name="price" value="{{ room.price if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Diện Tích (m²)</label>
+                <input type="number" name="area" value="{{ room.area if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Sức Chứa (người)</label>
+                <input type="number" name="capacity" value="{{ room.capacity if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tiện Nghi (mỗi dòng một tiện nghi)</label>
+            <textarea name="amenities" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="WiFi miễn phí&#10;Điều hòa&#10;Minibar">{{ room.amenities if room else '' }}</textarea>
+        </div>
+        
+        <div class="mt-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Video YouTube URL</label>
+            <input type="url" name="video_url" value="{{ room.video_url if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="https://www.youtube.com/embed/...">
+        </div>
+        
+        <div class="mt-6 flex items-center space-x-6">
+            <label class="flex items-center">
+                <input type="checkbox" name="is_active" {% if room and room.is_active %}checked{% elif not room %}checked{% endif %} class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                <span class="ml-2 text-sm text-gray-700">Hiển thị trên website</span>
+            </label>
+            <label class="flex items-center">
+                <input type="checkbox" name="is_featured" {% if room and room.is_featured %}checked{% endif %} class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                <span class="ml-2 text-sm text-gray-700">Phòng nổi bật</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Hình Ảnh</h2>
+        <div id="images-container" class="space-y-3">
+            {% if room and room.images %}
+                {% for img in room.images %}
+                <div class="flex items-center space-x-3 image-row">
+                    <input type="url" name="images[]" value="{{ img.url }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="https://example.com/image.jpg">
+                    <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="flex items-center space-x-3 image-row">
+                <input type="url" name="images[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="https://example.com/image.jpg">
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <button type="button" onclick="addImageField()" class="mt-4 text-primary hover:text-primary/80">
+            <i class="fas fa-plus mr-2"></i>Thêm Hình
+        </button>
+    </div>
+    
+    <div class="flex items-center justify-between">
+        <a href="{{ url_for('admin.rooms_list') }}" class="text-gray-600 hover:text-gray-800">
+            <i class="fas fa-arrow-left mr-2"></i>Quay lại
+        </a>
+        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition">
+            <i class="fas fa-save mr-2"></i>{{ 'Cập Nhật' if room else 'Tạo Phòng' }}
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addImageField() {
+    const container = document.getElementById('images-container');
+    const div = document.createElement('div');
+    div.className = 'flex items-center space-x-3 image-row';
+    div.innerHTML = `
+        <input type="url" name="images[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="https://example.com/image.jpg">
+        <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-2">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+</script>
+{% endblock %}

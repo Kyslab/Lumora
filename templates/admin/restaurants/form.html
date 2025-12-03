@@ -1,0 +1,106 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Sửa Nhà Hàng' if restaurant else 'Thêm Nhà Hàng' }}{% endblock %}
+{% block page_title %}{{ 'Sửa Nhà Hàng' if restaurant else 'Thêm Nhà Hàng' }}{% endblock %}
+
+{% block content %}
+<form method="POST" class="space-y-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Thông Tin Nhà Hàng</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Slug (URL) *</label>
+                <input type="text" name="slug" value="{{ restaurant.slug if restaurant else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Giờ Mở Cửa</label>
+                <input type="text" name="hours" value="{{ restaurant.hours if restaurant else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="06:00 - 22:00">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tên (Tiếng Việt) *</label>
+                <input type="text" name="name_vi" value="{{ restaurant.name_vi if restaurant else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tên (Tiếng Anh) *</label>
+                <input type="text" name="name_en" value="{{ restaurant.name_en if restaurant else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Danh Mục (Tiếng Việt)</label>
+                <input type="text" name="category_vi" value="{{ restaurant.category_vi if restaurant else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Danh Mục (Tiếng Anh)</label>
+                <input type="text" name="category_en" value="{{ restaurant.category_en if restaurant else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô Tả (Tiếng Việt)</label>
+                <textarea name="description_vi" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">{{ restaurant.description_vi if restaurant else '' }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô Tả (Tiếng Anh)</label>
+                <textarea name="description_en" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">{{ restaurant.description_en if restaurant else '' }}</textarea>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <label class="flex items-center">
+                <input type="checkbox" name="is_active" {% if restaurant and restaurant.is_active %}checked{% elif not restaurant %}checked{% endif %} class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                <span class="ml-2 text-sm text-gray-700">Hiển thị trên website</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Hình Ảnh</h2>
+        <div id="images-container" class="space-y-3">
+            {% if restaurant and restaurant.images %}
+                {% for img in restaurant.images %}
+                <div class="flex items-center space-x-3 image-row">
+                    <input type="url" name="images[]" value="{{ img.url }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-2"><i class="fas fa-times"></i></button>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="flex items-center space-x-3 image-row">
+                <input type="url" name="images[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="https://example.com/image.jpg">
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-2"><i class="fas fa-times"></i></button>
+            </div>
+            {% endif %}
+        </div>
+        <button type="button" onclick="addImageField()" class="mt-4 text-primary hover:text-primary/80">
+            <i class="fas fa-plus mr-2"></i>Thêm Hình
+        </button>
+    </div>
+    
+    <div class="flex items-center justify-between">
+        <a href="{{ url_for('admin.restaurants_list') }}" class="text-gray-600 hover:text-gray-800">
+            <i class="fas fa-arrow-left mr-2"></i>Quay lại
+        </a>
+        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition">
+            <i class="fas fa-save mr-2"></i>{{ 'Cập Nhật' if restaurant else 'Tạo Mới' }}
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addImageField() {
+    const container = document.getElementById('images-container');
+    const div = document.createElement('div');
+    div.className = 'flex items-center space-x-3 image-row';
+    div.innerHTML = `<input type="url" name="images[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="https://example.com/image.jpg"><button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-2"><i class="fas fa-times"></i></button>`;
+    container.appendChild(div);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm">Phòng</p>
+                <p class="text-3xl font-bold text-gray-800">{{ stats.rooms }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-bed text-blue-600 text-xl"></i>
+            </div>
+        </div>
+        <a href="{{ url_for('admin.rooms_list') }}" class="text-blue-600 text-sm hover:underline mt-4 block">Quản lý &rarr;</a>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm">Nhà Hàng</p>
+                <p class="text-3xl font-bold text-gray-800">{{ stats.restaurants }}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-utensils text-orange-600 text-xl"></i>
+            </div>
+        </div>
+        <a href="{{ url_for('admin.restaurants_list') }}" class="text-orange-600 text-sm hover:underline mt-4 block">Quản lý &rarr;</a>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm">Tiện Ích</p>
+                <p class="text-3xl font-bold text-gray-800">{{ stats.amenities }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-swimming-pool text-green-600 text-xl"></i>
+            </div>
+        </div>
+        <a href="{{ url_for('admin.amenities_list') }}" class="text-green-600 text-sm hover:underline mt-4 block">Quản lý &rarr;</a>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm">Liên Hệ Mới</p>
+                <p class="text-3xl font-bold text-gray-800">{{ stats.contacts }}</p>
+            </div>
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-envelope text-red-600 text-xl"></i>
+            </div>
+        </div>
+        <a href="{{ url_for('admin.contacts_list') }}" class="text-red-600 text-sm hover:underline mt-4 block">Xem tất cả &rarr;</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-4">Thống Kê Nội Dung</h2>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between py-2 border-b">
+                <span class="text-gray-600">Trải Nghiệm</span>
+                <span class="font-semibold">{{ stats.experiences }}</span>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b">
+                <span class="text-gray-600">Chương Trình STEAM</span>
+                <span class="font-semibold">{{ stats.steam }}</span>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b">
+                <span class="text-gray-600">Sự Kiện</span>
+                <span class="font-semibold">{{ stats.events }}</span>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b">
+                <span class="text-gray-600">Tin Tức</span>
+                <span class="font-semibold">{{ stats.news }}</span>
+            </div>
+            <div class="flex items-center justify-between py-2">
+                <span class="text-gray-600">Thư Viện Ảnh/Video</span>
+                <span class="font-semibold">{{ stats.gallery }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-4">Liên Hệ Gần Đây</h2>
+        {% if recent_contacts %}
+            <div class="space-y-3">
+                {% for contact in recent_contacts %}
+                    <a href="{{ url_for('admin.contacts_view', id=contact.id) }}" class="block p-3 rounded-lg hover:bg-gray-50 border {% if contact.status == 'new' %}border-red-200 bg-red-50{% else %}border-gray-100{% endif %}">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">{{ contact.name }}</span>
+                            <span class="text-xs text-gray-500">{{ contact.created_at.strftime('%d/%m/%Y') }}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 truncate">{{ contact.subject or contact.message[:50] }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 text-center py-8">Chưa có liên hệ nào.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <a href="{{ url_for('admin.rooms_create') }}" class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition flex items-center space-x-3">
+        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+            <i class="fas fa-plus text-primary"></i>
+        </div>
+        <span class="font-medium">Thêm Phòng</span>
+    </a>
+    <a href="{{ url_for('admin.news_create') }}" class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition flex items-center space-x-3">
+        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+            <i class="fas fa-plus text-primary"></i>
+        </div>
+        <span class="font-medium">Thêm Tin Tức</span>
+    </a>
+    <a href="{{ url_for('admin.gallery_create') }}" class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition flex items-center space-x-3">
+        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+            <i class="fas fa-plus text-primary"></i>
+        </div>
+        <span class="font-medium">Thêm Ảnh/Video</span>
+    </a>
+    <a href="{{ url_for('admin.experiences_create') }}" class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition flex items-center space-x-3">
+        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+            <i class="fas fa-plus text-primary"></i>
+        </div>
+        <span class="font-medium">Thêm Trải Nghiệm</span>
+    </a>
+</div>
+{% endblock %}

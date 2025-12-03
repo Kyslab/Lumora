@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Sửa STEAM' if program else 'Thêm STEAM' }}{% endblock %}
+{% block page_title %}{{ 'Sửa Chương Trình STEAM' if program else 'Thêm Chương Trình STEAM' }}{% endblock %}
+
+{% block content %}
+<form method="POST" class="space-y-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Thông Tin Chương Trình</h2>
+        
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Slug *</label>
+            <input type="text" name="slug" value="{{ program.slug if program else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tiêu Đề (Tiếng Việt) *</label>
+                <input type="text" name="title_vi" value="{{ program.title_vi if program else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tiêu Đề (Tiếng Anh) *</label>
+                <input type="text" name="title_en" value="{{ program.title_en if program else '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô Tả Ngắn (Tiếng Việt)</label>
+                <textarea name="short_desc_vi" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg">{{ program.short_desc_vi if program else '' }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mô Tả Ngắn (Tiếng Anh)</label>
+                <textarea name="short_desc_en" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg">{{ program.short_desc_en if program else '' }}</textarea>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nội Dung (Tiếng Việt - HTML)</label>
+                <textarea name="content_vi" rows="8" class="w-full px-4 py-2 border border-gray-300 rounded-lg font-mono text-sm">{{ program.content_vi if program else '' }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nội Dung (Tiếng Anh - HTML)</label>
+                <textarea name="content_en" rows="8" class="w-full px-4 py-2 border border-gray-300 rounded-lg font-mono text-sm">{{ program.content_en if program else '' }}</textarea>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <label class="flex items-center">
+                <input type="checkbox" name="is_active" {% if program and program.is_active %}checked{% elif not program %}checked{% endif %} class="w-4 h-4 text-primary border-gray-300 rounded">
+                <span class="ml-2 text-sm text-gray-700">Hiển thị trên website</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Hình Ảnh</h2>
+        <div id="images-container" class="space-y-3">
+            {% if program and program.images %}
+                {% for img in program.images %}
+                <div class="flex items-center space-x-3">
+                    <input type="url" name="images[]" value="{{ img.url }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg">
+                    <button type="button" onclick="this.parentElement.remove()" class="text-red-600 p-2"><i class="fas fa-times"></i></button>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="flex items-center space-x-3">
+                <input type="url" name="images[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg" placeholder="URL hình ảnh">
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-600 p-2"><i class="fas fa-times"></i></button>
+            </div>
+            {% endif %}
+        </div>
+        <button type="button" onclick="addImageField()" class="mt-4 text-primary"><i class="fas fa-plus mr-2"></i>Thêm Hình</button>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold mb-6">Video</h2>
+        <div id="videos-container" class="space-y-4">
+            {% if program and program.videos %}
+                {% for vid in program.videos %}
+                <div class="p-4 bg-gray-50 rounded-lg video-row">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="url" name="video_urls[]" value="{{ vid.url }}" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="URL embed">
+                        <input type="text" name="video_titles_vi[]" value="{{ vid.title_vi }}" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="Tiêu đề (VI)">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" name="video_titles_en[]" value="{{ vid.title_en }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Tiêu đề (EN)">
+                            <button type="button" onclick="this.closest('.video-row').remove()" class="text-red-600 p-2"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button type="button" onclick="addVideoField()" class="mt-4 text-primary"><i class="fas fa-plus mr-2"></i>Thêm Video</button>
+    </div>
+    
+    <div class="flex items-center justify-between">
+        <a href="{{ url_for('admin.steam_list') }}" class="text-gray-600"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
+        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg"><i class="fas fa-save mr-2"></i>{{ 'Cập Nhật' if program else 'Tạo Mới' }}</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addImageField() {
+    const container = document.getElementById('images-container');
+    const div = document.createElement('div');
+    div.className = 'flex items-center space-x-3';
+    div.innerHTML = `<input type="url" name="images[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg" placeholder="URL hình ảnh"><button type="button" onclick="this.parentElement.remove()" class="text-red-600 p-2"><i class="fas fa-times"></i></button>`;
+    container.appendChild(div);
+}
+function addVideoField() {
+    const container = document.getElementById('videos-container');
+    const div = document.createElement('div');
+    div.className = 'p-4 bg-gray-50 rounded-lg video-row';
+    div.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4"><input type="url" name="video_urls[]" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="URL embed"><input type="text" name="video_titles_vi[]" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="Tiêu đề (VI)"><div class="flex items-center space-x-2"><input type="text" name="video_titles_en[]" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Tiêu đề (EN)"><button type="button" onclick="this.closest('.video-row').remove()" class="text-red-600 p-2"><i class="fas fa-times"></i></button></div></div>`;
+    container.appendChild(div);
+}
+</script>
+{% endblock %}

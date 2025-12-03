@@ -1,0 +1,748 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask_login import login_user, logout_user, login_required, current_user
+from functools import wraps
+from models import db, User, Room, RoomImage, Restaurant, RestaurantImage, MenuItem
+from models import Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo
+from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact
+from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
+
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash('Bạn cần đăng nhập với tài khoản admin.', 'error')
+            return redirect(url_for('admin.login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@admin_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated and current_user.is_admin:
+        return redirect(url_for('admin.dashboard'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password) and user.is_admin:
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            login_user(user)
+            flash('Đăng nhập thành công!', 'success')
+            return redirect(url_for('admin.dashboard'))
+        else:
+            flash('Tên đăng nhập hoặc mật khẩu không đúng.', 'error')
+    
+    return render_template('admin/login.html')
+
+@admin_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Đã đăng xuất.', 'success')
+    return redirect(url_for('admin.login'))
+
+@admin_bp.route('/')
+@admin_required
+def dashboard():
+    stats = {
+        'rooms': Room.query.count(),
+        'restaurants': Restaurant.query.count(),
+        'amenities': Amenity.query.count(),
+        'experiences': Experience.query.count(),
+        'steam': SteamProgram.query.count(),
+        'events': Event.query.count(),
+        'news': News.query.count(),
+        'gallery': GalleryItem.query.count(),
+        'contacts': Contact.query.filter_by(status='new').count()
+    }
+    recent_contacts = Contact.query.order_by(Contact.created_at.desc()).limit(5).all()
+    return render_template('admin/dashboard.html', stats=stats, recent_contacts=recent_contacts)
+
+@admin_bp.route('/rooms')
+@admin_required
+def rooms_list():
+    rooms = Room.query.order_by(Room.created_at.desc()).all()
+    return render_template('admin/rooms/list.html', rooms=rooms)
+
+@admin_bp.route('/rooms/create', methods=['GET', 'POST'])
+@admin_required
+def rooms_create():
+    if request.method == 'POST':
+        room = Room(
+            slug=request.form.get('slug'),
+            name_vi=request.form.get('name_vi'),
+            name_en=request.form.get('name_en'),
+            description_vi=request.form.get('description_vi'),
+            description_en=request.form.get('description_en'),
+            price=int(request.form.get('price', 0)) if request.form.get('price') else None,
+            area=int(request.form.get('area', 0)) if request.form.get('area') else None,
+            capacity=int(request.form.get('capacity', 0)) if request.form.get('capacity') else None,
+            room_type=request.form.get('room_type'),
+            amenities=request.form.get('amenities'),
+            video_url=request.form.get('video_url'),
+            is_featured=request.form.get('is_featured') == 'on',
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(room)
+        db.session.commit()
+        
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                room_img = RoomImage(room_id=room.id, url=img_url, sort_order=i)
+                db.session.add(room_img)
+        db.session.commit()
+        
+        flash('Đã tạo phòng mới thành công!', 'success')
+        return redirect(url_for('admin.rooms_list'))
+    
+    return render_template('admin/rooms/form.html', room=None)
+
+@admin_bp.route('/rooms/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def rooms_edit(id):
+    room = Room.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        room.slug = request.form.get('slug')
+        room.name_vi = request.form.get('name_vi')
+        room.name_en = request.form.get('name_en')
+        room.description_vi = request.form.get('description_vi')
+        room.description_en = request.form.get('description_en')
+        room.price = int(request.form.get('price', 0)) if request.form.get('price') else None
+        room.area = int(request.form.get('area', 0)) if request.form.get('area') else None
+        room.capacity = int(request.form.get('capacity', 0)) if request.form.get('capacity') else None
+        room.room_type = request.form.get('room_type')
+        room.amenities = request.form.get('amenities')
+        room.video_url = request.form.get('video_url')
+        room.is_featured = request.form.get('is_featured') == 'on'
+        room.is_active = request.form.get('is_active') == 'on'
+        
+        RoomImage.query.filter_by(room_id=room.id).delete()
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                room_img = RoomImage(room_id=room.id, url=img_url, sort_order=i)
+                db.session.add(room_img)
+        
+        db.session.commit()
+        flash('Đã cập nhật phòng thành công!', 'success')
+        return redirect(url_for('admin.rooms_list'))
+    
+    return render_template('admin/rooms/form.html', room=room)
+
+@admin_bp.route('/rooms/<int:id>/delete', methods=['POST'])
+@admin_required
+def rooms_delete(id):
+    room = Room.query.get_or_404(id)
+    db.session.delete(room)
+    db.session.commit()
+    flash('Đã xóa phòng thành công!', 'success')
+    return redirect(url_for('admin.rooms_list'))
+
+@admin_bp.route('/restaurants')
+@admin_required
+def restaurants_list():
+    restaurants = Restaurant.query.order_by(Restaurant.created_at.desc()).all()
+    return render_template('admin/restaurants/list.html', restaurants=restaurants)
+
+@admin_bp.route('/restaurants/create', methods=['GET', 'POST'])
+@admin_required
+def restaurants_create():
+    if request.method == 'POST':
+        restaurant = Restaurant(
+            slug=request.form.get('slug'),
+            name_vi=request.form.get('name_vi'),
+            name_en=request.form.get('name_en'),
+            description_vi=request.form.get('description_vi'),
+            description_en=request.form.get('description_en'),
+            category_vi=request.form.get('category_vi'),
+            category_en=request.form.get('category_en'),
+            hours=request.form.get('hours'),
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(restaurant)
+        db.session.commit()
+        
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                rest_img = RestaurantImage(restaurant_id=restaurant.id, url=img_url, sort_order=i)
+                db.session.add(rest_img)
+        db.session.commit()
+        
+        flash('Đã tạo nhà hàng mới thành công!', 'success')
+        return redirect(url_for('admin.restaurants_list'))
+    
+    return render_template('admin/restaurants/form.html', restaurant=None)
+
+@admin_bp.route('/restaurants/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def restaurants_edit(id):
+    restaurant = Restaurant.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        restaurant.slug = request.form.get('slug')
+        restaurant.name_vi = request.form.get('name_vi')
+        restaurant.name_en = request.form.get('name_en')
+        restaurant.description_vi = request.form.get('description_vi')
+        restaurant.description_en = request.form.get('description_en')
+        restaurant.category_vi = request.form.get('category_vi')
+        restaurant.category_en = request.form.get('category_en')
+        restaurant.hours = request.form.get('hours')
+        restaurant.is_active = request.form.get('is_active') == 'on'
+        
+        RestaurantImage.query.filter_by(restaurant_id=restaurant.id).delete()
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                rest_img = RestaurantImage(restaurant_id=restaurant.id, url=img_url, sort_order=i)
+                db.session.add(rest_img)
+        
+        db.session.commit()
+        flash('Đã cập nhật nhà hàng thành công!', 'success')
+        return redirect(url_for('admin.restaurants_list'))
+    
+    return render_template('admin/restaurants/form.html', restaurant=restaurant)
+
+@admin_bp.route('/restaurants/<int:id>/delete', methods=['POST'])
+@admin_required
+def restaurants_delete(id):
+    restaurant = Restaurant.query.get_or_404(id)
+    db.session.delete(restaurant)
+    db.session.commit()
+    flash('Đã xóa nhà hàng thành công!', 'success')
+    return redirect(url_for('admin.restaurants_list'))
+
+@admin_bp.route('/amenities')
+@admin_required
+def amenities_list():
+    amenities = Amenity.query.order_by(Amenity.created_at.desc()).all()
+    return render_template('admin/amenities/list.html', amenities=amenities)
+
+@admin_bp.route('/amenities/create', methods=['GET', 'POST'])
+@admin_required
+def amenities_create():
+    if request.method == 'POST':
+        amenity = Amenity(
+            slug=request.form.get('slug'),
+            name_vi=request.form.get('name_vi'),
+            name_en=request.form.get('name_en'),
+            description_vi=request.form.get('description_vi'),
+            description_en=request.form.get('description_en'),
+            icon=request.form.get('icon'),
+            video_url=request.form.get('video_url'),
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(amenity)
+        db.session.commit()
+        
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                am_img = AmenityImage(amenity_id=amenity.id, url=img_url, sort_order=i)
+                db.session.add(am_img)
+        db.session.commit()
+        
+        flash('Đã tạo tiện ích mới thành công!', 'success')
+        return redirect(url_for('admin.amenities_list'))
+    
+    return render_template('admin/amenities/form.html', amenity=None)
+
+@admin_bp.route('/amenities/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def amenities_edit(id):
+    amenity = Amenity.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        amenity.slug = request.form.get('slug')
+        amenity.name_vi = request.form.get('name_vi')
+        amenity.name_en = request.form.get('name_en')
+        amenity.description_vi = request.form.get('description_vi')
+        amenity.description_en = request.form.get('description_en')
+        amenity.icon = request.form.get('icon')
+        amenity.video_url = request.form.get('video_url')
+        amenity.is_active = request.form.get('is_active') == 'on'
+        
+        AmenityImage.query.filter_by(amenity_id=amenity.id).delete()
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                am_img = AmenityImage(amenity_id=amenity.id, url=img_url, sort_order=i)
+                db.session.add(am_img)
+        
+        db.session.commit()
+        flash('Đã cập nhật tiện ích thành công!', 'success')
+        return redirect(url_for('admin.amenities_list'))
+    
+    return render_template('admin/amenities/form.html', amenity=amenity)
+
+@admin_bp.route('/amenities/<int:id>/delete', methods=['POST'])
+@admin_required
+def amenities_delete(id):
+    amenity = Amenity.query.get_or_404(id)
+    db.session.delete(amenity)
+    db.session.commit()
+    flash('Đã xóa tiện ích thành công!', 'success')
+    return redirect(url_for('admin.amenities_list'))
+
+@admin_bp.route('/experiences')
+@admin_required
+def experiences_list():
+    experiences = Experience.query.order_by(Experience.created_at.desc()).all()
+    return render_template('admin/experiences/list.html', experiences=experiences)
+
+@admin_bp.route('/experiences/create', methods=['GET', 'POST'])
+@admin_required
+def experiences_create():
+    if request.method == 'POST':
+        experience = Experience(
+            slug=request.form.get('slug'),
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            short_desc_vi=request.form.get('short_desc_vi'),
+            short_desc_en=request.form.get('short_desc_en'),
+            content_vi=request.form.get('content_vi'),
+            content_en=request.form.get('content_en'),
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(experience)
+        db.session.commit()
+        
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                exp_img = ExperienceImage(experience_id=experience.id, url=img_url, sort_order=i)
+                db.session.add(exp_img)
+        
+        video_urls = request.form.getlist('video_urls[]')
+        video_titles_vi = request.form.getlist('video_titles_vi[]')
+        video_titles_en = request.form.getlist('video_titles_en[]')
+        for i, video_url in enumerate(video_urls):
+            if video_url:
+                exp_vid = ExperienceVideo(
+                    experience_id=experience.id,
+                    url=video_url,
+                    title_vi=video_titles_vi[i] if i < len(video_titles_vi) else '',
+                    title_en=video_titles_en[i] if i < len(video_titles_en) else '',
+                    sort_order=i
+                )
+                db.session.add(exp_vid)
+        
+        db.session.commit()
+        flash('Đã tạo trải nghiệm mới thành công!', 'success')
+        return redirect(url_for('admin.experiences_list'))
+    
+    return render_template('admin/experiences/form.html', experience=None)
+
+@admin_bp.route('/experiences/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def experiences_edit(id):
+    experience = Experience.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        experience.slug = request.form.get('slug')
+        experience.title_vi = request.form.get('title_vi')
+        experience.title_en = request.form.get('title_en')
+        experience.short_desc_vi = request.form.get('short_desc_vi')
+        experience.short_desc_en = request.form.get('short_desc_en')
+        experience.content_vi = request.form.get('content_vi')
+        experience.content_en = request.form.get('content_en')
+        experience.is_active = request.form.get('is_active') == 'on'
+        
+        ExperienceImage.query.filter_by(experience_id=experience.id).delete()
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                exp_img = ExperienceImage(experience_id=experience.id, url=img_url, sort_order=i)
+                db.session.add(exp_img)
+        
+        ExperienceVideo.query.filter_by(experience_id=experience.id).delete()
+        video_urls = request.form.getlist('video_urls[]')
+        video_titles_vi = request.form.getlist('video_titles_vi[]')
+        video_titles_en = request.form.getlist('video_titles_en[]')
+        for i, video_url in enumerate(video_urls):
+            if video_url:
+                exp_vid = ExperienceVideo(
+                    experience_id=experience.id,
+                    url=video_url,
+                    title_vi=video_titles_vi[i] if i < len(video_titles_vi) else '',
+                    title_en=video_titles_en[i] if i < len(video_titles_en) else '',
+                    sort_order=i
+                )
+                db.session.add(exp_vid)
+        
+        db.session.commit()
+        flash('Đã cập nhật trải nghiệm thành công!', 'success')
+        return redirect(url_for('admin.experiences_list'))
+    
+    return render_template('admin/experiences/form.html', experience=experience)
+
+@admin_bp.route('/experiences/<int:id>/delete', methods=['POST'])
+@admin_required
+def experiences_delete(id):
+    experience = Experience.query.get_or_404(id)
+    db.session.delete(experience)
+    db.session.commit()
+    flash('Đã xóa trải nghiệm thành công!', 'success')
+    return redirect(url_for('admin.experiences_list'))
+
+@admin_bp.route('/steam')
+@admin_required
+def steam_list():
+    programs = SteamProgram.query.order_by(SteamProgram.created_at.desc()).all()
+    return render_template('admin/steam/list.html', programs=programs)
+
+@admin_bp.route('/steam/create', methods=['GET', 'POST'])
+@admin_required
+def steam_create():
+    if request.method == 'POST':
+        program = SteamProgram(
+            slug=request.form.get('slug'),
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            short_desc_vi=request.form.get('short_desc_vi'),
+            short_desc_en=request.form.get('short_desc_en'),
+            content_vi=request.form.get('content_vi'),
+            content_en=request.form.get('content_en'),
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(program)
+        db.session.commit()
+        
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                st_img = SteamImage(steam_id=program.id, url=img_url, sort_order=i)
+                db.session.add(st_img)
+        
+        video_urls = request.form.getlist('video_urls[]')
+        video_titles_vi = request.form.getlist('video_titles_vi[]')
+        video_titles_en = request.form.getlist('video_titles_en[]')
+        for i, video_url in enumerate(video_urls):
+            if video_url:
+                st_vid = SteamVideo(
+                    steam_id=program.id,
+                    url=video_url,
+                    title_vi=video_titles_vi[i] if i < len(video_titles_vi) else '',
+                    title_en=video_titles_en[i] if i < len(video_titles_en) else '',
+                    sort_order=i
+                )
+                db.session.add(st_vid)
+        
+        db.session.commit()
+        flash('Đã tạo chương trình STEAM mới thành công!', 'success')
+        return redirect(url_for('admin.steam_list'))
+    
+    return render_template('admin/steam/form.html', program=None)
+
+@admin_bp.route('/steam/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def steam_edit(id):
+    program = SteamProgram.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        program.slug = request.form.get('slug')
+        program.title_vi = request.form.get('title_vi')
+        program.title_en = request.form.get('title_en')
+        program.short_desc_vi = request.form.get('short_desc_vi')
+        program.short_desc_en = request.form.get('short_desc_en')
+        program.content_vi = request.form.get('content_vi')
+        program.content_en = request.form.get('content_en')
+        program.is_active = request.form.get('is_active') == 'on'
+        
+        SteamImage.query.filter_by(steam_id=program.id).delete()
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                st_img = SteamImage(steam_id=program.id, url=img_url, sort_order=i)
+                db.session.add(st_img)
+        
+        SteamVideo.query.filter_by(steam_id=program.id).delete()
+        video_urls = request.form.getlist('video_urls[]')
+        video_titles_vi = request.form.getlist('video_titles_vi[]')
+        video_titles_en = request.form.getlist('video_titles_en[]')
+        for i, video_url in enumerate(video_urls):
+            if video_url:
+                st_vid = SteamVideo(
+                    steam_id=program.id,
+                    url=video_url,
+                    title_vi=video_titles_vi[i] if i < len(video_titles_vi) else '',
+                    title_en=video_titles_en[i] if i < len(video_titles_en) else '',
+                    sort_order=i
+                )
+                db.session.add(st_vid)
+        
+        db.session.commit()
+        flash('Đã cập nhật chương trình STEAM thành công!', 'success')
+        return redirect(url_for('admin.steam_list'))
+    
+    return render_template('admin/steam/form.html', program=program)
+
+@admin_bp.route('/steam/<int:id>/delete', methods=['POST'])
+@admin_required
+def steam_delete(id):
+    program = SteamProgram.query.get_or_404(id)
+    db.session.delete(program)
+    db.session.commit()
+    flash('Đã xóa chương trình STEAM thành công!', 'success')
+    return redirect(url_for('admin.steam_list'))
+
+@admin_bp.route('/events')
+@admin_required
+def events_list():
+    events = Event.query.order_by(Event.created_at.desc()).all()
+    return render_template('admin/events/list.html', events=events)
+
+@admin_bp.route('/events/create', methods=['GET', 'POST'])
+@admin_required
+def events_create():
+    if request.method == 'POST':
+        event = Event(
+            slug=request.form.get('slug'),
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            description_vi=request.form.get('description_vi'),
+            description_en=request.form.get('description_en'),
+            capacity=int(request.form.get('capacity', 0)) if request.form.get('capacity') else None,
+            price=int(request.form.get('price', 0)) if request.form.get('price') else None,
+            features=request.form.get('features'),
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(event)
+        db.session.commit()
+        
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                ev_img = EventImage(event_id=event.id, url=img_url, sort_order=i)
+                db.session.add(ev_img)
+        db.session.commit()
+        
+        flash('Đã tạo sự kiện mới thành công!', 'success')
+        return redirect(url_for('admin.events_list'))
+    
+    return render_template('admin/events/form.html', event=None)
+
+@admin_bp.route('/events/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def events_edit(id):
+    event = Event.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        event.slug = request.form.get('slug')
+        event.title_vi = request.form.get('title_vi')
+        event.title_en = request.form.get('title_en')
+        event.description_vi = request.form.get('description_vi')
+        event.description_en = request.form.get('description_en')
+        event.capacity = int(request.form.get('capacity', 0)) if request.form.get('capacity') else None
+        event.price = int(request.form.get('price', 0)) if request.form.get('price') else None
+        event.features = request.form.get('features')
+        event.is_active = request.form.get('is_active') == 'on'
+        
+        EventImage.query.filter_by(event_id=event.id).delete()
+        images = request.form.getlist('images[]')
+        for i, img_url in enumerate(images):
+            if img_url:
+                ev_img = EventImage(event_id=event.id, url=img_url, sort_order=i)
+                db.session.add(ev_img)
+        
+        db.session.commit()
+        flash('Đã cập nhật sự kiện thành công!', 'success')
+        return redirect(url_for('admin.events_list'))
+    
+    return render_template('admin/events/form.html', event=event)
+
+@admin_bp.route('/events/<int:id>/delete', methods=['POST'])
+@admin_required
+def events_delete(id):
+    event = Event.query.get_or_404(id)
+    db.session.delete(event)
+    db.session.commit()
+    flash('Đã xóa sự kiện thành công!', 'success')
+    return redirect(url_for('admin.events_list'))
+
+@admin_bp.route('/news')
+@admin_required
+def news_list():
+    news_items = News.query.order_by(News.created_at.desc()).all()
+    return render_template('admin/news/list.html', news_items=news_items)
+
+@admin_bp.route('/news/create', methods=['GET', 'POST'])
+@admin_required
+def news_create():
+    if request.method == 'POST':
+        news = News(
+            slug=request.form.get('slug'),
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            excerpt_vi=request.form.get('excerpt_vi'),
+            excerpt_en=request.form.get('excerpt_en'),
+            content_vi=request.form.get('content_vi'),
+            content_en=request.form.get('content_en'),
+            category=request.form.get('category'),
+            image_url=request.form.get('image_url'),
+            status=request.form.get('status', 'draft'),
+            published_at=datetime.utcnow() if request.form.get('status') == 'published' else None
+        )
+        db.session.add(news)
+        db.session.commit()
+        
+        flash('Đã tạo tin tức mới thành công!', 'success')
+        return redirect(url_for('admin.news_list'))
+    
+    return render_template('admin/news/form.html', news=None)
+
+@admin_bp.route('/news/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def news_edit(id):
+    news = News.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        news.slug = request.form.get('slug')
+        news.title_vi = request.form.get('title_vi')
+        news.title_en = request.form.get('title_en')
+        news.excerpt_vi = request.form.get('excerpt_vi')
+        news.excerpt_en = request.form.get('excerpt_en')
+        news.content_vi = request.form.get('content_vi')
+        news.content_en = request.form.get('content_en')
+        news.category = request.form.get('category')
+        news.image_url = request.form.get('image_url')
+        news.status = request.form.get('status', 'draft')
+        if news.status == 'published' and not news.published_at:
+            news.published_at = datetime.utcnow()
+        
+        db.session.commit()
+        flash('Đã cập nhật tin tức thành công!', 'success')
+        return redirect(url_for('admin.news_list'))
+    
+    return render_template('admin/news/form.html', news=news)
+
+@admin_bp.route('/news/<int:id>/delete', methods=['POST'])
+@admin_required
+def news_delete(id):
+    news = News.query.get_or_404(id)
+    db.session.delete(news)
+    db.session.commit()
+    flash('Đã xóa tin tức thành công!', 'success')
+    return redirect(url_for('admin.news_list'))
+
+@admin_bp.route('/gallery')
+@admin_required
+def gallery_list():
+    items = GalleryItem.query.order_by(GalleryItem.sort_order, GalleryItem.created_at.desc()).all()
+    return render_template('admin/gallery/list.html', items=items)
+
+@admin_bp.route('/gallery/create', methods=['GET', 'POST'])
+@admin_required
+def gallery_create():
+    if request.method == 'POST':
+        item = GalleryItem(
+            type=request.form.get('type'),
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            url=request.form.get('url'),
+            thumb_url=request.form.get('thumb_url'),
+            category=request.form.get('category'),
+            sort_order=int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0,
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(item)
+        db.session.commit()
+        
+        flash('Đã thêm mục gallery mới thành công!', 'success')
+        return redirect(url_for('admin.gallery_list'))
+    
+    return render_template('admin/gallery/form.html', item=None)
+
+@admin_bp.route('/gallery/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def gallery_edit(id):
+    item = GalleryItem.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        item.type = request.form.get('type')
+        item.title_vi = request.form.get('title_vi')
+        item.title_en = request.form.get('title_en')
+        item.url = request.form.get('url')
+        item.thumb_url = request.form.get('thumb_url')
+        item.category = request.form.get('category')
+        item.sort_order = int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0
+        item.is_active = request.form.get('is_active') == 'on'
+        
+        db.session.commit()
+        flash('Đã cập nhật mục gallery thành công!', 'success')
+        return redirect(url_for('admin.gallery_list'))
+    
+    return render_template('admin/gallery/form.html', item=item)
+
+@admin_bp.route('/gallery/<int:id>/delete', methods=['POST'])
+@admin_required
+def gallery_delete(id):
+    item = GalleryItem.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    flash('Đã xóa mục gallery thành công!', 'success')
+    return redirect(url_for('admin.gallery_list'))
+
+@admin_bp.route('/contacts')
+@admin_required
+def contacts_list():
+    contacts = Contact.query.order_by(Contact.created_at.desc()).all()
+    return render_template('admin/contacts/list.html', contacts=contacts)
+
+@admin_bp.route('/contacts/<int:id>')
+@admin_required
+def contacts_view(id):
+    contact = Contact.query.get_or_404(id)
+    if contact.status == 'new':
+        contact.status = 'read'
+        db.session.commit()
+    return render_template('admin/contacts/view.html', contact=contact)
+
+@admin_bp.route('/contacts/<int:id>/delete', methods=['POST'])
+@admin_required
+def contacts_delete(id):
+    contact = Contact.query.get_or_404(id)
+    db.session.delete(contact)
+    db.session.commit()
+    flash('Đã xóa liên hệ thành công!', 'success')
+    return redirect(url_for('admin.contacts_list'))
+
+@admin_bp.route('/upload', methods=['POST'])
+@admin_required
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S_')
+        filename = timestamp + filename
+        
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
+        
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+        
+        return jsonify({'url': '/' + filepath})
+    
+    return jsonify({'error': 'File type not allowed'}), 400

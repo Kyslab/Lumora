@@ -1,11 +1,43 @@
 import os
 from flask import Flask, render_template, request, jsonify, session
+from flask_login import LoginManager
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "lumora-resort-secret-key")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+from models import db, User, Contact
+db.init_app(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'admin.login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+from admin import admin_bp
+app.register_blueprint(admin_bp)
+
+def create_admin_user():
+    with app.app_context():
+        db.create_all()
+        admin = User.query.filter_by(username='admin').first()
+        if not admin:
+            admin = User(
+                username='admin',
+                email='admin@lumoraresort.com',
+                is_admin=True
+            )
+            admin.set_password('admin123')
+            db.session.add(admin)
+            db.session.commit()
+            print("Admin user created: admin / admin123")
 
 ROOMS_DATA = {
     "deluxe": {
@@ -724,12 +756,41 @@ def contact():
 @app.route('/api/contact', methods=['POST'])
 def submit_contact():
     data = request.get_json()
+    try:
+        contact = Contact(
+            name=data.get('name') or data.get('parent_name', ''),
+            email=data.get('email', ''),
+            phone=data.get('phone', ''),
+            subject=data.get('subject') or data.get('program', ''),
+            message=str(data),
+            contact_type=data.get('type', 'contact'),
+            status='new'
+        )
+        db.session.add(contact)
+        db.session.commit()
+    except Exception as e:
+        print(f"Error saving contact: {e}")
     return jsonify({"success": True, "message": "Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất."})
 
 @app.route('/api/booking', methods=['POST'])
 def submit_booking():
     data = request.get_json()
+    try:
+        contact = Contact(
+            name=data.get('name', ''),
+            email=data.get('email', ''),
+            phone=data.get('phone', ''),
+            subject='Đặt phòng',
+            message=str(data),
+            contact_type='booking',
+            status='new'
+        )
+        db.session.add(contact)
+        db.session.commit()
+    except Exception as e:
+        print(f"Error saving booking: {e}")
     return jsonify({"success": True, "message": "Yêu cầu đặt phòng đã được gửi! Chúng tôi sẽ liên hệ xác nhận."})
 
 if __name__ == '__main__':
+    create_admin_user()
     app.run(host='0.0.0.0', port=5000, debug=True)

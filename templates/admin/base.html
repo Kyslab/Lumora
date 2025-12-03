@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin{% endblock %} - Lumora Resort</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2D5A27',
+                        secondary: '#8B7355',
+                        accent: '#D4AF37'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <aside class="w-64 bg-primary text-white fixed h-full overflow-y-auto">
+            <div class="p-4 border-b border-primary/50">
+                <a href="{{ url_for('admin.dashboard') }}" class="text-xl font-bold">Lumora Admin</a>
+            </div>
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ url_for('admin.dashboard') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if request.endpoint == 'admin.dashboard' %}bg-white/20{% endif %}">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.rooms_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'rooms' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-bed w-5"></i>
+                            <span>Phòng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.restaurants_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'restaurants' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-utensils w-5"></i>
+                            <span>Nhà Hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.amenities_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'amenities' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-swimming-pool w-5"></i>
+                            <span>Tiện Ích</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.experiences_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'experiences' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-hiking w-5"></i>
+                            <span>Trải Nghiệm</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.steam_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'steam' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-flask w-5"></i>
+                            <span>STEAM</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.events_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'events' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-calendar-alt w-5"></i>
+                            <span>Sự Kiện</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.news_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'news' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-newspaper w-5"></i>
+                            <span>Tin Tức</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.gallery_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'gallery' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-images w-5"></i>
+                            <span>Thư Viện</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.contacts_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'contacts' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-envelope w-5"></i>
+                            <span>Liên Hệ</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="border-t border-white/20 mt-6 pt-6">
+                    <a href="/" target="_blank" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10">
+                        <i class="fas fa-external-link-alt w-5"></i>
+                        <span>Xem Website</span>
+                    </a>
+                    <a href="{{ url_for('admin.logout') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 text-red-300">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span>Đăng Xuất</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <main class="flex-1 ml-64">
+            <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+                <h1 class="text-xl font-semibold text-gray-800">{% block page_title %}Dashboard{% endblock %}</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Xin chào, {{ current_user.username }}</span>
+                </div>
+            </header>
+            
+            <div class="p-6">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="mb-4 p-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
