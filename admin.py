@@ -6,6 +6,7 @@ from models import Amenity, AmenityImage, Experience, ExperienceImage, Experienc
 from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact
 from datetime import datetime
 import os
+import uuid
 from werkzeug.utils import secure_filename
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -15,6 +16,21 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_uploaded_file(file, subfolder):
+    """Save uploaded file and return the URL path"""
+    if file and file.filename and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        unique_filename = f"{uuid.uuid4().hex}_{filename}"
+        
+        upload_path = os.path.join(UPLOAD_FOLDER, subfolder)
+        os.makedirs(upload_path, exist_ok=True)
+        
+        file_path = os.path.join(upload_path, unique_filename)
+        file.save(file_path)
+        
+        return f"/{file_path}"
+    return None
 
 def admin_required(f):
     @wraps(f)
@@ -99,11 +115,24 @@ def rooms_create():
         db.session.add(room)
         db.session.commit()
         
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                room_img = RoomImage(room_id=room.id, url=img_url, sort_order=i)
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        
+        sort_order = 0
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'rooms')
+                if url:
+                    room_img = RoomImage(room_id=room.id, url=url, sort_order=sort_order)
+                    db.session.add(room_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                room_img = RoomImage(room_id=room.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(room_img)
+                sort_order += 1
+        
         db.session.commit()
         
         flash('Đã tạo phòng mới thành công!', 'success')
@@ -131,12 +160,28 @@ def rooms_edit(id):
         room.is_featured = request.form.get('is_featured') == 'on'
         room.is_active = request.form.get('is_active') == 'on'
         
-        RoomImage.query.filter_by(room_id=room.id).delete()
-        images = request.form.getlist('images[]')
-        for i, img_url in enumerate(images):
-            if img_url:
-                room_img = RoomImage(room_id=room.id, url=img_url, sort_order=i)
+        keep_images = request.form.getlist('keep_images[]')
+        RoomImage.query.filter(RoomImage.room_id == room.id, ~RoomImage.id.in_([int(x) for x in keep_images if x])).delete(synchronize_session=False)
+        
+        uploaded_files = request.files.getlist('image_files[]')
+        image_urls = request.form.getlist('images[]')
+        
+        max_order = db.session.query(db.func.max(RoomImage.sort_order)).filter_by(room_id=room.id).scalar() or -1
+        sort_order = max_order + 1
+        
+        for file in uploaded_files:
+            if file and file.filename:
+                url = save_uploaded_file(file, 'rooms')
+                if url:
+                    room_img = RoomImage(room_id=room.id, url=url, sort_order=sort_order)
+                    db.session.add(room_img)
+                    sort_order += 1
+        
+        for img_url in image_urls:
+            if img_url and img_url.strip():
+                room_img = RoomImage(room_id=room.id, url=img_url.strip(), sort_order=sort_order)
                 db.session.add(room_img)
+                sort_order += 1
         
         db.session.commit()
         flash('Đã cập nhật phòng thành công!', 'success')

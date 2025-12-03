@@ -1,4 +1,6 @@
 import os
+import uuid
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, jsonify, session
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -7,6 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.environ.get("SESSION_SECRET", "lumora-resort-secret-key")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
