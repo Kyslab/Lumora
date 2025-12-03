@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, jsonify, session
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,9 +10,12 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "lumora-resort-secret-key")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['WTF_CSRF_ENABLED'] = True
 
 from models import db, User, Contact
 db.init_app(app)
+
+csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

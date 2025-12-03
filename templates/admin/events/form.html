@@ -5,6 +5,7 @@
 
 {% block content %}
 <form method="POST" class="space-y-6">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="bg-white rounded-xl shadow-sm p-6">
         <h2 class="text-lg font-semibold mb-6">Thông Tin Sự Kiện</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

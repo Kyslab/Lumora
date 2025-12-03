@@ -1,10 +1,11 @@
 # Lumora Resort Website
 
 ## Overview
-Website resort đa ngôn ngữ (Việt/Anh) cho Lumora Resort với đầy đủ các tính năng giới thiệu và đặt phòng.
+Website resort đa ngôn ngữ (Việt/Anh) cho Lumora Resort với đầy đủ các tính năng giới thiệu và đặt phòng. Bao gồm admin panel để quản lý nội dung.
 
 ## Tech Stack
-- **Backend**: Python Flask
+- **Backend**: Python Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF
+- **Database**: PostgreSQL (Neon-backed)
 - **Frontend**: HTML5, TailwindCSS (CDN), JavaScript
 - **Template Engine**: Jinja2
 - **Fonts**: Google Fonts (Playfair Display, Open Sans)
@@ -13,6 +14,8 @@ Website resort đa ngôn ngữ (Việt/Anh) cho Lumora Resort với đầy đủ
 ## Project Structure
 ```
 ├── app.py                 # Main Flask application with routes and data
+├── models.py              # SQLAlchemy database models
+├── admin.py               # Admin blueprint with CRUD routes
 ├── templates/
 │   ├── base.html          # Base template with header, footer, nav
 │   ├── home.html          # Homepage with hero, rooms preview, amenities
@@ -28,7 +31,20 @@ Website resort đa ngôn ngữ (Việt/Anh) cho Lumora Resort với đầy đủ
 │   ├── news_detail.html
 │   ├── gallery.html       # Photo and video gallery
 │   ├── contact.html       # Contact form and booking
-│   └── 404.html           # Error page
+│   ├── 404.html           # Error page
+│   └── admin/             # Admin panel templates
+│       ├── base.html      # Admin base layout
+│       ├── login.html     # Admin login page
+│       ├── dashboard.html # Admin dashboard
+│       ├── rooms/         # Room CRUD templates
+│       ├── restaurants/   # Restaurant CRUD templates
+│       ├── amenities/     # Amenity CRUD templates
+│       ├── experiences/   # Experience CRUD templates
+│       ├── steam/         # STEAM CRUD templates
+│       ├── events/        # Event CRUD templates
+│       ├── news/          # News CRUD templates
+│       ├── gallery/       # Gallery CRUD templates
+│       └── contacts/      # Contact view templates
 └── attached_assets/       # User uploaded files
 ```
 
@@ -49,14 +65,43 @@ Website resort đa ngôn ngữ (Việt/Anh) cho Lumora Resort với đầy đủ
 9. **Thư Viện**: Gallery hình ảnh và video
 10. **Liên Hệ**: Form đặt phòng, form liên hệ, Google Maps
 
+## Admin Panel
+- **URL**: `/admin`
+- **Default credentials**: admin / admin123 (CHANGE IMMEDIATELY IN PRODUCTION)
+- **Features**:
+  - Dashboard với thống kê tổng quan
+  - Quản lý Phòng (thêm, sửa, xóa)
+  - Quản lý Nhà Hàng và Menu
+  - Quản lý Tiện Ích
+  - Quản lý Trải Nghiệm
+  - Quản lý Chương Trình STEAM
+  - Quản lý Sự Kiện
+  - Quản lý Tin Tức
+  - Quản lý Thư Viện Ảnh/Video
+  - Xem Liên Hệ từ khách hàng
+
+## Database Models
+- User: Tài khoản admin
+- Room, RoomImage: Phòng và hình ảnh phòng
+- Restaurant, MenuItem: Nhà hàng và menu
+- Amenity, AmenityImage: Tiện ích
+- Experience, ExperienceImage, ExperienceVideo: Trải nghiệm
+- SteamProgram, SteamProgramImage, SteamProgramVideo: Chương trình STEAM
+- Event, EventImage: Sự kiện
+- News: Tin tức
+- GalleryItem: Thư viện ảnh/video
+- Contact: Liên hệ từ khách
+
 ## Đa Ngôn Ngữ
 - Hỗ trợ Tiếng Việt và Tiếng Anh
 - Chuyển đổi qua URL parameter `?lang=vi` hoặc `?lang=en`
+- Tất cả nội dung admin hỗ trợ nhập song ngữ
 
 ## Responsive Design
 - Mobile-first với TailwindCSS
 - Breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
 - Mobile menu với slide animation
+- Admin panel responsive
 
 ## Running the App
 ```bash
@@ -71,5 +116,14 @@ Server chạy trên port 5000.
 - Dark: #1A1A1A
 - Light: #F5F5F0
 
+## Security Notes
+- Default admin password should be changed immediately after first login
+- Session-based authentication with Flask-Login
+- CSRF protection enabled via Flask-WTF
+- Password hashing with Werkzeug
+
 ## Recent Changes
+- 2024-12-03: Added admin panel with full CRUD for all content types
+- 2024-12-03: Integrated PostgreSQL database with SQLAlchemy ORM
+- 2024-12-03: Contact/Booking forms now save to database
 - 2024-12-02: Initial setup with all pages and features
