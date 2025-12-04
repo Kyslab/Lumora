@@ -4,7 +4,7 @@
 {% block page_title %}{{ 'Sửa Trải Nghiệm' if experience else 'Thêm Trải Nghiệm' }}{% endblock %}
 
 {% block content %}
-<form method="POST" enctype="multipart/form-data" class="space-y-6">
+<form method="POST" enctype="multipart/form-data" class="space-y-6" id="main-form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="bg-white rounded-xl shadow-sm p-6">
         <h2 class="text-lg font-semibold mb-6">Thông Tin Trải Nghiệm</h2>
@@ -84,7 +84,7 @@
                 <label for="file-input" class="cursor-pointer">
                     <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
                     <p class="text-gray-600">Kéo thả hoặc <span class="text-primary font-medium">click để chọn</span> hình ảnh</p>
-                    <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF, WEBP (tối đa 16MB)</p>
+                    <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF, WEBP (tối đa 5MB mỗi file)</p>
                 </label>
             </div>
             <div id="file-preview" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4"></div>

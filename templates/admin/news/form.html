@@ -4,7 +4,7 @@
 {% block page_title %}{{ 'Sửa Tin Tức' if news else 'Thêm Tin Tức' }}{% endblock %}
 
 {% block content %}
-<form method="POST" enctype="multipart/form-data" class="space-y-6">
+<form method="POST" enctype="multipart/form-data" class="space-y-6" id="main-form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="bg-white rounded-xl shadow-sm p-6">
         <h2 class="text-lg font-semibold mb-6">Thông Tin Tin Tức</h2>
@@ -49,7 +49,7 @@
                     <label for="file-input" class="cursor-pointer">
                         <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-1"></i>
                         <p class="text-gray-600 text-sm">Kéo thả hoặc <span class="text-primary font-medium">click để chọn</span></p>
-                        <p class="text-xs text-gray-500">PNG, JPG, GIF, WEBP (tối đa 16MB)</p>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF, WEBP (tối đa 5MB)</p>
                     </label>
                 </div>
                 <div id="file-preview" class="mt-2"></div>

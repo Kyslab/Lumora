@@ -13,7 +13,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 app.secret_key = os.environ.get("SESSION_SECRET", "lumora-resort-secret-key")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -352,6 +352,12 @@ def submit_booking():
     except Exception as e:
         print(f"Error saving booking: {e}")
     return jsonify({"success": True, "message": "Yêu cầu đặt phòng đã được gửi! Chúng tôi sẽ liên hệ xác nhận."})
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    from flask import flash
+    flash('File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.', 'error')
+    return render_template('error.html', error_code=413, error_message='File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.'), 413
 
 if __name__ == '__main__':
     create_admin_user()
