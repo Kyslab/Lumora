@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     }
 }
 
-from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem
+from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner
 db.init_app(app)
 
 csrf = CSRFProtect(app)
@@ -177,11 +177,14 @@ def home():
     news_items = News.query.filter_by(status='published').order_by(News.published_at.desc()).limit(3).all()
     news_data = [news_to_dict(n) for n in news_items]
     
+    banners = Banner.query.filter_by(is_active=True).order_by(Banner.sort_order, Banner.created_at).all()
+    
     return render_template('home.html', 
                          lang=lang,
                          rooms=rooms_data,
                          amenities=amenities_data,
-                         news=news_data)
+                         news=news_data,
+                         banners=banners)
 
 @app.route('/accommodation')
 def accommodation():

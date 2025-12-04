@@ -270,3 +270,23 @@ class Contact(db.Model):
     contact_type = db.Column(db.String(50))
     status = db.Column(db.String(20), default='new')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Banner(db.Model):
+    __tablename__ = 'banners'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title_vi = db.Column(db.String(200), nullable=False)
+    title_en = db.Column(db.String(200), nullable=False)
+    subtitle_vi = db.Column(db.String(300))
+    subtitle_en = db.Column(db.String(300))
+    description_vi = db.Column(db.Text)
+    description_en = db.Column(db.Text)
+    button_text_vi = db.Column(db.String(100))
+    button_text_en = db.Column(db.String(100))
+    button_link = db.Column(db.String(500))
+    image_url = db.Column(db.String(500), nullable=False)
+    icon = db.Column(db.String(50))
+    sort_order = db.Column(db.Integer, default=0)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

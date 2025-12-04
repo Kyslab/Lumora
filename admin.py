@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from functools import wraps
 from models import db, User, Room, RoomImage, Restaurant, RestaurantImage, MenuItem
 from models import Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo
-from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact
+from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner
 from datetime import datetime
 import os
 import uuid
@@ -966,3 +966,101 @@ def upload_file():
         return jsonify({'url': '/' + filepath})
     
     return jsonify({'error': 'File type not allowed'}), 400
+
+@admin_bp.route('/banners')
+@admin_required
+def banners_list():
+    banners = Banner.query.order_by(Banner.sort_order, Banner.created_at.desc()).all()
+    return render_template('admin/banners/list.html', banners=banners)
+
+@admin_bp.route('/banners/create', methods=['GET', 'POST'])
+@admin_required
+def banners_create():
+    if request.method == 'POST':
+        image_url = None
+        
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            image_url = save_uploaded_file(uploaded_file, 'banners')
+        
+        if not image_url:
+            image_url = request.form.get('image_url')
+        
+        if not image_url:
+            flash('Vui lòng chọn hình ảnh cho banner.', 'error')
+            return render_template('admin/banners/form.html', banner=None)
+        
+        banner = Banner(
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            subtitle_vi=request.form.get('subtitle_vi'),
+            subtitle_en=request.form.get('subtitle_en'),
+            description_vi=request.form.get('description_vi'),
+            description_en=request.form.get('description_en'),
+            button_text_vi=request.form.get('button_text_vi'),
+            button_text_en=request.form.get('button_text_en'),
+            button_link=request.form.get('button_link'),
+            image_url=image_url,
+            icon=request.form.get('icon'),
+            sort_order=int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0,
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(banner)
+        db.session.commit()
+        
+        flash('Đã tạo banner mới thành công!', 'success')
+        return redirect(url_for('admin.banners_list'))
+    
+    return render_template('admin/banners/form.html', banner=None)
+
+@admin_bp.route('/banners/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def banners_edit(id):
+    banner = Banner.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        banner.title_vi = request.form.get('title_vi')
+        banner.title_en = request.form.get('title_en')
+        banner.subtitle_vi = request.form.get('subtitle_vi')
+        banner.subtitle_en = request.form.get('subtitle_en')
+        banner.description_vi = request.form.get('description_vi')
+        banner.description_en = request.form.get('description_en')
+        banner.button_text_vi = request.form.get('button_text_vi')
+        banner.button_text_en = request.form.get('button_text_en')
+        banner.button_link = request.form.get('button_link')
+        banner.icon = request.form.get('icon')
+        banner.sort_order = int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0
+        banner.is_active = request.form.get('is_active') == 'on'
+        
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            image_url = save_uploaded_file(uploaded_file, 'banners')
+            if image_url:
+                banner.image_url = image_url
+        elif request.form.get('image_url'):
+            banner.image_url = request.form.get('image_url')
+        
+        db.session.commit()
+        flash('Đã cập nhật banner thành công!', 'success')
+        return redirect(url_for('admin.banners_list'))
+    
+    return render_template('admin/banners/form.html', banner=banner)
+
+@admin_bp.route('/banners/<int:id>/delete', methods=['POST'])
+@admin_required
+def banners_delete(id):
+    banner = Banner.query.get_or_404(id)
+    db.session.delete(banner)
+    db.session.commit()
+    flash('Đã xóa banner thành công!', 'success')
+    return redirect(url_for('admin.banners_list'))
+
+@admin_bp.route('/banners/<int:id>/toggle', methods=['POST'])
+@admin_required
+def banners_toggle(id):
+    banner = Banner.query.get_or_404(id)
+    banner.is_active = not banner.is_active
+    db.session.commit()
+    status = 'bật' if banner.is_active else 'tắt'
+    flash(f'Đã {status} banner thành công!', 'success')
+    return redirect(url_for('admin.banners_list'))

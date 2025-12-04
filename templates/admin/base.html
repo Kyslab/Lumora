@@ -43,6 +43,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ url_for('admin.banners_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'banners' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-sliders-h w-5"></i>
+                            <span>Slider Banner</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('admin.rooms_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'rooms' in request.endpoint %}bg-white/20{% endif %}">
                             <i class="fas fa-bed w-5"></i>
                             <span>Phòng</span>

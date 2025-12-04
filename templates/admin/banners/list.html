@@ -1,0 +1,102 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Quản Lý Slider Banner - Admin{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Quản Lý Slider Banner</h1>
+    <a href="{{ url_for('admin.banners_create') }}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition">
+        <i class="fas fa-plus mr-2"></i>Thêm Banner Mới
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thứ Tự</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hình Ảnh</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu Đề</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Icon</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for banner in banners %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-semibold">
+                            {{ banner.sort_order }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <img src="{{ banner.image_url }}" alt="{{ banner.title_vi }}" class="w-32 h-20 object-cover rounded-lg">
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">{{ banner.title_vi }}</div>
+                        <div class="text-sm text-gray-500">{{ banner.title_en }}</div>
+                        {% if banner.subtitle_vi %}
+                        <div class="text-xs text-gray-400 mt-1">{{ banner.subtitle_vi[:50] }}...</div>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if banner.icon %}
+                        <i class="{{ banner.icon }} text-xl text-primary"></i>
+                        {% else %}
+                        <span class="text-gray-400">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <form action="{{ url_for('admin.banners_toggle', id=banner.id) }}" method="POST" class="inline">
+                            <button type="submit" class="inline-flex items-center px-3 py-1 rounded-full text-sm {% if banner.is_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-600{% endif %} hover:opacity-80 transition">
+                                <i class="fas {% if banner.is_active %}fa-check-circle{% else %}fa-times-circle{% endif %} mr-1"></i>
+                                {{ 'Đang hiển thị' if banner.is_active else 'Đang ẩn' }}
+                            </button>
+                        </form>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{{ url_for('admin.banners_edit', id=banner.id) }}" class="text-primary hover:text-opacity-80 mr-3">
+                            <i class="fas fa-edit"></i> Sửa
+                        </a>
+                        <form action="{{ url_for('admin.banners_delete', id=banner.id) }}" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa banner này?');">
+                            <button type="submit" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        <i class="fas fa-images text-4xl mb-4 block"></i>
+                        <p>Chưa có banner nào. <a href="{{ url_for('admin.banners_create') }}" class="text-primary hover:underline">Thêm banner mới</a></p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-6 p-4 bg-blue-50 rounded-lg">
+    <h3 class="font-semibold text-blue-800 mb-2"><i class="fas fa-info-circle mr-2"></i>Hướng dẫn</h3>
+    <ul class="text-sm text-blue-700 space-y-1">
+        <li>- Slider banner hiển thị trên trang chủ với hiệu ứng chuyển đổi tự động</li>
+        <li>- Sử dụng "Thứ Tự" để sắp xếp thứ tự hiển thị (số nhỏ hiển thị trước)</li>
+        <li>- Nhấn vào trạng thái để bật/tắt hiển thị banner</li>
+        <li>- Nên sử dụng hình ảnh có kích thước tối thiểu 1920x1080px</li>
+    </ul>
+</div>
+{% endblock %}
