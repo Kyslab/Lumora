@@ -1,4 +1,4 @@
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
 
 function initFileUpload() {
     const fileInput = document.getElementById('file-input');
@@ -40,7 +40,7 @@ function initFileUpload() {
         });
         
         if (hasOversized) {
-            alert('Một số file quá lớn (>5MB). Vui lòng giảm kích thước ảnh hoặc chọn file khác.');
+            alert('Một số file quá lớn (>25MB). Vui lòng giảm kích thước ảnh hoặc chọn file khác.');
         }
     });
     
@@ -67,7 +67,7 @@ function initFileUpload() {
             for (let i = 0; i < files.length; i++) {
                 if (files[i].size > MAX_FILE_SIZE) {
                     e.preventDefault();
-                    alert('Một số file quá lớn (>5MB). Vui lòng xóa hoặc giảm kích thước ảnh trước khi lưu.');
+                    alert('Một số file quá lớn (>25MB). Vui lòng xóa hoặc giảm kích thước ảnh trước khi lưu.');
                     return false;
                 }
             }
