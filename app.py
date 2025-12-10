@@ -324,16 +324,31 @@ def submit_contact():
         contact_type = data.get('type', 'contact')
         
         if contact_type == 'steam_register':
+            programs = {
+                'steam_camp': 'STEAM Camp (3-5 ngày)',
+                'steam_weekend': 'STEAM Weekend (2 ngày)', 
+                'steam_day': 'STEAM Day Trip (1 ngày)',
+                'robot_workshop': 'Workshop Làm Robot',
+                'science_workshop': 'Workshop Thí Nghiệm Khoa Học',
+                'art_workshop': 'Workshop Nghệ Thuật Tái Chế',
+                'gardening_workshop': 'Workshop Làm Vườn',
+                'survival_workshop': 'Workshop Kỹ Năng Sinh Tồn',
+                'cooking_workshop': 'Workshop Nấu Ăn'
+            }
+            program_name = programs.get(data.get('program', ''), data.get('program', ''))
+            
             message_parts = [
                 f"Tên phụ huynh: {data.get('parent_name', '')}",
-                f"Tên trẻ: {data.get('child_name', '')}",
-                f"Tuổi trẻ: {data.get('child_age', '')}",
-                f"Chương trình: {data.get('program', '')}",
+                f"Tên học viên: {data.get('student_name', '')}",
+                f"Tuổi học viên: {data.get('student_age', '')}",
+                f"Chương trình: {program_name}",
+                f"Ngày dự kiến: {data.get('expected_date', 'Chưa xác định')}",
+                f"Số lượng học viên: {data.get('num_students', '1')}",
             ]
             if data.get('notes'):
                 message_parts.append(f"Ghi chú: {data.get('notes')}")
             formatted_message = '\n'.join(message_parts)
-            subject = data.get('program', 'Đăng ký STEAM')
+            subject = f"Đăng ký STEAM - {program_name}"
         else:
             formatted_message = data.get('message', '')
             subject = data.get('subject', '')

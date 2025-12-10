@@ -183,6 +183,7 @@
         
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
+        data.type = 'steam_register';
         
         fetch('/api/contact', {
             method: 'POST',
