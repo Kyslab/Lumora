@@ -341,12 +341,27 @@ def submit_contact():
 def submit_booking():
     data = request.get_json()
     try:
+        room_types = {'deluxe': 'Phòng Deluxe', 'glamping': 'Glamping / Cabin', 'bungalow': 'Bungalow'}
+        room_type = room_types.get(data.get('room_type', ''), data.get('room_type', ''))
+        
+        message_parts = [
+            f"Ngày nhận phòng: {data.get('checkin', '')}",
+            f"Ngày trả phòng: {data.get('checkout', '')}",
+            f"Loại phòng: {room_type}",
+            f"Số người lớn: {data.get('adults', '1')}",
+            f"Số trẻ em: {data.get('children', '0')}",
+        ]
+        if data.get('notes'):
+            message_parts.append(f"Ghi chú: {data.get('notes')}")
+        
+        formatted_message = '\n'.join(message_parts)
+        
         contact = Contact(
             name=data.get('name', ''),
             email=data.get('email', ''),
             phone=data.get('phone', ''),
             subject='Đặt phòng',
-            message=str(data),
+            message=formatted_message,
             contact_type='booking',
             status='new'
         )

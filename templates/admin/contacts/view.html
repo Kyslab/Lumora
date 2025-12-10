@@ -15,7 +15,7 @@
             <div><span class="text-sm text-gray-500">Điện Thoại:</span><p class="font-medium">{{ contact.phone or '-' }}</p></div>
         </div>
         {% if contact.subject %}<div><span class="text-sm text-gray-500">Chủ Đề:</span><p class="font-medium">{{ contact.subject }}</p></div>{% endif %}
-        <div><span class="text-sm text-gray-500">Nội Dung:</span><p class="mt-2 p-4 bg-gray-50 rounded-lg">{{ contact.message }}</p></div>
+        <div><span class="text-sm text-gray-500">Nội Dung:</span><p class="mt-2 p-4 bg-gray-50 rounded-lg whitespace-pre-line">{{ contact.message }}</p></div>
     </div>
     <div class="mt-6 flex items-center justify-between">
         <a href="{{ url_for('admin.contacts_list') }}" class="text-gray-600"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
