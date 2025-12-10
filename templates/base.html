@@ -213,20 +213,23 @@
 </head>
 <body class="bg-light text-dark">
     <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
-        <nav class="container mx-auto px-4">
-            <div class="flex items-center justify-between h-20">
-                <a href="/?lang={{ lang }}" class="flex items-center space-x-2">
-                    <span class="text-3xl font-display font-bold text-primary">Lumora</span>
-                    <span class="text-sm text-secondary">Resort</span>
+        <nav class="container mx-auto px-2 lg:px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="/?lang={{ lang }}" class="flex items-center space-x-2 flex-shrink-0">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-10 w-10 object-contain">
+                    <div class="hidden sm:block">
+                        <span class="text-xl font-display font-bold text-primary">Lumora</span>
+                        <span class="text-xs text-secondary ml-1">Resort</span>
+                    </div>
                 </a>
 
-                <div class="hidden lg:flex items-center space-x-8">
-                    <a href="/?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                <div class="hidden xl:flex items-center space-x-3">
+                    <a href="/?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium">
                         {{ 'Trang Chủ' if lang == 'vi' else 'Home' }}
                     </a>
                     
                     <div class="dropdown relative">
-                        <a href="/accommodation?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium flex items-center">
+                        <a href="/accommodation?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium flex items-center">
                             {{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}
                             <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </a>
@@ -238,78 +241,78 @@
                     </div>
 
                     <div class="dropdown relative">
-                        <a href="/dining?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium flex items-center">
+                        <a href="/dining?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium flex items-center">
                             {{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}
                             <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </a>
                         <div class="dropdown-menu py-2">
-                            <a href="/dining?lang={{ lang }}#restaurant1" class="block px-4 py-2 hover:bg-light">{{ 'Nhà Hàng' if lang == 'vi' else 'Restaurant' }}</a>
-                            <a href="/dining?lang={{ lang }}#restaurant2" class="block px-4 py-2 hover:bg-light">{{ 'BBQ Garden' if lang == 'vi' else 'BBQ Garden' }}</a>
-                            <a href="/dining?lang={{ lang }}#cafe" class="block px-4 py-2 hover:bg-light">{{ 'Café & Bar' if lang == 'vi' else 'Café & Bar' }}</a>
+                            <a href="/dining?lang={{ lang }}#restaurant1" class="block px-4 py-2 text-sm hover:bg-light">{{ 'Nhà Hàng' if lang == 'vi' else 'Restaurant' }}</a>
+                            <a href="/dining?lang={{ lang }}#restaurant2" class="block px-4 py-2 text-sm hover:bg-light">BBQ Garden</a>
+                            <a href="/dining?lang={{ lang }}#cafe" class="block px-4 py-2 text-sm hover:bg-light">Café & Bar</a>
                         </div>
                     </div>
 
-                    <a href="/amenities?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                    <a href="/amenities?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium">
                         {{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}
                     </a>
 
                     <div class="dropdown relative">
-                        <span class="nav-link text-dark hover:text-primary font-medium flex items-center cursor-pointer">
+                        <span class="nav-link text-dark hover:text-primary text-sm font-medium flex items-center cursor-pointer">
                             {{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}
                             <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </span>
                         <div class="dropdown-menu py-2">
-                            <a href="/experiences/checkin?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Tham Quan Check-in' if lang == 'vi' else 'Check-in Tour' }}</a>
-                            <a href="/experiences/adventure?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Khu Trò Chơi Mạo Hiểm' if lang == 'vi' else 'Adventure Playground' }}</a>
+                            <a href="/experiences/checkin?lang={{ lang }}" class="block px-4 py-2 text-sm hover:bg-light">{{ 'Check-in Tour' if lang == 'vi' else 'Check-in Tour' }}</a>
+                            <a href="/experiences/adventure?lang={{ lang }}" class="block px-4 py-2 text-sm hover:bg-light">{{ 'Mạo Hiểm' if lang == 'vi' else 'Adventure' }}</a>
                         </div>
                     </div>
 
                     <div class="dropdown relative">
-                        <span class="nav-link text-dark hover:text-primary font-medium flex items-center cursor-pointer">
-                            {{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}
+                        <span class="nav-link text-dark hover:text-primary text-sm font-medium flex items-center cursor-pointer">
+                            STEAM
                             <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </span>
                         <div class="dropdown-menu py-2">
-                            <a href="/steam/intro?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Giới Thiệu Chương Trình' if lang == 'vi' else 'Program Introduction' }}</a>
-                            <a href="/steam/workshop?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Workshop Kỹ Năng' if lang == 'vi' else 'Skills Workshop' }}</a>
-                            <a href="/steam/register?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Đăng Ký Tham Gia' if lang == 'vi' else 'Register' }}</a>
+                            <a href="/steam/intro?lang={{ lang }}" class="block px-4 py-2 text-sm hover:bg-light">{{ 'Giới Thiệu' if lang == 'vi' else 'Introduction' }}</a>
+                            <a href="/steam/workshop?lang={{ lang }}" class="block px-4 py-2 text-sm hover:bg-light">Workshop</a>
+                            <a href="/steam/register?lang={{ lang }}" class="block px-4 py-2 text-sm hover:bg-light">{{ 'Đăng Ký' if lang == 'vi' else 'Register' }}</a>
                         </div>
                     </div>
 
-                    <a href="/events?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                    <a href="/events?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium">
                         {{ 'Sự Kiện' if lang == 'vi' else 'Events' }}
                     </a>
 
-                    <a href="/news?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                    <a href="/news?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium">
                         {{ 'Tin Tức' if lang == 'vi' else 'News' }}
                     </a>
 
-                    <a href="/gallery?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                    <a href="/gallery?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium">
                         {{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}
                     </a>
 
-                    <a href="/contact?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium">
+                    <a href="/contact?lang={{ lang }}" class="nav-link text-dark hover:text-primary text-sm font-medium">
                         {{ 'Liên Hệ' if lang == 'vi' else 'Contact' }}
                     </a>
                 </div>
 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
                     <button id="theme-toggle" class="theme-toggle text-primary dark:text-accent" title="{{ 'Chế độ sáng/tối' if lang == 'vi' else 'Light/Dark mode' }}">
-                        <i class="fas fa-sun text-xl dark:hidden"></i>
-                        <i class="fas fa-moon text-xl hidden dark:block"></i>
+                        <i class="fas fa-sun text-lg dark:hidden"></i>
+                        <i class="fas fa-moon text-lg hidden dark:block"></i>
                     </button>
                     
-                    <div class="flex items-center space-x-2 border rounded-full px-3 py-1">
-                        <a href="?lang=vi" class="text-sm {{ 'font-bold text-primary' if lang == 'vi' else 'text-gray-500' }}">VI</a>
+                    <div class="flex items-center space-x-1 border rounded-full px-2 py-1">
+                        <a href="?lang=vi" class="text-xs {{ 'font-bold text-primary' if lang == 'vi' else 'text-gray-500' }}">VI</a>
                         <span class="text-gray-300">|</span>
-                        <a href="?lang=en" class="text-sm {{ 'font-bold text-primary' if lang == 'en' else 'text-gray-500' }}">EN</a>
+                        <a href="?lang=en" class="text-xs {{ 'font-bold text-primary' if lang == 'en' else 'text-gray-500' }}">EN</a>
                     </div>
 
-                    <a href="/contact?lang={{ lang }}#booking" class="hidden md:block bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition font-medium">
-                        {{ 'Đặt Phòng' if lang == 'vi' else 'Book Now' }}
+                    <a href="/contact?lang={{ lang }}#booking" class="hidden lg:block bg-primary text-white px-4 py-1.5 rounded-full hover:bg-opacity-90 transition text-sm font-medium">
+                        {{ 'Đặt Phòng' if lang == 'vi' else 'Book' }}
                     </a>
 
-                    <button id="mobile-menu-btn" class="lg:hidden text-2xl text-primary">
+                    <button id="mobile-menu-btn" class="xl:hidden text-xl text-primary">
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
