@@ -290,3 +290,12 @@ class Banner(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Newsletter(db.Model):
+    __tablename__ = 'newsletters'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    subscribed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    unsubscribed_at = db.Column(db.DateTime)

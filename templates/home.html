@@ -267,6 +267,29 @@
                     <i class="fas fa-phone mr-2"></i> 1900 1234
                 </a>
             </div>
+            
+            <!-- Newsletter Subscription -->
+            <div class="mt-12 pt-10 border-t border-white/20">
+                <div class="flex items-center justify-center gap-3 mb-3">
+                    <i class="fas fa-envelope text-accent text-3xl"></i>
+                    <h3 class="text-2xl font-display">
+                        {{ 'Đăng Ký Nhận Tin Khuyến Mãi' if lang == 'vi' else 'Subscribe for Promotions' }}
+                    </h3>
+                </div>
+                <p class="text-gray-200 mb-6">
+                    {{ 'Nhận thông tin về các chương trình khuyến mãi và sự kiện sắp diễn ra của Lumora Resort.' if lang == 'vi' else 'Get updates on promotions and upcoming events at Lumora Resort.' }}
+                </p>
+                <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="email" id="newsletter-email" name="email" required 
+                           placeholder="{{ 'Nhập email của bạn...' if lang == 'vi' else 'Enter your email...' }}" 
+                           class="flex-1 px-6 py-3 rounded-full text-dark focus:outline-none focus:ring-2 focus:ring-accent">
+                    <button type="submit" class="bg-accent text-dark px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition whitespace-nowrap">
+                        <i class="fas fa-paper-plane mr-2"></i>{{ 'Đăng Ký' if lang == 'vi' else 'Subscribe' }}
+                    </button>
+                </form>
+                <p id="newsletter-message" class="mt-4 text-sm hidden"></p>
+            </div>
         </div>
     </div>
 </section>
@@ -374,6 +397,54 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     startAutoSlide();
+    
+    // Newsletter form handling
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterMessage = document.getElementById('newsletter-message');
+    const newsletterEmail = document.getElementById('newsletter-email');
+    
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = newsletterEmail.value.trim();
+            if (!email) return;
+            
+            const lang = '{{ lang }}';
+            
+            fetch('/api/newsletter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email, lang: lang })
+            })
+            .then(response => response.json())
+            .then(data => {
+                newsletterMessage.textContent = data.message;
+                newsletterMessage.classList.remove('hidden');
+                
+                if (data.success) {
+                    newsletterMessage.classList.remove('text-red-300');
+                    newsletterMessage.classList.add('text-green-300');
+                    newsletterEmail.value = '';
+                } else {
+                    newsletterMessage.classList.remove('text-green-300');
+                    newsletterMessage.classList.add('text-red-300');
+                }
+                
+                setTimeout(() => {
+                    newsletterMessage.classList.add('hidden');
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                newsletterMessage.textContent = lang === 'vi' ? 'Có lỗi xảy ra, vui lòng thử lại.' : 'An error occurred, please try again.';
+                newsletterMessage.classList.remove('hidden', 'text-green-300');
+                newsletterMessage.classList.add('text-red-300');
+            });
+        });
+    }
 });
 </script>
 {% endblock extra_scripts %}

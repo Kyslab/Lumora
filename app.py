@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     }
 }
 
-from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner
+from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner, Newsletter
 db.init_app(app)
 
 csrf = CSRFProtect(app)
@@ -355,6 +355,40 @@ def submit_booking():
     except Exception as e:
         print(f"Error saving booking: {e}")
     return jsonify({"success": True, "message": "Yêu cầu đặt phòng đã được gửi! Chúng tôi sẽ liên hệ xác nhận."})
+
+@app.route('/api/newsletter', methods=['POST'])
+@csrf.exempt
+def subscribe_newsletter():
+    data = request.get_json()
+    email = data.get('email', '').strip().lower()
+    lang = data.get('lang', 'vi')
+    
+    if not email:
+        msg = 'Vui lòng nhập email.' if lang == 'vi' else 'Please enter your email.'
+        return jsonify({"success": False, "message": msg})
+    
+    try:
+        existing = Newsletter.query.filter_by(email=email).first()
+        if existing:
+            if existing.is_active:
+                msg = 'Email này đã được đăng ký nhận tin.' if lang == 'vi' else 'This email is already subscribed.'
+                return jsonify({"success": False, "message": msg})
+            else:
+                existing.is_active = True
+                existing.unsubscribed_at = None
+                db.session.commit()
+                msg = 'Đăng ký thành công! Cảm ơn bạn đã quan tâm.' if lang == 'vi' else 'Subscribed successfully! Thank you for your interest.'
+                return jsonify({"success": True, "message": msg})
+        
+        newsletter = Newsletter(email=email)
+        db.session.add(newsletter)
+        db.session.commit()
+        msg = 'Đăng ký thành công! Cảm ơn bạn đã quan tâm đến Lumora Resort.' if lang == 'vi' else 'Subscribed successfully! Thank you for your interest in Lumora Resort.'
+        return jsonify({"success": True, "message": msg})
+    except Exception as e:
+        print(f"Error subscribing newsletter: {e}")
+        msg = 'Có lỗi xảy ra, vui lòng thử lại sau.' if lang == 'vi' else 'An error occurred, please try again later.'
+        return jsonify({"success": False, "message": msg})
 
 @app.errorhandler(413)
 def request_entity_too_large(error):
