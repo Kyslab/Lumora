@@ -54,19 +54,36 @@
                 <div class="mb-6">
                     <h3 class="font-display font-semibold text-lg mb-3">{{ 'Tiện nghi' if lang == 'vi' else 'Amenities' }}</h3>
                     <div class="flex flex-wrap gap-3">
+                        {% if room.amenities %}
                         {% for amenity in room.amenities %}
+                        {% if amenity and amenity.strip() %}
                         <span class="bg-light px-4 py-2 rounded-full text-sm flex items-center gap-2">
-                            {% if amenity == 'wifi' %}<i class="fas fa-wifi text-primary"></i> WiFi{% endif %}
-                            {% if amenity == 'ac' %}<i class="fas fa-snowflake text-primary"></i> {{ 'Điều hòa' if lang == 'vi' else 'AC' }}{% endif %}
-                            {% if amenity == 'tv' %}<i class="fas fa-tv text-primary"></i> TV{% endif %}
-                            {% if amenity == 'minibar' %}<i class="fas fa-glass-martini text-primary"></i> Minibar{% endif %}
-                            {% if amenity == 'bathroom' %}<i class="fas fa-bath text-primary"></i> {{ 'Phòng tắm' if lang == 'vi' else 'Bathroom' }}{% endif %}
-                            {% if amenity == 'outdoor' %}<i class="fas fa-tree text-primary"></i> {{ 'Ngoài trời' if lang == 'vi' else 'Outdoor' }}{% endif %}
-                            {% if amenity == 'bbq' %}<i class="fas fa-fire text-primary"></i> BBQ{% endif %}
-                            {% if amenity == 'kitchen' %}<i class="fas fa-utensils text-primary"></i> {{ 'Bếp' if lang == 'vi' else 'Kitchen' }}{% endif %}
-                            {% if amenity == 'garden' %}<i class="fas fa-leaf text-primary"></i> {{ 'Vườn' if lang == 'vi' else 'Garden' }}{% endif %}
+                            {% if 'wifi' in amenity.lower() %}
+                            <i class="fas fa-wifi text-primary"></i>
+                            {% elif 'điều hòa' in amenity.lower() or 'ac' in amenity.lower() %}
+                            <i class="fas fa-snowflake text-primary"></i>
+                            {% elif 'tv' in amenity.lower() %}
+                            <i class="fas fa-tv text-primary"></i>
+                            {% elif 'minibar' in amenity.lower() %}
+                            <i class="fas fa-glass-martini text-primary"></i>
+                            {% elif 'phòng tắm' in amenity.lower() or 'bathroom' in amenity.lower() %}
+                            <i class="fas fa-bath text-primary"></i>
+                            {% elif 'ngoài trời' in amenity.lower() or 'outdoor' in amenity.lower() %}
+                            <i class="fas fa-tree text-primary"></i>
+                            {% elif 'bbq' in amenity.lower() %}
+                            <i class="fas fa-fire text-primary"></i>
+                            {% elif 'bếp' in amenity.lower() or 'kitchen' in amenity.lower() %}
+                            <i class="fas fa-utensils text-primary"></i>
+                            {% elif 'vườn' in amenity.lower() or 'garden' in amenity.lower() or 'sân' in amenity.lower() %}
+                            <i class="fas fa-leaf text-primary"></i>
+                            {% else %}
+                            <i class="fas fa-check text-primary"></i>
+                            {% endif %}
+                            {{ amenity.strip() }}
                         </span>
+                        {% endif %}
                         {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
