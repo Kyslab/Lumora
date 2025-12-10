@@ -60,17 +60,32 @@
                     </div>
                     <div class="flex flex-wrap gap-2 mb-4">
                         {% for amenity in room.amenities[:4] %}
-                        <span class="bg-light text-gray-600 px-3 py-1 rounded-full text-xs">
-                            {% if amenity == 'wifi' %}<i class="fas fa-wifi"></i>{% endif %}
-                            {% if amenity == 'ac' %}<i class="fas fa-snowflake"></i>{% endif %}
-                            {% if amenity == 'tv' %}<i class="fas fa-tv"></i>{% endif %}
-                            {% if amenity == 'minibar' %}<i class="fas fa-glass-martini"></i>{% endif %}
-                            {% if amenity == 'bathroom' %}<i class="fas fa-bath"></i>{% endif %}
-                            {% if amenity == 'outdoor' %}<i class="fas fa-tree"></i>{% endif %}
-                            {% if amenity == 'bbq' %}<i class="fas fa-fire"></i>{% endif %}
-                            {% if amenity == 'kitchen' %}<i class="fas fa-utensils"></i>{% endif %}
-                            {% if amenity == 'garden' %}<i class="fas fa-leaf"></i>{% endif %}
+                        {% if amenity and amenity.strip() %}
+                        <span class="bg-light text-gray-600 px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                            {% if 'wifi' in amenity.lower() %}
+                            <i class="fas fa-wifi"></i>
+                            {% elif 'điều hòa' in amenity.lower() or 'ac' in amenity.lower() %}
+                            <i class="fas fa-snowflake"></i>
+                            {% elif 'tv' in amenity.lower() %}
+                            <i class="fas fa-tv"></i>
+                            {% elif 'minibar' in amenity.lower() %}
+                            <i class="fas fa-glass-martini"></i>
+                            {% elif 'phòng tắm' in amenity.lower() or 'bathroom' in amenity.lower() %}
+                            <i class="fas fa-bath"></i>
+                            {% elif 'ngoài trời' in amenity.lower() or 'outdoor' in amenity.lower() %}
+                            <i class="fas fa-tree"></i>
+                            {% elif 'bbq' in amenity.lower() %}
+                            <i class="fas fa-fire"></i>
+                            {% elif 'bếp' in amenity.lower() or 'kitchen' in amenity.lower() %}
+                            <i class="fas fa-utensils"></i>
+                            {% elif 'vườn' in amenity.lower() or 'garden' in amenity.lower() or 'sân' in amenity.lower() %}
+                            <i class="fas fa-leaf"></i>
+                            {% else %}
+                            <i class="fas fa-check"></i>
+                            {% endif %}
+                            {{ amenity.strip() }}
                         </span>
+                        {% endif %}
                         {% endfor %}
                     </div>
                     <div class="flex gap-2">
