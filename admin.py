@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from functools import wraps
 from models import db, User, Room, RoomImage, Restaurant, RestaurantImage, MenuItem
 from models import Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo
-from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner
+from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner, Newsletter
 from datetime import datetime
 import os
 import uuid
@@ -941,6 +941,35 @@ def contacts_delete(id):
     db.session.commit()
     flash('Đã xóa liên hệ thành công!', 'success')
     return redirect(url_for('admin.contacts_list'))
+
+@admin_bp.route('/newsletters')
+@admin_required
+def newsletters_list():
+    newsletters = Newsletter.query.order_by(Newsletter.subscribed_at.desc()).all()
+    return render_template('admin/newsletters/list.html', newsletters=newsletters)
+
+@admin_bp.route('/newsletters/<int:id>/toggle', methods=['POST'])
+@admin_required
+def newsletters_toggle(id):
+    newsletter = Newsletter.query.get_or_404(id)
+    newsletter.is_active = not newsletter.is_active
+    if not newsletter.is_active:
+        newsletter.unsubscribed_at = datetime.utcnow()
+    else:
+        newsletter.unsubscribed_at = None
+    db.session.commit()
+    status = 'kích hoạt' if newsletter.is_active else 'hủy kích hoạt'
+    flash(f'Đã {status} email {newsletter.email}!', 'success')
+    return redirect(url_for('admin.newsletters_list'))
+
+@admin_bp.route('/newsletters/<int:id>/delete', methods=['POST'])
+@admin_required
+def newsletters_delete(id):
+    newsletter = Newsletter.query.get_or_404(id)
+    db.session.delete(newsletter)
+    db.session.commit()
+    flash('Đã xóa email thành công!', 'success')
+    return redirect(url_for('admin.newsletters_list'))
 
 @admin_bp.route('/upload', methods=['POST'])
 @admin_required

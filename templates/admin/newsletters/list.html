@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Quản Lý Newsletter{% endblock %}
+{% block page_title %}Danh Sách Đăng Ký Newsletter{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="p-6 border-b flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-semibold">Email Đăng Ký Nhận Tin</h2>
+            <p class="text-gray-500 text-sm">Tổng: {{ newsletters|length }} email</p>
+        </div>
+    </div>
+    
+    {% if newsletters %}
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày Đăng Ký</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng Thái</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+            {% for newsletter in newsletters %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">
+                    <a href="mailto:{{ newsletter.email }}" class="text-primary hover:underline">{{ newsletter.email }}</a>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    {{ newsletter.subscribed_at.strftime('%d/%m/%Y %H:%M') }}
+                </td>
+                <td class="px-6 py-4">
+                    {% if newsletter.is_active %}
+                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Hoạt động</span>
+                    {% else %}
+                    <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">Đã hủy</span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 text-right space-x-2">
+                    <form action="{{ url_for('admin.newsletters_toggle', id=newsletter.id) }}" method="POST" class="inline">
+                        <button type="submit" class="text-sm {% if newsletter.is_active %}text-yellow-600 hover:text-yellow-800{% else %}text-green-600 hover:text-green-800{% endif %}">
+                            <i class="fas {% if newsletter.is_active %}fa-pause{% else %}fa-play{% endif %}"></i>
+                            {{ 'Hủy' if newsletter.is_active else 'Kích hoạt' }}
+                        </button>
+                    </form>
+                    <form action="{{ url_for('admin.newsletters_delete', id=newsletter.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa email này?')">
+                        <button type="submit" class="text-sm text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="p-12 text-center text-gray-500">
+        <i class="fas fa-mail-bulk text-4xl mb-4 text-gray-300"></i>
+        <p>Chưa có email đăng ký nào.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
