@@ -321,13 +321,30 @@ def contact():
 def submit_contact():
     data = request.get_json()
     try:
+        contact_type = data.get('type', 'contact')
+        
+        if contact_type == 'steam_register':
+            message_parts = [
+                f"Tên phụ huynh: {data.get('parent_name', '')}",
+                f"Tên trẻ: {data.get('child_name', '')}",
+                f"Tuổi trẻ: {data.get('child_age', '')}",
+                f"Chương trình: {data.get('program', '')}",
+            ]
+            if data.get('notes'):
+                message_parts.append(f"Ghi chú: {data.get('notes')}")
+            formatted_message = '\n'.join(message_parts)
+            subject = data.get('program', 'Đăng ký STEAM')
+        else:
+            formatted_message = data.get('message', '')
+            subject = data.get('subject', '')
+        
         contact = Contact(
             name=data.get('name') or data.get('parent_name', ''),
             email=data.get('email', ''),
             phone=data.get('phone', ''),
-            subject=data.get('subject') or data.get('program', ''),
-            message=str(data),
-            contact_type=data.get('type', 'contact'),
+            subject=subject,
+            message=formatted_message,
+            contact_type=contact_type,
             status='new'
         )
         db.session.add(contact)
