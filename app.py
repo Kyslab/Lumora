@@ -443,6 +443,67 @@ def request_entity_too_large(error):
     flash('File quá lớn! Vui lòng chọn file nhỏ hơn 25MB.', 'error')
     return render_template('error.html', error_code=413, error_message='File quá lớn! Vui lòng chọn file nhỏ hơn 25MB.'), 413
 
+@app.route('/robots.txt')
+def robots_txt():
+    from flask import Response
+    content = """User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: {host}sitemap.xml
+""".format(host=request.host_url)
+    return Response(content, mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    from flask import Response
+    from datetime import datetime
+    
+    pages = [
+        {'loc': '', 'priority': '1.0', 'changefreq': 'daily'},
+        {'loc': 'accommodation', 'priority': '0.9', 'changefreq': 'weekly'},
+        {'loc': 'dining', 'priority': '0.8', 'changefreq': 'weekly'},
+        {'loc': 'amenities', 'priority': '0.8', 'changefreq': 'weekly'},
+        {'loc': 'experiences', 'priority': '0.8', 'changefreq': 'weekly'},
+        {'loc': 'steam', 'priority': '0.7', 'changefreq': 'weekly'},
+        {'loc': 'events', 'priority': '0.7', 'changefreq': 'weekly'},
+        {'loc': 'news', 'priority': '0.8', 'changefreq': 'daily'},
+        {'loc': 'gallery', 'priority': '0.6', 'changefreq': 'weekly'},
+        {'loc': 'contact', 'priority': '0.7', 'changefreq': 'monthly'},
+    ]
+    
+    rooms = Room.query.filter_by(is_active=True).all()
+    for room in rooms:
+        pages.append({'loc': f'room/{room.slug}', 'priority': '0.8', 'changefreq': 'weekly'})
+    
+    restaurants = Restaurant.query.filter_by(is_active=True).all()
+    for r in restaurants:
+        pages.append({'loc': f'restaurant/{r.slug}', 'priority': '0.7', 'changefreq': 'weekly'})
+    
+    news_items = News.query.filter_by(is_active=True).all()
+    for n in news_items:
+        pages.append({'loc': f'news/{n.slug}', 'priority': '0.7', 'changefreq': 'weekly'})
+    
+    base_url = request.host_url.rstrip('/')
+    lastmod = datetime.now().strftime('%Y-%m-%d')
+    
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    for lang in ['vi', 'en']:
+        for page in pages:
+            url = f"{base_url}/{page['loc']}?lang={lang}" if page['loc'] else f"{base_url}/?lang={lang}"
+            xml += f'''  <url>
+    <loc>{url}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>{page['changefreq']}</changefreq>
+    <priority>{page['priority']}</priority>
+  </url>\n'''
+    
+    xml += '</urlset>'
+    return Response(xml, mimetype='application/xml')
+
 if __name__ == '__main__':
     create_admin_user()
     app.run(host='0.0.0.0', port=5000, debug=True)

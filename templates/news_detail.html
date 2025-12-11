@@ -1,6 +1,41 @@
 {% extends "base.html" %}
 
-{% block title %}{{ article.title[lang] }} - Lumora Resort{% endblock %}
+{% block title %}{{ article.title[lang] }} - Tin Tức Lumora Resort{% endblock %}
+
+{% block meta_description %}{{ article.excerpt[lang][:160] }}{% endblock %}
+{% block meta_keywords %}{{ article.title[lang] }}, tin tức Lumora Resort, {{ article.category[lang] }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title[lang] }}{% endblock %}
+{% block og_description %}{{ article.excerpt[lang][:200] }}{% endblock %}
+{% block og_image %}{{ article.image }}{% endblock %}
+
+{% block twitter_title %}{{ article.title[lang] }}{% endblock %}
+{% block twitter_description %}{{ article.excerpt[lang][:200] }}{% endblock %}
+{% block twitter_image %}{{ article.image }}{% endblock %}
+
+{% block structured_data %}
+{
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "{{ article.title[lang] }}",
+    "description": "{{ article.excerpt[lang] }}",
+    "image": "{{ article.image }}",
+    "datePublished": "{{ article.date }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Lumora Resort"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Lumora Resort",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{{ url_for('static', filename='images/logo.png', _external=True) }}"
+        }
+    }
+}
+{% endblock %}
 
 {% block extra_head %}
 <style>

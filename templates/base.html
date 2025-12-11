@@ -3,9 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block meta_description %}Lumora Resort - Khu nghỉ dưỡng cao cấp với đầy đủ tiện nghi{% endblock %}">
-    <meta name="keywords" content="resort, nghỉ dưỡng, khách sạn, glamping, Lumora">
-    <title>{% block title %}Lumora Resort{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Lumora Resort - Khu Nghỉ Dưỡng Cao Cấp{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Lumora Resort - Khu nghỉ dưỡng sinh thái cao cấp với phòng nghỉ sang trọng, nhà hàng ẩm thực, vườn thú, bể bơi vô cực và các hoạt động trải nghiệm độc đáo.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}Lumora Resort, resort cao cấp, nghỉ dưỡng sinh thái, khách sạn, glamping, bungalow, team building, STEAM education, vườn thú, bể bơi vô cực{% endblock %}">
+    <meta name="author" content="Lumora Resort">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% block canonical %}{{ request.url }}{% endblock %}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}Lumora Resort - Khu Nghỉ Dưỡng Cao Cấp{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Trải nghiệm kỳ nghỉ tuyệt vời tại Lumora Resort với phòng nghỉ sang trọng, ẩm thực đa dạng và các hoạt động thú vị.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/og-image.jpg', _external=True) }}{% endblock %}">
+    <meta property="og:site_name" content="Lumora Resort">
+    <meta property="og:locale" content="{{ 'vi_VN' if lang == 'vi' else 'en_US' }}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Lumora Resort - Khu Nghỉ Dưỡng Cao Cấp{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Trải nghiệm kỳ nghỉ tuyệt vời tại Lumora Resort{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/og-image.jpg', _external=True) }}{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {% block structured_data %}
+    {
+        "@context": "https://schema.org",
+        "@type": "Resort",
+        "name": "Lumora Resort",
+        "description": "Khu nghỉ dưỡng sinh thái cao cấp với đầy đủ tiện nghi",
+        "url": "{{ request.host_url }}",
+        "logo": "{{ url_for('static', filename='images/logo.png', _external=True) }}",
+        "image": "{{ url_for('static', filename='images/og-image.jpg', _external=True) }}",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "VN"
+        },
+        "amenityFeature": [
+            {"@type": "LocationFeatureSpecification", "name": "Swimming Pool"},
+            {"@type": "LocationFeatureSpecification", "name": "Restaurant"},
+            {"@type": "LocationFeatureSpecification", "name": "Zoo"},
+            {"@type": "LocationFeatureSpecification", "name": "Garden"}
+        ],
+        "sameAs": []
+    }
+    {% endblock %}
+    </script>
+    
+    {% block extra_head %}{% endblock %}
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
