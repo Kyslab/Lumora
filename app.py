@@ -481,7 +481,7 @@ def sitemap_xml():
     for r in restaurants:
         pages.append({'loc': f'restaurant/{r.slug}', 'priority': '0.7', 'changefreq': 'weekly'})
     
-    news_items = News.query.filter_by(is_active=True).all()
+    news_items = News.query.all()
     for n in news_items:
         pages.append({'loc': f'news/{n.slug}', 'priority': '0.7', 'changefreq': 'weekly'})
     
