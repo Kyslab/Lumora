@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from functools import wraps
 from models import db, User, Room, RoomImage, Restaurant, RestaurantImage, MenuItem
 from models import Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo
-from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner, Newsletter
+from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner, Newsletter, SiteSetting
 from datetime import datetime
 import os
 import uuid
@@ -1093,3 +1093,35 @@ def banners_toggle(id):
     status = 'bật' if banner.is_active else 'tắt'
     flash(f'Đã {status} banner thành công!', 'success')
     return redirect(url_for('admin.banners_list'))
+
+@admin_bp.route('/effects')
+@admin_required
+def effects():
+    setting = SiteSetting.query.filter_by(key='holiday_effect').first()
+    current_effect = setting.value if setting else 'none'
+    return render_template('admin/effects.html', current_effect=current_effect)
+
+@admin_bp.route('/effects', methods=['POST'])
+@admin_required
+def effects_save():
+    effect = request.form.get('effect', 'none')
+    
+    setting = SiteSetting.query.filter_by(key='holiday_effect').first()
+    if setting:
+        setting.value = effect
+    else:
+        setting = SiteSetting(key='holiday_effect', value=effect)
+        db.session.add(setting)
+    
+    db.session.commit()
+    
+    effect_names = {
+        'none': 'Tắt hiệu ứng',
+        'snow': 'Tuyết rơi (Giáng sinh)',
+        'fireworks': 'Pháo hoa (Năm mới)',
+        'sakura': 'Hoa anh đào (Xuân)',
+        'leaves': 'Lá rơi (Thu)',
+        'hearts': 'Trái tim (Valentine)'
+    }
+    flash(f'Đã bật: {effect_names.get(effect, effect)}', 'success')
+    return redirect(url_for('admin.effects'))

@@ -1,0 +1,106 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Hiệu Ứng Lễ Hội - Admin{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">
+        <i class="fas fa-magic mr-3 text-primary"></i>Hiệu Ứng Lễ Hội
+    </h1>
+</div>
+
+<div class="bg-white rounded-xl shadow-md p-6">
+    <p class="text-gray-600 mb-6">Chọn hiệu ứng phù hợp với dịp lễ để trang trí website. Hiệu ứng sẽ hiển thị trên tất cả các trang.</p>
+    
+    <form method="POST" action="{{ url_for('admin.effects_save') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <label class="effect-card cursor-pointer">
+                <input type="radio" name="effect" value="none" class="hidden" {{ 'checked' if current_effect == 'none' }}>
+                <div class="border-2 rounded-xl p-6 text-center transition-all {{ 'border-primary bg-primary/5' if current_effect == 'none' else 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="text-4xl mb-3">🚫</div>
+                    <h3 class="font-bold text-lg mb-1">Tắt Hiệu Ứng</h3>
+                    <p class="text-sm text-gray-500">Không hiển thị hiệu ứng</p>
+                </div>
+            </label>
+            
+            <label class="effect-card cursor-pointer">
+                <input type="radio" name="effect" value="snow" class="hidden" {{ 'checked' if current_effect == 'snow' }}>
+                <div class="border-2 rounded-xl p-6 text-center transition-all {{ 'border-primary bg-primary/5' if current_effect == 'snow' else 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="text-4xl mb-3">❄️</div>
+                    <h3 class="font-bold text-lg mb-1">Tuyết Rơi</h3>
+                    <p class="text-sm text-gray-500">Dịp Giáng Sinh, Noel</p>
+                </div>
+            </label>
+            
+            <label class="effect-card cursor-pointer">
+                <input type="radio" name="effect" value="fireworks" class="hidden" {{ 'checked' if current_effect == 'fireworks' }}>
+                <div class="border-2 rounded-xl p-6 text-center transition-all {{ 'border-primary bg-primary/5' if current_effect == 'fireworks' else 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="text-4xl mb-3">🎆</div>
+                    <h3 class="font-bold text-lg mb-1">Pháo Hoa</h3>
+                    <p class="text-sm text-gray-500">Năm Mới, Tết</p>
+                </div>
+            </label>
+            
+            <label class="effect-card cursor-pointer">
+                <input type="radio" name="effect" value="sakura" class="hidden" {{ 'checked' if current_effect == 'sakura' }}>
+                <div class="border-2 rounded-xl p-6 text-center transition-all {{ 'border-primary bg-primary/5' if current_effect == 'sakura' else 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="text-4xl mb-3">🌸</div>
+                    <h3 class="font-bold text-lg mb-1">Hoa Anh Đào</h3>
+                    <p class="text-sm text-gray-500">Mùa Xuân</p>
+                </div>
+            </label>
+            
+            <label class="effect-card cursor-pointer">
+                <input type="radio" name="effect" value="leaves" class="hidden" {{ 'checked' if current_effect == 'leaves' }}>
+                <div class="border-2 rounded-xl p-6 text-center transition-all {{ 'border-primary bg-primary/5' if current_effect == 'leaves' else 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="text-4xl mb-3">🍂</div>
+                    <h3 class="font-bold text-lg mb-1">Lá Rơi</h3>
+                    <p class="text-sm text-gray-500">Mùa Thu</p>
+                </div>
+            </label>
+            
+            <label class="effect-card cursor-pointer">
+                <input type="radio" name="effect" value="hearts" class="hidden" {{ 'checked' if current_effect == 'hearts' }}>
+                <div class="border-2 rounded-xl p-6 text-center transition-all {{ 'border-primary bg-primary/5' if current_effect == 'hearts' else 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="text-4xl mb-3">💕</div>
+                    <h3 class="font-bold text-lg mb-1">Trái Tim</h3>
+                    <p class="text-sm text-gray-500">Valentine, Tình yêu</p>
+                </div>
+            </label>
+        </div>
+        
+        <div class="flex justify-end">
+            <button type="submit" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition font-medium">
+                <i class="fas fa-save mr-2"></i>Lưu Thay Đổi
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="mt-6 bg-blue-50 rounded-xl p-6">
+    <h3 class="font-bold text-blue-800 mb-3"><i class="fas fa-info-circle mr-2"></i>Hướng Dẫn</h3>
+    <ul class="text-blue-700 space-y-2">
+        <li><i class="fas fa-check mr-2"></i>Chọn hiệu ứng phù hợp với dịp lễ đang diễn ra</li>
+        <li><i class="fas fa-check mr-2"></i>Hiệu ứng sẽ hiển thị ngay lập tức trên tất cả các trang</li>
+        <li><i class="fas fa-check mr-2"></i>Nhớ tắt hiệu ứng sau khi dịp lễ kết thúc</li>
+        <li><i class="fas fa-check mr-2"></i>Hiệu ứng nhẹ nhàng, không ảnh hưởng đến trải nghiệm người dùng</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.effect-card input').forEach(input => {
+    input.addEventListener('change', function() {
+        document.querySelectorAll('.effect-card > div').forEach(card => {
+            card.classList.remove('border-primary', 'bg-primary/5');
+            card.classList.add('border-gray-200');
+        });
+        this.closest('.effect-card').querySelector('div').classList.remove('border-gray-200');
+        this.closest('.effect-card').querySelector('div').classList.add('border-primary', 'bg-primary/5');
+    });
+});
+</script>
+{% endblock %}

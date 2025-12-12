@@ -299,3 +299,11 @@ class Newsletter(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     subscribed_at = db.Column(db.DateTime, default=datetime.utcnow)
     unsubscribed_at = db.Column(db.DateTime)
+
+class SiteSetting(db.Model):
+    __tablename__ = 'site_settings'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(100), unique=True, nullable=False)
+    value = db.Column(db.Text)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

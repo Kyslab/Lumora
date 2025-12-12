@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     }
 }
 
-from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner, Newsletter
+from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner, Newsletter, SiteSetting
 db.init_app(app)
 
 csrf = CSRFProtect(app)
@@ -47,6 +47,15 @@ def load_user(user_id):
 
 from admin import admin_bp
 app.register_blueprint(admin_bp)
+
+@app.context_processor
+def inject_site_effects():
+    try:
+        effect_setting = SiteSetting.query.filter_by(key='holiday_effect').first()
+        effect = effect_setting.value if effect_setting else 'none'
+    except:
+        effect = 'none'
+    return {'site_effect': effect}
 
 def create_admin_user():
     with app.app_context():

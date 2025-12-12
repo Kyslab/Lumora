@@ -108,6 +108,12 @@
                             <span>Newsletter</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ url_for('admin.effects') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'effects' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-magic w-5"></i>
+                            <span>Hiệu Ứng Lễ Hội</span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="border-t border-white/20 mt-6 pt-6">
                     <a href="/" target="_blank" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10">
