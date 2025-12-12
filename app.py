@@ -279,9 +279,15 @@ def events():
 @app.route('/news')
 def news():
     lang = request.args.get('lang', 'vi')
-    news_items = News.query.filter_by(status='published').order_by(News.published_at.desc()).all()
+    category = request.args.get('category', '')
+    
+    query = News.query.filter_by(status='published')
+    if category:
+        query = query.filter_by(category=category)
+    
+    news_items = query.order_by(News.published_at.desc()).all()
     news_data = [news_to_dict(n) for n in news_items]
-    return render_template('news.html', lang=lang, news=news_data)
+    return render_template('news.html', lang=lang, news=news_data, current_category=category)
 
 @app.route('/news/<int:news_id>')
 def news_detail(news_id):

@@ -20,18 +20,18 @@
 <section class="py-16 bg-light">
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <button class="px-6 py-2 rounded-full bg-primary text-white">
+            <a href="/news?lang={{ lang }}" class="px-6 py-2 rounded-full transition {{ 'bg-primary text-white' if not current_category else 'bg-white text-dark hover:bg-primary hover:text-white' }}">
                 {{ 'Tất cả' if lang == 'vi' else 'All' }}
-            </button>
-            <button class="px-6 py-2 rounded-full bg-white text-dark hover:bg-primary hover:text-white transition">
+            </a>
+            <a href="/news?lang={{ lang }}&category=news" class="px-6 py-2 rounded-full transition {{ 'bg-primary text-white' if current_category == 'news' else 'bg-white text-dark hover:bg-primary hover:text-white' }}">
                 {{ 'Tin tức' if lang == 'vi' else 'News' }}
-            </button>
-            <button class="px-6 py-2 rounded-full bg-white text-dark hover:bg-primary hover:text-white transition">
+            </a>
+            <a href="/news?lang={{ lang }}&category=offer" class="px-6 py-2 rounded-full transition {{ 'bg-primary text-white' if current_category == 'offer' else 'bg-white text-dark hover:bg-primary hover:text-white' }}">
                 {{ 'Ưu đãi' if lang == 'vi' else 'Offers' }}
-            </button>
-            <button class="px-6 py-2 rounded-full bg-white text-dark hover:bg-primary hover:text-white transition">
+            </a>
+            <a href="/news?lang={{ lang }}&category=event" class="px-6 py-2 rounded-full transition {{ 'bg-primary text-white' if current_category == 'event' else 'bg-white text-dark hover:bg-primary hover:text-white' }}">
                 {{ 'Sự kiện' if lang == 'vi' else 'Events' }}
-            </button>
+            </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
