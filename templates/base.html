@@ -574,15 +574,15 @@
         if (!container) return;
         
         const particles = {
-            snow: { chars: ['❄', '❅', '❆', '✻', '✼'], colors: ['#fff', '#e3f2fd', '#bbdefb'], speed: [8, 15] },
-            sakura: { chars: ['🌸', '🏵️', '✿', '❀'], colors: ['#ffb7c5', '#ff69b4', '#ffc0cb'], speed: [6, 12] },
-            leaves: { chars: ['🍂', '🍁', '🍃'], colors: ['#d2691e', '#ff8c00', '#ffa500'], speed: [5, 10] },
-            hearts: { chars: ['❤️', '💕', '💗', '💖', '💝'], colors: ['#ff6b6b', '#ff8787', '#ffa8a8'], speed: [6, 12] }
+            snow: { chars: ['❄', '❅', '❆', '✻', '✼', '•'], speed: [8, 15] },
+            sakura: { chars: ['🌸', '🏵️', '✿', '❀'], speed: [6, 12] },
+            leaves: { chars: ['🍂', '🍁', '🍃'], speed: [5, 10] },
+            hearts: { chars: ['❤️', '💕', '💗', '💖', '💝'], speed: [6, 12] }
         };
         
         function createParticle() {
             if (effect === 'fireworks') {
-                if (Math.random() > 0.98) createFirework();
+                if (Math.random() > 0.92) createFirework();
                 return;
             }
             
@@ -597,36 +597,42 @@
             particle.style.animationDuration = (Math.random() * (config.speed[1] - config.speed[0]) + config.speed[0]) + 's';
             particle.style.opacity = Math.random() * 0.5 + 0.5;
             
+            if (effect === 'snow') {
+                particle.style.color = '#ffffff';
+                particle.style.textShadow = '0 0 5px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.5)';
+            }
+            
             container.appendChild(particle);
             setTimeout(() => particle.remove(), 15000);
         }
         
         function createFirework() {
             const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight * 0.6;
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff69b4'];
+            const y = Math.random() * window.innerHeight * 0.5;
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff69b4', '#gold', '#ff4444'];
             const color = colors[Math.floor(Math.random() * colors.length)];
+            const particleCount = 20 + Math.floor(Math.random() * 10);
             
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'firework-particle';
                 particle.style.left = x + 'px';
                 particle.style.top = y + 'px';
-                particle.style.width = '8px';
-                particle.style.height = '8px';
+                particle.style.width = (12 + Math.random() * 8) + 'px';
+                particle.style.height = (12 + Math.random() * 8) + 'px';
                 particle.style.backgroundColor = color;
-                particle.style.boxShadow = `0 0 10px ${color}`;
+                particle.style.boxShadow = `0 0 15px ${color}, 0 0 30px ${color}`;
                 
-                const angle = (i / 12) * Math.PI * 2;
-                const distance = 50 + Math.random() * 50;
+                const angle = (i / particleCount) * Math.PI * 2;
+                const distance = 80 + Math.random() * 80;
                 particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
                 
                 container.appendChild(particle);
-                setTimeout(() => particle.remove(), 1500);
+                setTimeout(() => particle.remove(), 2000);
             }
         }
         
-        setInterval(createParticle, effect === 'fireworks' ? 100 : 300);
+        setInterval(createParticle, effect === 'fireworks' ? 80 : 250);
     })();
     </script>
     {% endif %}
