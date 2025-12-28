@@ -200,7 +200,7 @@
             background-color: #1A1A1A;
             color: #F5F5F0;
         }
-        .dark header {
+        .dark header.header-scrolled {
             background-color: #252525;
         }
         .dark .bg-white {
@@ -255,117 +255,264 @@
             transition: all 0.3s ease;
         }
         .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .header-scrolled .theme-toggle:hover {
             background-color: rgba(45, 90, 39, 0.1);
         }
-        .dark .theme-toggle:hover {
+        .dark .header-scrolled .theme-toggle:hover {
             background-color: rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Transparent Header Styles */
+        .header-transparent {
+            background: transparent !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+        .dark .header-transparent {
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+        .header-transparent .nav-link,
+        .header-transparent .header-text {
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .header-transparent .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        .header-transparent .theme-toggle,
+        .header-transparent .mobile-menu-btn {
+            color: white !important;
+        }
+        .header-transparent .lang-switcher {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .header-transparent .lang-switcher a {
+            color: white !important;
+        }
+        .header-transparent .lang-switcher a.active {
+            color: #D4AF37 !important;
+        }
+        .header-scrolled {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dark .header-scrolled {
+            background: #252525;
+        }
+        .header-scrolled .nav-link,
+        .header-scrolled .header-text {
+            color: #1A1A1A !important;
+            text-shadow: none;
+        }
+        .dark .header-scrolled .nav-link,
+        .dark .header-scrolled .header-text {
+            color: #F5F5F0 !important;
+        }
+        .header-scrolled .nav-link:hover {
+            color: #2D5A27 !important;
+        }
+        .header-scrolled .theme-toggle,
+        .header-scrolled .mobile-menu-btn {
+            color: #2D5A27 !important;
+        }
+        .dark .header-scrolled .theme-toggle,
+        .dark .header-scrolled .mobile-menu-btn {
+            color: #D4AF37 !important;
+        }
+        .header-scrolled .lang-switcher {
+            border-color: #E5E5E5;
+        }
+        .dark .header-scrolled .lang-switcher {
+            border-color: #4A4A4A;
+        }
+        .header-scrolled .lang-switcher a {
+            color: #6B7280 !important;
+        }
+        .header-scrolled .lang-switcher a.active {
+            color: #2D5A27 !important;
+        }
+        .dark .header-scrolled .lang-switcher a.active {
+            color: #D4AF37 !important;
+        }
+        header {
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* Logo Wrapper Styles */
+        .logo-wrapper {
+            transition: top 0.3s ease;
+        }
+        .logo-wrapper img {
+            transition: height 0.3s ease, width 0.3s ease;
+        }
+        .main-nav {
+            transition: margin-top 0.3s ease;
+        }
+        
+        /* Top Bar Styles */
+        .top-bar {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+        }
+        .header-scrolled .top-bar {
+            border-bottom-color: rgba(0, 0, 0, 0.05);
+        }
+        .dark .header-scrolled .top-bar {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+        .header-scrolled .top-bar .border-l {
+            border-color: rgba(0, 0, 0, 0.2) !important;
+        }
+        .dark .header-scrolled .top-bar .border-l {
+            border-color: rgba(255, 255, 255, 0.2) !important;
         }
     </style>
 </head>
 <body class="bg-light text-dark">
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
-        <nav class="container mx-auto px-4">
-            <div class="flex items-center justify-between h-18 py-2">
-                <a href="/?lang={{ lang }}" class="flex items-center space-x-2 flex-shrink-0">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-14 w-14 object-contain">
-                    <div class="hidden sm:block">
-                        <span class="text-2xl font-display font-bold text-primary">Lumora</span>
-                        <span class="text-sm text-secondary ml-1">Resort</span>
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 header-transparent">
+        <!-- Mobile Header Bar - only visible on mobile -->
+        <div class="lg:hidden flex items-center justify-between px-4 py-3">
+            <button id="mobile-menu-btn" class="mobile-menu-btn text-2xl w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/?lang={{ lang }}" class="flex-shrink-0">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-12 w-12 object-contain">
+            </a>
+            <a href="/contact?lang={{ lang }}#booking" class="bg-accent text-dark px-3 py-1.5 rounded text-xs font-semibold uppercase">
+                {{ 'Đặt Phòng' if lang == 'vi' else 'Book' }}
+            </a>
+        </div>
+        
+        <!-- Logo centered above both rows - Desktop only -->
+        <a href="/?lang={{ lang }}" class="logo-wrapper hidden lg:flex absolute left-1/2 transform -translate-x-1/2 z-10 flex-col items-center" style="top: 8px;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-16 w-16 xl:h-20 xl:w-20 object-contain">
+        </a>
+        
+        <!-- Top bar - will hide on scroll -->
+        <div class="top-bar hidden lg:block transition-all duration-300" id="top-bar">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between py-2 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-phone-alt header-text"></i>
+                        <span class="header-text font-medium">Hotline: 0918 556 738</span>
                     </div>
-                </a>
-
-                <div class="hidden xl:flex items-center space-x-4">
-                    <a href="/?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium whitespace-nowrap">
-                        {{ 'Trang Chủ' if lang == 'vi' else 'Home' }}
-                    </a>
                     
-                    <div class="dropdown relative">
-                        <a href="/accommodation?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium flex items-center whitespace-nowrap">
-                            {{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}
-                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    <div class="flex items-center space-x-4">
+                        <span class="header-text hidden xl:inline">{{ 'Kết nối với chúng tôi:' if lang == 'vi' else 'Connect with us:' }}</span>
+                        <div class="flex items-center space-x-3">
+                            <a href="#" class="header-text hover:text-accent transition"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="header-text hover:text-accent transition"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="header-text hover:text-accent transition"><i class="fab fa-youtube"></i></a>
+                        </div>
+                        
+                        <div class="border-l border-white/30 h-4 mx-2"></div>
+                        
+                        <button id="theme-toggle" class="theme-toggle w-8 h-8" title="{{ 'Chế độ sáng/tối' if lang == 'vi' else 'Light/Dark mode' }}">
+                            <i class="fas fa-sun dark:hidden"></i>
+                            <i class="fas fa-moon hidden dark:block"></i>
+                        </button>
+                        
+                        <div class="lang-switcher flex items-center space-x-1 border rounded px-2 py-0.5">
+                            <a href="?lang=vi" class="text-xs {{ 'font-bold active' if lang == 'vi' else '' }}">VI</a>
+                            <span class="opacity-50 text-xs">|</span>
+                            <a href="?lang=en" class="text-xs {{ 'font-bold active' if lang == 'en' else '' }}">EN</a>
+                        </div>
+                        
+                        <a href="/contact?lang={{ lang }}#booking" class="bg-accent text-dark px-4 py-1.5 rounded hover:bg-white transition font-semibold text-xs uppercase">
+                            {{ 'Đặt Phòng' if lang == 'vi' else 'Book Now' }}
                         </a>
-                        <div class="dropdown-menu py-2">
-                            <a href="/accommodation?lang={{ lang }}&type=deluxe" class="block px-4 py-2 hover:bg-light">{{ 'Phòng Deluxe' if lang == 'vi' else 'Deluxe Room' }}</a>
-                            <a href="/accommodation?lang={{ lang }}&type=glamping" class="block px-4 py-2 hover:bg-light">{{ 'Glamping / Cabin' if lang == 'vi' else 'Glamping / Cabin' }}</a>
-                            <a href="/accommodation?lang={{ lang }}&type=bungalow" class="block px-4 py-2 hover:bg-light">{{ 'Bungalow' if lang == 'vi' else 'Bungalow' }}</a>
-                        </div>
                     </div>
-
-                    <div class="dropdown relative">
-                        <a href="/dining?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium flex items-center whitespace-nowrap">
-                            {{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}
-                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                        </a>
-                        <div class="dropdown-menu py-2">
-                            <a href="/dining?lang={{ lang }}#restaurant1" class="block px-4 py-2 hover:bg-light">{{ 'Nhà Hàng' if lang == 'vi' else 'Restaurant' }}</a>
-                            <a href="/dining?lang={{ lang }}#restaurant2" class="block px-4 py-2 hover:bg-light">BBQ Garden</a>
-                            <a href="/dining?lang={{ lang }}#cafe" class="block px-4 py-2 hover:bg-light">Café & Bar</a>
-                        </div>
-                    </div>
-
-                    <a href="/amenities?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium whitespace-nowrap">
-                        {{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}
-                    </a>
-
-                    <div class="dropdown relative">
-                        <span class="nav-link text-dark hover:text-primary font-medium flex items-center cursor-pointer whitespace-nowrap">
-                            {{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}
-                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                        </span>
-                        <div class="dropdown-menu py-2">
-                            <a href="/experiences/checkin?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">Check-in Tour</a>
-                            <a href="/experiences/adventure?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Mạo Hiểm' if lang == 'vi' else 'Adventure' }}</a>
-                        </div>
-                    </div>
-
-                    <div class="dropdown relative">
-                        <span class="nav-link text-dark hover:text-primary font-medium flex items-center cursor-pointer whitespace-nowrap">
-                            STEAM
-                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                        </span>
-                        <div class="dropdown-menu py-2">
-                            <a href="/steam/intro?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Giới Thiệu' if lang == 'vi' else 'Introduction' }}</a>
-                            <a href="/steam/workshop?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">Workshop</a>
-                            <a href="/steam/register?lang={{ lang }}" class="block px-4 py-2 hover:bg-light">{{ 'Đăng Ký' if lang == 'vi' else 'Register' }}</a>
-                        </div>
-                    </div>
-
-                    <a href="/events?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium whitespace-nowrap">
-                        {{ 'Sự Kiện' if lang == 'vi' else 'Events' }}
-                    </a>
-
-                    <a href="/news?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium whitespace-nowrap">
-                        {{ 'Tin Tức' if lang == 'vi' else 'News' }}
-                    </a>
-
-                    <a href="/gallery?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium whitespace-nowrap">
-                        {{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}
-                    </a>
-
-                    <a href="/contact?lang={{ lang }}" class="nav-link text-dark hover:text-primary font-medium whitespace-nowrap">
-                        {{ 'Liên Hệ' if lang == 'vi' else 'Contact' }}
-                    </a>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Main navigation - compact height, menu items spaced evenly around center logo space -->
+        <nav class="main-nav" style="margin-top: 20px;">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-center py-1">
+                    <!-- Left menu items -->
+                    <div class="hidden xl:flex items-center justify-end space-x-6 flex-1 pr-24">
+                        <a href="/?lang={{ lang }}" class="nav-link font-medium whitespace-nowrap">
+                            {{ 'Trang Chủ' if lang == 'vi' else 'Home' }}
+                        </a>
+                        
+                        <div class="dropdown relative">
+                            <a href="/accommodation?lang={{ lang }}" class="nav-link font-medium flex items-center whitespace-nowrap">
+                                {{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </a>
+                            <div class="dropdown-menu py-2">
+                                <a href="/accommodation?lang={{ lang }}&type=deluxe" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Phòng Deluxe' if lang == 'vi' else 'Deluxe Room' }}</a>
+                                <a href="/accommodation?lang={{ lang }}&type=glamping" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Glamping / Cabin' if lang == 'vi' else 'Glamping / Cabin' }}</a>
+                                <a href="/accommodation?lang={{ lang }}&type=bungalow" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Bungalow' if lang == 'vi' else 'Bungalow' }}</a>
+                            </div>
+                        </div>
 
-                <div class="flex items-center space-x-3">
-                    <button id="theme-toggle" class="theme-toggle text-primary dark:text-accent" title="{{ 'Chế độ sáng/tối' if lang == 'vi' else 'Light/Dark mode' }}">
-                        <i class="fas fa-sun text-xl dark:hidden"></i>
-                        <i class="fas fa-moon text-xl hidden dark:block"></i>
-                    </button>
-                    
-                    <div class="flex items-center space-x-2 border rounded-full px-3 py-1">
-                        <a href="?lang=vi" class="text-sm {{ 'font-bold text-primary' if lang == 'vi' else 'text-gray-500' }}">VI</a>
-                        <span class="text-gray-300">|</span>
-                        <a href="?lang=en" class="text-sm {{ 'font-bold text-primary' if lang == 'en' else 'text-gray-500' }}">EN</a>
+                        <div class="dropdown relative">
+                            <a href="/dining?lang={{ lang }}" class="nav-link font-medium flex items-center whitespace-nowrap">
+                                {{ 'Ẩm Thực' if lang == 'vi' else 'Dining' }}
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </a>
+                            <div class="dropdown-menu py-2">
+                                <a href="/dining?lang={{ lang }}#restaurant1" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Nhà Hàng' if lang == 'vi' else 'Restaurant' }}</a>
+                                <a href="/dining?lang={{ lang }}#restaurant2" class="block px-4 py-2 hover:bg-light text-dark">BBQ Garden</a>
+                                <a href="/dining?lang={{ lang }}#cafe" class="block px-4 py-2 hover:bg-light text-dark">Café & Bar</a>
+                            </div>
+                        </div>
+
+                        <a href="/amenities?lang={{ lang }}" class="nav-link font-medium whitespace-nowrap">
+                            {{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}
+                        </a>
+
+                        <div class="dropdown relative">
+                            <span class="nav-link font-medium flex items-center cursor-pointer whitespace-nowrap">
+                                STEAM
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </span>
+                            <div class="dropdown-menu py-2">
+                                <a href="/steam/intro?lang={{ lang }}" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Giới Thiệu' if lang == 'vi' else 'Introduction' }}</a>
+                                <a href="/steam/workshop?lang={{ lang }}" class="block px-4 py-2 hover:bg-light text-dark">Workshop</a>
+                                <a href="/steam/register?lang={{ lang }}" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Đăng Ký' if lang == 'vi' else 'Register' }}</a>
+                            </div>
+                        </div>
                     </div>
 
-                    <a href="/contact?lang={{ lang }}#booking" class="hidden lg:block bg-primary text-white px-5 py-2 rounded-full hover:bg-opacity-90 transition font-medium">
-                        {{ 'Đặt Phòng' if lang == 'vi' else 'Book' }}
-                    </a>
+                    <!-- Center space for logo (invisible placeholder) -->
+                    <div class="hidden xl:block w-24 flex-shrink-0"></div>
 
-                    <button id="mobile-menu-btn" class="xl:hidden text-2xl text-primary">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <!-- Right menu items -->
+                    <div class="hidden xl:flex items-center justify-start space-x-6 flex-1 pl-24">
+                        <div class="dropdown relative">
+                            <span class="nav-link font-medium flex items-center cursor-pointer whitespace-nowrap">
+                                {{ 'Trải Nghiệm' if lang == 'vi' else 'Experiences' }}
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </span>
+                            <div class="dropdown-menu py-2">
+                                <a href="/experiences/checkin?lang={{ lang }}" class="block px-4 py-2 hover:bg-light text-dark">Check-in Tour</a>
+                                <a href="/experiences/adventure?lang={{ lang }}" class="block px-4 py-2 hover:bg-light text-dark">{{ 'Mạo Hiểm' if lang == 'vi' else 'Adventure' }}</a>
+                            </div>
+                        </div>
+
+                        <a href="/events?lang={{ lang }}" class="nav-link font-medium whitespace-nowrap">
+                            {{ 'Sự Kiện' if lang == 'vi' else 'Events' }}
+                        </a>
+
+                        <a href="/news?lang={{ lang }}" class="nav-link font-medium whitespace-nowrap">
+                            {{ 'Tin Tức' if lang == 'vi' else 'News' }}
+                        </a>
+
+                        <a href="/gallery?lang={{ lang }}" class="nav-link font-medium whitespace-nowrap">
+                            {{ 'Thư Viện' if lang == 'vi' else 'Gallery' }}
+                        </a>
+
+                        <a href="/contact?lang={{ lang }}" class="nav-link font-medium whitespace-nowrap">
+                            {{ 'Liên Hệ' if lang == 'vi' else 'Contact' }}
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </nav>
@@ -415,7 +562,7 @@
         </div>
     </header>
 
-    <main class="pt-20">
+    <main class="pt-28 lg:pt-32">
         {% block content %}{% endblock %}
     </main>
 
@@ -489,6 +636,7 @@
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const closeMenuBtn = document.getElementById('close-menu');
+        const mainHeader = document.getElementById('main-header');
 
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.add('active');
@@ -510,23 +658,80 @@
             window.location.href = url.toString();
         }
         
-        // Theme Toggle
-        const themeToggle = document.getElementById('theme-toggle');
+        // Header Scroll Effect
+        const topBar = document.getElementById('top-bar');
+        const logoWrapper = document.querySelector('.logo-wrapper');
+        const mainNav = document.querySelector('.main-nav');
         
-        function updateThemeIcons() {
-            const isDark = document.documentElement.classList.contains('dark');
-            const sunIcon = themeToggle.querySelector('.fa-sun');
-            const moonIcon = themeToggle.querySelector('.fa-moon');
-            if (isDark) {
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
+        function handleScroll() {
+            if (window.scrollY > 50) {
+                mainHeader.classList.remove('header-transparent');
+                mainHeader.classList.add('header-scrolled');
+                // Hide top bar and adjust logo position
+                if (topBar) {
+                    topBar.style.maxHeight = '0';
+                    topBar.style.opacity = '0';
+                    topBar.style.overflow = 'hidden';
+                    topBar.style.padding = '0';
+                }
+                if (logoWrapper) {
+                    logoWrapper.style.top = '8px';
+                    logoWrapper.querySelector('img').style.height = '44px';
+                    logoWrapper.querySelector('img').style.width = '44px';
+                }
+                if (mainNav) {
+                    mainNav.style.marginTop = '0px';
+                    mainNav.style.paddingTop = '12px';
+                    mainNav.style.paddingBottom = '12px';
+                }
             } else {
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
+                mainHeader.classList.remove('header-scrolled');
+                mainHeader.classList.add('header-transparent');
+                // Show top bar and restore logo position
+                if (topBar) {
+                    topBar.style.maxHeight = '100px';
+                    topBar.style.opacity = '1';
+                    topBar.style.overflow = 'visible';
+                    topBar.style.padding = '';
+                }
+                if (logoWrapper) {
+                    logoWrapper.style.top = '8px';
+                    logoWrapper.querySelector('img').style.height = '';
+                    logoWrapper.querySelector('img').style.width = '';
+                }
+                if (mainNav) {
+                    mainNav.style.marginTop = '20px';
+                    mainNav.style.paddingTop = '';
+                    mainNav.style.paddingBottom = '';
+                }
             }
         }
         
-        themeToggle.addEventListener('click', () => {
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+        
+        function updateThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.querySelectorAll('.theme-toggle').forEach(btn => {
+                const sunIcon = btn.querySelector('.fa-sun');
+                const moonIcon = btn.querySelector('.fa-moon');
+                if (sunIcon && moonIcon) {
+                    if (isDark) {
+                        sunIcon.classList.add('hidden');
+                        moonIcon.classList.remove('hidden');
+                    } else {
+                        sunIcon.classList.remove('hidden');
+                        moonIcon.classList.add('hidden');
+                    }
+                }
+            });
+        }
+        
+        function toggleTheme() {
             const html = document.documentElement;
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
@@ -538,7 +743,10 @@
                 localStorage.setItem('theme', 'dark');
             }
             updateThemeIcons();
-        });
+        }
+        
+        if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+        if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
         
         // Initial icon state
         updateThemeIcons();

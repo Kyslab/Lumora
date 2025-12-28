@@ -3,7 +3,7 @@
 {% block title %}Lumora Resort - {{ 'Khu Nghỉ Dưỡng Cao Cấp' if lang == 'vi' else 'Premium Resort' }}{% endblock %}
 
 {% block content %}
-<section class="relative h-screen overflow-hidden" id="hero-slider">
+<section class="relative h-screen overflow-hidden -mt-28 lg:-mt-32" id="hero-slider">
     <div class="slider-container absolute inset-0">
         {% if banners and banners|length > 0 %}
             {% for banner in banners %}
