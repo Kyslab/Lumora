@@ -183,7 +183,7 @@ def home():
     amenities = Amenity.query.filter_by(is_active=True).all()
     amenities_data = {a.slug: amenity_to_dict(a) for a in amenities}
     
-    news_items = News.query.filter_by(status='published').order_by(News.published_at.desc()).limit(3).all()
+    news_items = News.query.filter_by(status='published').order_by(News.published_at.desc()).limit(9).all()
     news_data = [news_to_dict(n) for n in news_items]
     
     banners = Banner.query.filter_by(is_active=True).order_by(Banner.sort_order, Banner.created_at).all()

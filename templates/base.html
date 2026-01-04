@@ -379,7 +379,7 @@
                 <i class="fas fa-bars"></i>
             </button>
             <a href="/?lang={{ lang }}" class="flex-shrink-0">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-12 w-12 object-contain">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-16 w-16 object-contain drop-shadow-lg">
             </a>
             <a href="/contact?lang={{ lang }}#booking" class="bg-accent text-dark px-3 py-1.5 rounded text-xs font-semibold uppercase">
                 {{ 'Đặt Phòng' if lang == 'vi' else 'Book' }}
@@ -387,8 +387,8 @@
         </div>
         
         <!-- Logo centered above both rows - Desktop only -->
-        <a href="/?lang={{ lang }}" class="logo-wrapper hidden lg:flex absolute left-1/2 transform -translate-x-1/2 z-10 flex-col items-center" style="top: 8px;">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-16 w-16 xl:h-20 xl:w-20 object-contain">
+        <a href="/?lang={{ lang }}" class="logo-wrapper hidden lg:flex absolute left-1/2 transform -translate-x-1/2 z-10 flex-col items-center" style="top: 4px;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Lumora Resort" class="h-28 w-28 xl:h-32 xl:w-32 object-contain drop-shadow-lg">
         </a>
         
         <!-- Top bar - will hide on scroll -->
@@ -430,7 +430,7 @@
         </div>
         
         <!-- Main navigation - compact height, menu items spaced evenly around center logo space -->
-        <nav class="main-nav" style="margin-top: 20px;">
+        <nav class="main-nav" style="margin-top: 15px;">
             <div class="container mx-auto px-4">
                 <div class="flex items-center justify-center py-1">
                     <!-- Left menu items -->
@@ -700,7 +700,7 @@
                     logoWrapper.querySelector('img').style.width = '';
                 }
                 if (mainNav) {
-                    mainNav.style.marginTop = '20px';
+                    mainNav.style.marginTop = '15px';
                     mainNav.style.paddingTop = '';
                     mainNav.style.paddingBottom = '';
                 }

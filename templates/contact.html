@@ -79,18 +79,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'Ngày nhận phòng' if lang == 'vi' else 'Check-in Date' }} *</label>
-                            <input type="date" name="checkin" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <input type="date" name="checkin" id="booking-checkin" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'Ngày trả phòng' if lang == 'vi' else 'Check-out Date' }} *</label>
-                            <input type="date" name="checkout" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <input type="date" name="checkout" id="booking-checkout" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'Loại phòng' if lang == 'vi' else 'Room Type' }}</label>
-                            <select name="room_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <select name="room_type" id="booking-room-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <option value="deluxe">{{ 'Phòng Deluxe' if lang == 'vi' else 'Deluxe Room' }}</option>
                                 <option value="glamping">Glamping / Cabin</option>
                                 <option value="bungalow">Bungalow</option>
@@ -98,20 +98,23 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'Người lớn' if lang == 'vi' else 'Adults' }}</label>
-                            <select name="adults" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <select name="adults" id="booking-adults" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <option value="1">1</option>
-                                <option value="2" selected>2</option>
+                                <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'Trẻ em' if lang == 'vi' else 'Children' }}</label>
-                            <select name="children" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <option value="0" selected>0</option>
+                            <select name="children" id="booking-children" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
+                                <option value="4">4</option>
                             </select>
                         </div>
                     </div>
@@ -193,6 +196,36 @@
 
 {% block extra_scripts %}
 <script>
+    // Pre-fill booking form from URL parameters
+    (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const checkin = urlParams.get('checkin');
+        const checkout = urlParams.get('checkout');
+        const adults = urlParams.get('adults');
+        const children = urlParams.get('children');
+        
+        if (checkin) {
+            const checkinInput = document.getElementById('booking-checkin');
+            if (checkinInput) checkinInput.value = checkin;
+        }
+        
+        if (checkout) {
+            const checkoutInput = document.getElementById('booking-checkout');
+            if (checkoutInput) checkoutInput.value = checkout;
+        }
+        
+        if (adults) {
+            const adultsSelect = document.getElementById('booking-adults');
+            if (adultsSelect) adultsSelect.value = adults;
+        }
+        
+        if (children) {
+            const childrenSelect = document.getElementById('booking-children');
+            if (childrenSelect) childrenSelect.value = children;
+        }
+    })();
+
     document.getElementById('booking-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         const formData = new FormData(this);

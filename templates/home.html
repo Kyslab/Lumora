@@ -97,6 +97,129 @@
     </div>
 </section>
 
+<!-- Quick Booking Bar -->
+<section class="relative z-30 py-8 bg-light dark:bg-gray-900">
+    <div class="container mx-auto px-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8">
+            <form id="quick-booking-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <!-- Check-in Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-calendar-check mr-2 text-primary"></i>
+                        {{ 'Ngày nhận phòng' if lang == 'vi' else 'Check-in Date' }}
+                    </label>
+                    <input type="date" name="checkin" id="quick-checkin" required
+                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
+                </div>
+                
+                <!-- Check-out Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-calendar-minus mr-2 text-primary"></i>
+                        {{ 'Ngày trả phòng' if lang == 'vi' else 'Check-out Date' }}
+                    </label>
+                    <input type="date" name="checkout" id="quick-checkout" required
+                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
+                </div>
+                
+                <!-- Adults -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-user mr-2 text-primary"></i>
+                        {{ 'Người lớn' if lang == 'vi' else 'Adults' }}
+                    </label>
+                    <select name="adults" id="quick-adults"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                
+                <!-- Children -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-child mr-2 text-primary"></i>
+                        {{ 'Trẻ em' if lang == 'vi' else 'Children' }}
+                    </label>
+                    <select name="children" id="quick-children"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                
+                <!-- Book Button -->
+                <div>
+                    <button type="submit" 
+                            class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 text-lg">
+                        <i class="fas fa-search"></i>
+                        {{ 'ĐẶT PHÒNG' if lang == 'vi' else 'BOOK NOW' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum dates
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const checkinInput = document.getElementById('quick-checkin');
+    const checkoutInput = document.getElementById('quick-checkout');
+    
+    // Format date to YYYY-MM-DD
+    const formatDate = (date) => date.toISOString().split('T')[0];
+    
+    checkinInput.min = formatDate(today);
+    checkinInput.value = formatDate(today);
+    checkoutInput.min = formatDate(tomorrow);
+    checkoutInput.value = formatDate(tomorrow);
+    
+    // Update checkout min date when checkin changes
+    checkinInput.addEventListener('change', function() {
+        const checkinDate = new Date(this.value);
+        const minCheckout = new Date(checkinDate);
+        minCheckout.setDate(minCheckout.getDate() + 1);
+        checkoutInput.min = formatDate(minCheckout);
+        if (new Date(checkoutInput.value) <= checkinDate) {
+            checkoutInput.value = formatDate(minCheckout);
+        }
+    });
+    
+    // Handle form submission
+    document.getElementById('quick-booking-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const checkin = document.getElementById('quick-checkin').value;
+        const checkout = document.getElementById('quick-checkout').value;
+        const adults = document.getElementById('quick-adults').value;
+        const children = document.getElementById('quick-children').value;
+        
+        // Redirect to booking page with pre-filled data
+        const params = new URLSearchParams({
+            lang: '{{ lang }}',
+            checkin: checkin,
+            checkout: checkout,
+            adults: adults,
+            children: children
+        });
+        
+        window.location.href = '/contact?' + params.toString() + '#booking';
+    });
+});
+</script>
+
 <section id="intro" class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -216,32 +339,114 @@
     </div>
 </section>
 
+<!-- STEAM Education Section -->
+<section class="py-20 bg-light dark:bg-gray-900">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="order-2 lg:order-1">
+                <span class="text-accent font-medium uppercase tracking-wider">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</span>
+                <h2 class="text-4xl font-display font-bold text-dark dark:text-white mt-2 mb-6">
+                    {{ 'Học Tập Qua Trải Nghiệm Thực Tế' if lang == 'vi' else 'Learning Through Real Experience' }}
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
+                    {{ 'Lumora Resort mang đến chương trình giáo dục STEAM độc đáo, kết hợp giữa Khoa học, Công nghệ, Kỹ thuật, Nghệ thuật và Toán học. Trẻ em sẽ được học tập thông qua các hoạt động thực hành, khám phá thiên nhiên và phát triển tư duy sáng tạo.' if lang == 'vi' else 'Lumora Resort offers a unique STEAM education program, combining Science, Technology, Engineering, Arts and Mathematics. Children will learn through hands-on activities, nature exploration and creative thinking development.' }}
+                </p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-flask text-primary text-xl"></i>
+                        </div>
+                        <span class="font-medium text-dark dark:text-white">{{ 'Khoa học' if lang == 'vi' else 'Science' }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-laptop-code text-primary text-xl"></i>
+                        </div>
+                        <span class="font-medium text-dark dark:text-white">{{ 'Công nghệ' if lang == 'vi' else 'Technology' }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-cogs text-primary text-xl"></i>
+                        </div>
+                        <span class="font-medium text-dark dark:text-white">{{ 'Kỹ thuật' if lang == 'vi' else 'Engineering' }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-palette text-primary text-xl"></i>
+                        </div>
+                        <span class="font-medium text-dark dark:text-white">{{ 'Nghệ thuật' if lang == 'vi' else 'Arts' }}</span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/steam/intro?lang={{ lang }}" class="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition text-center">
+                        {{ 'Tìm Hiểu Thêm' if lang == 'vi' else 'Learn More' }}
+                    </a>
+                    <a href="/steam/register?lang={{ lang }}" class="border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition text-center">
+                        {{ 'Đăng Ký Ngay' if lang == 'vi' else 'Register Now' }}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="order-1 lg:order-2">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop" alt="STEAM Education" class="rounded-2xl shadow-lg w-full h-40 object-cover">
+                        <img src="https://images.unsplash.com/photo-1567168544813-cc03465b4fa8?w=400&h=400&fit=crop" alt="Science Activities" class="rounded-2xl shadow-lg w-full h-52 object-cover">
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=400&fit=crop" alt="Kids Learning" class="rounded-2xl shadow-lg w-full h-52 object-cover">
+                        <img src="https://images.unsplash.com/photo-1596496181871-9681eacf9764?w=400&h=300&fit=crop" alt="Nature Exploration" class="rounded-2xl shadow-lg w-full h-40 object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
             <span class="text-accent font-medium uppercase tracking-wider">{{ 'Tin Tức' if lang == 'vi' else 'News' }}</span>
             <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ 'Tin Tức & Ưu Đãi' if lang == 'vi' else 'News & Offers' }}</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {% for article in news %}
-            <div class="bg-light rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
-                <div class="relative overflow-hidden">
-                    <img src="{{ article.image }}" alt="{{ article.title[lang] }}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute top-4 left-4 bg-accent text-dark px-3 py-1 rounded-full text-sm font-medium">
-                        {{ article.category[lang] }}
+        
+        <div class="relative">
+            <button id="news-prev" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-8 z-10 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            
+            <div id="news-slider" class="overflow-hidden">
+                <div id="news-track" class="flex transition-transform duration-500 ease-in-out">
+                    {% for article in news %}
+                    <div class="news-slide flex-shrink-0 w-full md:w-1/3 px-4">
+                        <div class="bg-light rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group h-full">
+                            <div class="relative overflow-hidden">
+                                <img src="{{ article.image }}" alt="{{ article.title[lang] }}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
+                                <div class="absolute top-4 left-4 bg-accent text-dark px-3 py-1 rounded-full text-sm font-medium">
+                                    {{ article.category[lang] }}
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-gray-500 text-sm mb-2"><i class="far fa-calendar mr-1"></i> {{ article.date }}</p>
+                                <h3 class="text-lg font-display font-bold text-dark mb-2 line-clamp-2">{{ article.title[lang] }}</h3>
+                                <p class="text-gray-600 mb-4 line-clamp-2">{{ article.excerpt[lang] }}</p>
+                                <a href="/news/{{ article.id }}?lang={{ lang }}" class="text-primary font-medium hover:text-accent transition">
+                                    {{ 'Đọc thêm' if lang == 'vi' else 'Read more' }} <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="p-6">
-                    <p class="text-gray-500 text-sm mb-2"><i class="far fa-calendar mr-1"></i> {{ article.date }}</p>
-                    <h3 class="text-lg font-display font-bold text-dark mb-2 line-clamp-2">{{ article.title[lang] }}</h3>
-                    <p class="text-gray-600 mb-4 line-clamp-2">{{ article.excerpt[lang] }}</p>
-                    <a href="/news/{{ article.id }}?lang={{ lang }}" class="text-primary font-medium hover:text-accent transition">
-                        {{ 'Đọc thêm' if lang == 'vi' else 'Read more' }} <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
+            
+            <button id="news-next" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-8 z-10 w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-right text-xl"></i>
+            </button>
         </div>
+        
         <div class="text-center mt-10">
             <a href="/news?lang={{ lang }}" class="inline-block border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition">
                 {{ 'Xem Tất Cả Tin Tức' if lang == 'vi' else 'View All News' }}
@@ -289,6 +494,98 @@
                     </button>
                 </form>
                 <p id="newsletter-message" class="mt-4 text-sm hidden"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Google Maps Section -->
+<section class="py-16 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-10">
+            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Vị Trí' if lang == 'vi' else 'Location' }}</span>
+            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ 'Tìm Đường Đến Lumora Resort' if lang == 'vi' else 'Find Your Way To Lumora Resort' }}</h2>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">
+                {{ 'Lumora Resort tọa lạc tại vị trí đắc địa, dễ dàng tiếp cận từ trung tâm thành phố.' if lang == 'vi' else 'Lumora Resort is located in a prime location, easily accessible from the city center.' }}
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <!-- Contact Info -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                <h3 class="text-xl font-display font-bold text-dark mb-6">{{ 'Thông Tin Liên Hệ' if lang == 'vi' else 'Contact Information' }}</h3>
+                
+                <div class="space-y-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-marker-alt text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-dark">{{ 'Địa chỉ' if lang == 'vi' else 'Address' }}</p>
+                            <p class="text-gray-600 text-sm mt-1">{{ 'Khu trải nghiệm Bigsun, xã Hữu Bằng, Hải Phòng' if lang == 'vi' else 'Bigsun Experience Zone, Huu Bang Commune, Hai Phong' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-dark">{{ 'Điện thoại' if lang == 'vi' else 'Phone' }}</p>
+                            <a href="tel:0918556738" class="text-primary hover:text-accent transition text-sm mt-1 block">0918 556 738</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-dark">Email</p>
+                            <a href="mailto:info@lumoraresort.com" class="text-primary hover:text-accent transition text-sm mt-1 block">info@lumoraresort.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-dark">{{ 'Giờ làm việc' if lang == 'vi' else 'Working Hours' }}</p>
+                            <p class="text-gray-600 text-sm mt-1">{{ 'Hàng ngày: 6:00 - 22:00' if lang == 'vi' else 'Daily: 6:00 AM - 10:00 PM' }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="/contact?lang={{ lang }}" class="mt-6 block w-full bg-primary text-white text-center py-3 rounded-full font-semibold hover:bg-opacity-90 transition">
+                    {{ 'Liên Hệ Ngay' if lang == 'vi' else 'Contact Us' }}
+                </a>
+            </div>
+            
+            <!-- Google Map -->
+            <div class="lg:col-span-2">
+                <div class="rounded-2xl overflow-hidden shadow-lg h-[350px] lg:h-[450px]">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10663.833523583402!2d106.66755129951537!3d20.757015628649633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a713966b1a4d5%3A0x578c84b50d78cbd8!2sBig%20Sun!5e0!3m2!1svi!2s!4v1767453421027!5m2!1svi!2s" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Lumora Resort Location">
+                    </iframe>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-3 justify-center lg:justify-start">
+                    <a href="https://www.google.com/maps/dir//Big+Sun,+Huu+Bang,+Hai+Phong,+Vietnam" target="_blank" class="inline-flex items-center gap-2 bg-white px-5 py-2 rounded-full shadow text-primary hover:bg-primary hover:text-white transition">
+                        <i class="fas fa-directions"></i>
+                        {{ 'Chỉ đường' if lang == 'vi' else 'Get Directions' }}
+                    </a>
+                    <a href="https://www.google.com/maps/place/Big+Sun" target="_blank" class="inline-flex items-center gap-2 bg-white px-5 py-2 rounded-full shadow text-gray-700 hover:bg-gray-100 transition">
+                        <i class="fas fa-external-link-alt"></i>
+                        {{ 'Xem trên Google Maps' if lang == 'vi' else 'View on Google Maps' }}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -397,6 +694,59 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     startAutoSlide();
+    
+    // News Slider
+    const newsTrack = document.getElementById('news-track');
+    const newsPrevBtn = document.getElementById('news-prev');
+    const newsNextBtn = document.getElementById('news-next');
+    const newsSlides = document.querySelectorAll('.news-slide');
+    
+    if (newsTrack && newsSlides.length > 0) {
+        let newsCurrentIndex = 0;
+        let newsItemsPerView = window.innerWidth >= 768 ? 3 : 1;
+        
+        function getNewsMaxIndex() {
+            return Math.max(0, newsSlides.length - newsItemsPerView);
+        }
+        
+        function updateNewsSlider() {
+            const slideWidth = newsSlides[0].offsetWidth;
+            newsTrack.style.transform = `translateX(-${newsCurrentIndex * slideWidth}px)`;
+            
+            const maxIndex = getNewsMaxIndex();
+            if (newsPrevBtn) newsPrevBtn.disabled = newsCurrentIndex <= 0;
+            if (newsNextBtn) newsNextBtn.disabled = newsCurrentIndex >= maxIndex;
+        }
+        
+        function updateNewsItemsPerView() {
+            newsItemsPerView = window.innerWidth >= 768 ? 3 : 1;
+            const maxIndex = getNewsMaxIndex();
+            newsCurrentIndex = Math.min(newsCurrentIndex, maxIndex);
+            updateNewsSlider();
+        }
+        
+        if (newsPrevBtn) {
+            newsPrevBtn.addEventListener('click', function() {
+                if (newsCurrentIndex > 0) {
+                    newsCurrentIndex--;
+                    updateNewsSlider();
+                }
+            });
+        }
+        
+        if (newsNextBtn) {
+            newsNextBtn.addEventListener('click', function() {
+                const maxIndex = getNewsMaxIndex();
+                if (newsCurrentIndex < maxIndex) {
+                    newsCurrentIndex++;
+                    updateNewsSlider();
+                }
+            });
+        }
+        
+        window.addEventListener('resize', updateNewsItemsPerView);
+        setTimeout(updateNewsSlider, 100);
+    }
     
     // Newsletter form handling
     const newsletterForm = document.getElementById('newsletter-form');
