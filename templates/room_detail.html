@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}{{ room.name[lang] }} - Lumora Resort{% endblock %}
+{% block header_class %}header-scrolled{% endblock %}
+{% block transparent_header %}false{% endblock %}
+{% block main_padding %}pt-7 lg:pt-10{% endblock %}
 
 {% block content %}
 <section class="py-8 bg-white">

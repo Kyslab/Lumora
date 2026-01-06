@@ -39,13 +39,13 @@
                     {% endif %}
                 </td>
                 <td class="px-6 py-4 text-right space-x-2">
-                    <form action="{{ url_for('admin.newsletters_toggle', id=newsletter.id) }}" method="POST" class="inline">
+                    <form action="{{ url_for('admin.newsletters_toggle', id=newsletter.id) }}" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> class="inline">
                         <button type="submit" class="text-sm {% if newsletter.is_active %}text-yellow-600 hover:text-yellow-800{% else %}text-green-600 hover:text-green-800{% endif %}">
                             <i class="fas {% if newsletter.is_active %}fa-pause{% else %}fa-play{% endif %}"></i>
                             {{ 'Hủy' if newsletter.is_active else 'Kích hoạt' }}
                         </button>
                     </form>
-                    <form action="{{ url_for('admin.newsletters_delete', id=newsletter.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa email này?')">
+                    <form action="{{ url_for('admin.newsletters_delete', id=newsletter.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa email này?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="text-sm text-red-600 hover:text-red-800">
                             <i class="fas fa-trash"></i> Xóa
                         </button>

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block header_class %}header-scrolled{% endblock %}
+{% block transparent_header %}false{% endblock %}
+{% block main_padding %}pt-7 lg:pt-10{% endblock %}
 
 {% block title %}{{ 'Đăng Ký Tham Gia STEAM' if lang == 'vi' else 'Register for STEAM' }} - Lumora Resort{% endblock %}
 

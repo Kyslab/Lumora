@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -112,6 +113,12 @@
                         <a href="{{ url_for('admin.effects') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'effects' in request.endpoint %}bg-white/20{% endif %}">
                             <i class="fas fa-magic w-5"></i>
                             <span>Hiệu Ứng Lễ Hội</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.home_sections_list') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-white/10 {% if 'home_sections' in request.endpoint %}bg-white/20{% endif %}">
+                            <i class="fas fa-home w-5"></i>
+                            <span>Nội Dung Trang Chủ</span>
                         </a>
                     </li>
                 </ul>

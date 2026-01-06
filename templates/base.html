@@ -372,7 +372,7 @@
     </style>
 </head>
 <body class="bg-light text-dark">
-    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 header-transparent">
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 {% block header_class %}header-transparent{% endblock %}" data-transparent-header="{% block transparent_header %}true{% endblock %}">
         <!-- Mobile Header Bar - only visible on mobile -->
         <div class="lg:hidden flex items-center justify-between px-4 py-3">
             <button id="mobile-menu-btn" class="mobile-menu-btn text-2xl w-10 h-10 flex items-center justify-center">
@@ -562,7 +562,7 @@
         </div>
     </header>
 
-    <main class="pt-28 lg:pt-32">
+    <main class="{% block main_padding %}pt-28 lg:pt-32{% endblock %}">
         {% block content %}{% endblock %}
     </main>
 
@@ -662,9 +662,10 @@
         const topBar = document.getElementById('top-bar');
         const logoWrapper = document.querySelector('.logo-wrapper');
         const mainNav = document.querySelector('.main-nav');
+        const allowTransparent = mainHeader.dataset.transparentHeader === 'true';
         
         function handleScroll() {
-            if (window.scrollY > 50) {
+            if (window.scrollY > 50 || !allowTransparent) {
                 mainHeader.classList.remove('header-transparent');
                 mainHeader.classList.add('header-scrolled');
                 // Hide top bar and adjust logo position

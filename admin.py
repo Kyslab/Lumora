@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from functools import wraps
 from models import db, User, Room, RoomImage, Restaurant, RestaurantImage, MenuItem
 from models import Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo
-from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner, Newsletter, SiteSetting
+from models import SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Contact, Banner, Newsletter, SiteSetting, HomeSection, HomeSectionItem
 from datetime import datetime
 import os
 import uuid
@@ -1125,3 +1125,145 @@ def effects_save():
     }
     flash(f'Đã bật: {effect_names.get(effect, effect)}', 'success')
     return redirect(url_for('admin.effects'))
+
+@admin_bp.route('/home-sections')
+@admin_required
+def home_sections_list():
+    sections = HomeSection.query.all()
+    section_labels = {
+        'intro': 'Giới Thiệu Resort',
+        'rooms_section': 'Phòng Nghỉ Của Chúng Tôi',
+        'amenities_section': 'Tiện Ích Nổi Bật',
+        'steam': 'Giáo Dục STEAM',
+        'newsletter': 'Newsletter / CTA',
+        'location': 'Bản đồ / Vị trí'
+    }
+    return render_template('admin/home_sections/list.html', sections=sections, section_labels=section_labels)
+
+@admin_bp.route('/home-sections/<section_key>', methods=['GET', 'POST'])
+@admin_required
+def home_sections_edit(section_key):
+    section = HomeSection.query.filter_by(section_key=section_key).first()
+    if not section:
+        section = HomeSection(section_key=section_key, is_active=True)
+        db.session.add(section)
+        db.session.commit()
+    
+    if request.method == 'POST':
+        section.title_vi = request.form.get('title_vi')
+        section.title_en = request.form.get('title_en')
+        section.subtitle_vi = request.form.get('subtitle_vi')
+        section.subtitle_en = request.form.get('subtitle_en')
+        section.description_vi = request.form.get('description_vi')
+        section.description_en = request.form.get('description_en')
+        section.button_text_vi = request.form.get('button_text_vi')
+        section.button_text_en = request.form.get('button_text_en')
+        section.button_link = request.form.get('button_link')
+        section.button2_text_vi = request.form.get('button2_text_vi')
+        section.button2_text_en = request.form.get('button2_text_en')
+        section.button2_link = request.form.get('button2_link')
+        section.extra_data = request.form.get('extra_data')
+        section.is_active = request.form.get('is_active') == 'on'
+        
+        for i in range(1, 5):
+            field_name = f'image{i}_file'
+            uploaded_file = request.files.get(field_name)
+            if uploaded_file and uploaded_file.filename:
+                image_url = save_uploaded_file(uploaded_file, 'home_sections')
+                if image_url:
+                    setattr(section, f'image{i}_url', image_url)
+            elif request.form.get(f'image{i}_url'):
+                setattr(section, f'image{i}_url', request.form.get(f'image{i}_url'))
+        
+        db.session.commit()
+        flash('Đã cập nhật nội dung thành công!', 'success')
+        return redirect(url_for('admin.home_sections_list'))
+    
+    section_labels = {
+        'intro': 'Giới Thiệu Resort',
+        'rooms_section': 'Phòng Nghỉ Của Chúng Tôi',
+        'amenities_section': 'Tiện Ích Nổi Bật',
+        'steam': 'Giáo Dục STEAM',
+        'newsletter': 'Newsletter / CTA',
+        'location': 'Bản đồ / Vị trí'
+    }
+    return render_template('admin/home_sections/form.html', section=section, section_key=section_key, section_labels=section_labels)
+
+@admin_bp.route('/home-sections/<section_key>/items')
+@admin_required
+def home_section_items_list(section_key):
+    section = HomeSection.query.filter_by(section_key=section_key).first_or_404()
+    items = HomeSectionItem.query.filter_by(section_id=section.id).order_by(HomeSectionItem.sort_order).all()
+    return render_template('admin/home_sections/items_list.html', section=section, items=items, section_key=section_key)
+
+@admin_bp.route('/home-sections/<section_key>/items/create', methods=['GET', 'POST'])
+@admin_required
+def home_section_items_create(section_key):
+    section = HomeSection.query.filter_by(section_key=section_key).first_or_404()
+    
+    if request.method == 'POST':
+        item = HomeSectionItem(
+            section_id=section.id,
+            title_vi=request.form.get('title_vi'),
+            title_en=request.form.get('title_en'),
+            description_vi=request.form.get('description_vi'),
+            description_en=request.form.get('description_en'),
+            icon=request.form.get('icon'),
+            link=request.form.get('link'),
+            sort_order=int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0,
+            is_active=request.form.get('is_active') == 'on'
+        )
+        
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            image_url = save_uploaded_file(uploaded_file, 'home_sections')
+            if image_url:
+                item.image_url = image_url
+        elif request.form.get('image_url'):
+            item.image_url = request.form.get('image_url')
+        
+        db.session.add(item)
+        db.session.commit()
+        flash('Đã thêm mục mới thành công!', 'success')
+        return redirect(url_for('admin.home_section_items_list', section_key=section_key))
+    
+    return render_template('admin/home_sections/item_form.html', section=section, item=None, section_key=section_key)
+
+@admin_bp.route('/home-sections/<section_key>/items/<int:id>/edit', methods=['GET', 'POST'])
+@admin_required
+def home_section_items_edit(section_key, id):
+    section = HomeSection.query.filter_by(section_key=section_key).first_or_404()
+    item = HomeSectionItem.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        item.title_vi = request.form.get('title_vi')
+        item.title_en = request.form.get('title_en')
+        item.description_vi = request.form.get('description_vi')
+        item.description_en = request.form.get('description_en')
+        item.icon = request.form.get('icon')
+        item.link = request.form.get('link')
+        item.sort_order = int(request.form.get('sort_order', 0)) if request.form.get('sort_order') else 0
+        item.is_active = request.form.get('is_active') == 'on'
+        
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            image_url = save_uploaded_file(uploaded_file, 'home_sections')
+            if image_url:
+                item.image_url = image_url
+        elif request.form.get('image_url'):
+            item.image_url = request.form.get('image_url')
+        
+        db.session.commit()
+        flash('Đã cập nhật mục thành công!', 'success')
+        return redirect(url_for('admin.home_section_items_list', section_key=section_key))
+    
+    return render_template('admin/home_sections/item_form.html', section=section, item=item, section_key=section_key)
+
+@admin_bp.route('/home-sections/<section_key>/items/<int:id>/delete', methods=['POST'])
+@admin_required
+def home_section_items_delete(section_key, id):
+    item = HomeSectionItem.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    flash('Đã xóa mục thành công!', 'success')
+    return redirect(url_for('admin.home_section_items_list', section_key=section_key))

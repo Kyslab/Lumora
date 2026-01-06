@@ -59,7 +59,7 @@
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <form action="{{ url_for('admin.banners_toggle', id=banner.id) }}" method="POST" class="inline">
+                        <form action="{{ url_for('admin.banners_toggle', id=banner.id) }}" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> class="inline">
                             <button type="submit" class="inline-flex items-center px-3 py-1 rounded-full text-sm {% if banner.is_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-600{% endif %} hover:opacity-80 transition">
                                 <i class="fas {% if banner.is_active %}fa-check-circle{% else %}fa-times-circle{% endif %} mr-1"></i>
                                 {{ 'Đang hiển thị' if banner.is_active else 'Đang ẩn' }}

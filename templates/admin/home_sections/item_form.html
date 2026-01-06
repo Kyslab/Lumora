@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Sửa' if item else 'Thêm' }} Mục - Admin{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <a href="{{ url_for('admin.home_section_items_list', section_key=section_key) }}" class="text-blue-500 hover:underline mb-2 inline-block">
+            <i class="fas fa-arrow-left mr-1"></i> Quay lại
+        </a>
+        <h1 class="text-2xl font-bold text-gray-800">{{ 'Sửa' if item else 'Thêm' }} Mục - {{ section.section_key|upper }}</h1>
+    </div>
+</div>
+
+<form action="{{ url_for('admin.home_section_items_edit', section_key=section_key, id=item.id) if item else url_for('admin.home_section_items_create', section_key=section_key) }}" 
+      method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề (Tiếng Việt)</label>
+                <input type="text" name="title_vi" value="{{ item.title_vi if item else '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề (English)</label>
+                <input type="text" name="title_en" value="{{ item.title_en if item else '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mô tả (Tiếng Việt)</label>
+                <textarea name="description_vi" rows="3" 
+                          class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ item.description_vi if item else '' }}</textarea>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mô tả (English)</label>
+                <textarea name="description_en" rows="3" 
+                          class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ item.description_en if item else '' }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Icon (Font Awesome class)</label>
+                <input type="text" name="icon" value="{{ item.icon if item else '' }}" 
+                       placeholder="fas fa-flask"
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-1">Ví dụ: fas fa-flask, fas fa-laptop-code, fas fa-cogs</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Link</label>
+                <input type="text" name="link" value="{{ item.link if item else '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Thứ tự sắp xếp</label>
+                <input type="number" name="sort_order" value="{{ item.sort_order if item else 0 }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Hình ảnh</label>
+                {% if item and item.image_url %}
+                <div class="mb-2">
+                    <img src="{{ item.image_url }}" alt="Current image" class="w-24 h-24 object-cover rounded border">
+                </div>
+                {% endif %}
+                <input type="file" name="image_file" accept="image/*" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" name="image_url" value="{{ item.image_url if item else '' }}" 
+                       placeholder="Hoặc nhập URL hình ảnh"
+                       class="w-full border rounded-lg px-4 py-2 mt-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <div class="flex items-center">
+                <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if (item and item.is_active) or not item else '' }}
+                       class="w-5 h-5 text-blue-500 rounded focus:ring-blue-500">
+                <label for="is_active" class="ml-2 text-gray-700">Kích hoạt</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex gap-4">
+        <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">
+            <i class="fas fa-save mr-2"></i> {{ 'Cập nhật' if item else 'Thêm mới' }}
+        </button>
+        <a href="{{ url_for('admin.home_section_items_list', section_key=section_key) }}" class="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition">
+            Hủy
+        </a>
+    </div>
+</form>
+{% endblock %}

@@ -19,7 +19,7 @@
     </div>
     <div class="mt-6 flex items-center justify-between">
         <a href="{{ url_for('admin.contacts_list') }}" class="text-gray-600"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
-        <form action="{{ url_for('admin.contacts_delete', id=contact.id) }}" method="POST" onsubmit="return confirm('Xóa liên hệ này?')">
+        <form action="{{ url_for('admin.contacts_delete', id=contact.id) }}" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> onsubmit="return confirm('Xóa liên hệ này?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg"><i class="fas fa-trash mr-2"></i>Xóa</button>
         </form>
     </div>

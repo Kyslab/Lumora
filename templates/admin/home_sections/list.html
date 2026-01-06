@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Quản Lý Nội Dung Trang Chủ - Admin{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Quản Lý Nội Dung Trang Chủ</h1>
+</div>
+
+<div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="p-6">
+        <p class="text-gray-600 mb-6">Chỉnh sửa nội dung và hình ảnh cho các phần trên trang chủ.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% set all_sections = ['intro', 'rooms_section', 'amenities_section', 'steam', 'newsletter', 'location'] %}
+            {% for key in all_sections %}
+            {% set section = sections|selectattr('section_key', 'equalto', key)|first %}
+            <div class="border rounded-lg p-6 hover:shadow-lg transition">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ section_labels.get(key, key) }}</h3>
+                    {% if section and section.is_active %}
+                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Đang bật</span>
+                    {% else %}
+                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Chưa cấu hình</span>
+                    {% endif %}
+                </div>
+                
+                <p class="text-gray-500 text-sm mb-4">
+                    {% if key == 'intro' %}
+                    Phần giới thiệu resort với video YouTube.
+                    {% elif key == 'rooms_section' %}
+                    Tiêu đề và mô tả phần "Phòng Nghỉ Của Chúng Tôi".
+                    {% elif key == 'amenities_section' %}
+                    Tiêu đề và mô tả phần "Tiện Ích Nổi Bật".
+                    {% elif key == 'steam' %}
+                    Phần giới thiệu chương trình STEAM Education.
+                    {% elif key == 'newsletter' %}
+                    Phần đăng ký nhận tin và kêu gọi đặt phòng.
+                    {% elif key == 'location' %}
+                    Phần bản đồ và thông tin liên hệ.
+                    {% endif %}
+                </p>
+                
+                <div class="flex gap-2">
+                    <a href="{{ url_for('admin.home_sections_edit', section_key=key) }}" 
+                       class="flex-1 text-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        <i class="fas fa-edit mr-1"></i> Chỉnh sửa
+                    </a>
+                    {% if key == 'steam' %}
+                    <a href="{{ url_for('admin.home_section_items_list', section_key=key) }}" 
+                       class="flex-1 text-center bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-list mr-1"></i> Các mục
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

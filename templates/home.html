@@ -224,13 +224,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-                <span class="text-accent font-medium uppercase tracking-wider">{{ 'Chào mừng đến với' if lang == 'vi' else 'Welcome to' }}</span>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-dark mt-2 mb-6">Lumora Resort</h2>
+                <span class="text-accent font-medium uppercase tracking-wider">{{ (sections.intro.subtitle_vi if lang == 'vi' else sections.intro.subtitle_en) if sections.intro and (sections.intro.subtitle_vi or sections.intro.subtitle_en) else ('Chào mừng đến với' if lang == 'vi' else 'Welcome to') }}</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-dark mt-2 mb-6">{{ (sections.intro.title_vi if lang == 'vi' else sections.intro.title_en) if sections.intro and (sections.intro.title_vi or sections.intro.title_en) else 'Lumora Resort' }}</h2>
                 <p class="text-gray-600 text-lg mb-6 leading-relaxed">
-                    {{ 'Lumora Resort là điểm đến lý tưởng cho những ai tìm kiếm sự yên bình giữa thiên nhiên kết hợp với tiện nghi hiện đại. Với không gian xanh mát rộng lớn, chúng tôi mang đến trải nghiệm nghỉ dưỡng đẳng cấp cho mọi du khách.' if lang == 'vi' else 'Lumora Resort is the ideal destination for those seeking peace in nature combined with modern amenities. With vast green space, we bring premium resort experience for all guests.' }}
-                </p>
-                <p class="text-gray-600 text-lg mb-8 leading-relaxed">
-                    {{ 'Từ các phòng nghỉ sang trọng, nhà hàng ẩm thực đa dạng đến các hoạt động giải trí phong phú, Lumora Resort hứa hẹn mang đến kỳ nghỉ đáng nhớ cho bạn và gia đình.' if lang == 'vi' else 'From luxury rooms, diverse dining options to rich entertainment activities, Lumora Resort promises a memorable vacation for you and your family.' }}
+                    {{ (sections.intro.description_vi if lang == 'vi' else sections.intro.description_en) if sections.intro and (sections.intro.description_vi or sections.intro.description_en) else ('Lumora Resort là điểm đến lý tưởng cho những ai tìm kiếm sự yên bình giữa thiên nhiên kết hợp với tiện nghi hiện đại. Với không gian xanh mát rộng lớn, chúng tôi mang đến trải nghiệm nghỉ dưỡng đẳng cấp cho mọi du khách.' if lang == 'vi' else 'Lumora Resort is the ideal destination for those seeking peace in nature combined with modern amenities. With vast green space, we bring premium resort experience for all guests.') }}
                 </p>
                 <div class="flex flex-wrap gap-8">
                     <div class="text-center">
@@ -274,8 +271,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <section class="py-20 bg-light">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}</span>
-            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ 'Phòng Nghỉ Của Chúng Tôi' if lang == 'vi' else 'Our Rooms' }}</h2>
+            <span class="text-accent font-medium uppercase tracking-wider">{{ (sections.rooms_section.subtitle_vi if lang == 'vi' else sections.rooms_section.subtitle_en) if sections.rooms_section and (sections.rooms_section.subtitle_vi or sections.rooms_section.subtitle_en) else ('Lưu Trú' if lang == 'vi' else 'Accommodation') }}</span>
+            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ (sections.rooms_section.title_vi if lang == 'vi' else sections.rooms_section.title_en) if sections.rooms_section and (sections.rooms_section.title_vi or sections.rooms_section.title_en) else ('Phòng Nghỉ Của Chúng Tôi' if lang == 'vi' else 'Our Rooms') }}</h2>
+            {% if sections.rooms_section and (sections.rooms_section.description_vi or sections.rooms_section.description_en) %}
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">{{ sections.rooms_section.description_vi if lang == 'vi' else sections.rooms_section.description_en }}</p>
+            {% endif %}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for key, room in rooms.items() %}
@@ -308,31 +308,60 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </section>
 
-<section class="py-20 bg-primary text-white">
+<section class="py-20 bg-primary">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <span class="text-accent font-medium uppercase tracking-wider">{{ 'Tiện Ích' if lang == 'vi' else 'Amenities' }}</span>
-            <h2 class="text-4xl font-display font-bold mt-2">{{ 'Tiện Ích Nổi Bật' if lang == 'vi' else 'Featured Amenities' }}</h2>
+            <span class="text-accent font-medium uppercase tracking-wider">{{ (sections.amenities_section.subtitle_vi if lang == 'vi' else sections.amenities_section.subtitle_en) if sections.amenities_section and (sections.amenities_section.subtitle_vi or sections.amenities_section.subtitle_en) else ('Tiện Ích' if lang == 'vi' else 'Amenities') }}</span>
+            <h2 class="text-4xl font-display font-bold text-white mt-2">{{ (sections.amenities_section.title_vi if lang == 'vi' else sections.amenities_section.title_en) if sections.amenities_section and (sections.amenities_section.title_vi or sections.amenities_section.title_en) else ('Tiện Ích Nổi Bật' if lang == 'vi' else 'Featured Amenities') }}</h2>
+            {% if sections.amenities_section and (sections.amenities_section.description_vi or sections.amenities_section.description_en) %}
+            <p class="text-gray-200 mt-4 max-w-2xl mx-auto">{{ sections.amenities_section.description_vi if lang == 'vi' else sections.amenities_section.description_en }}</p>
+            {% endif %}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {% for key, amenity in amenities.items() %}
-            <div class="bg-white bg-opacity-10 rounded-2xl p-8 text-center hover:bg-opacity-20 transition">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-accent flex items-center justify-center">
-                    {% if key == 'zoo' %}
-                    <i class="fas fa-paw text-3xl text-dark"></i>
-                    {% elif key == 'garden' %}
-                    <i class="fas fa-leaf text-3xl text-dark"></i>
+            <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition">
+                <div class="relative overflow-hidden h-56">
+                    {% if amenity.images and amenity.images|length > 0 %}
+                    <img src="{{ amenity.images[0] }}" alt="{{ amenity.name[lang] }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                     {% else %}
-                    <i class="fas fa-swimming-pool text-3xl text-dark"></i>
+                    <div class="w-full h-full bg-primary flex items-center justify-center">
+                        {% if key == 'zoo' %}
+                        <i class="fas fa-paw text-6xl text-white opacity-50"></i>
+                        {% elif key == 'garden' %}
+                        <i class="fas fa-leaf text-6xl text-white opacity-50"></i>
+                        {% else %}
+                        <i class="fas fa-swimming-pool text-6xl text-white opacity-50"></i>
+                        {% endif %}
+                    </div>
                     {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
+                                {% if key == 'zoo' %}
+                                <i class="fas fa-paw text-xl text-dark"></i>
+                                {% elif key == 'garden' %}
+                                <i class="fas fa-leaf text-xl text-dark"></i>
+                                {% else %}
+                                <i class="fas fa-swimming-pool text-xl text-dark"></i>
+                                {% endif %}
+                            </div>
+                            <h3 class="text-xl font-display font-bold text-white">{{ amenity.name[lang] }}</h3>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-display font-bold mb-3">{{ amenity.name[lang] }}</h3>
-                <p class="text-gray-300">{{ amenity.description[lang] }}</p>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4 line-clamp-3">{{ amenity.description[lang] }}</p>
+                    <a href="/amenities#{{ key }}?lang={{ lang }}" class="text-primary font-semibold hover:text-accent transition inline-flex items-center gap-2">
+                        {{ 'Xem Chi Tiết' if lang == 'vi' else 'View Details' }}
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
             {% endfor %}
         </div>
         <div class="text-center mt-10">
-            <a href="/amenities?lang={{ lang }}" class="inline-block bg-accent text-dark px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition">
+            <a href="/amenities?lang={{ lang }}" class="inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition">
                 {{ 'Khám Phá Thêm' if lang == 'vi' else 'Explore More' }}
             </a>
         </div>
@@ -344,15 +373,25 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="order-2 lg:order-1">
-                <span class="text-accent font-medium uppercase tracking-wider">{{ 'Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education' }}</span>
+                <span class="text-accent font-medium uppercase tracking-wider">{{ (sections.steam.subtitle_vi if lang == 'vi' else sections.steam.subtitle_en) if sections.steam and (sections.steam.subtitle_vi or sections.steam.subtitle_en) else ('Giáo Dục STEAM' if lang == 'vi' else 'STEAM Education') }}</span>
                 <h2 class="text-4xl font-display font-bold text-dark dark:text-white mt-2 mb-6">
-                    {{ 'Học Tập Qua Trải Nghiệm Thực Tế' if lang == 'vi' else 'Learning Through Real Experience' }}
+                    {{ (sections.steam.title_vi if lang == 'vi' else sections.steam.title_en) if sections.steam and (sections.steam.title_vi or sections.steam.title_en) else ('Học Tập Qua Trải Nghiệm Thực Tế' if lang == 'vi' else 'Learning Through Real Experience') }}
                 </h2>
                 <p class="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
-                    {{ 'Lumora Resort mang đến chương trình giáo dục STEAM độc đáo, kết hợp giữa Khoa học, Công nghệ, Kỹ thuật, Nghệ thuật và Toán học. Trẻ em sẽ được học tập thông qua các hoạt động thực hành, khám phá thiên nhiên và phát triển tư duy sáng tạo.' if lang == 'vi' else 'Lumora Resort offers a unique STEAM education program, combining Science, Technology, Engineering, Arts and Mathematics. Children will learn through hands-on activities, nature exploration and creative thinking development.' }}
+                    {{ (sections.steam.description_vi if lang == 'vi' else sections.steam.description_en) if sections.steam and (sections.steam.description_vi or sections.steam.description_en) else ('Lumora Resort mang đến chương trình giáo dục STEAM độc đáo, kết hợp giữa Khoa học, Công nghệ, Kỹ thuật, Nghệ thuật và Toán học. Trẻ em sẽ được học tập thông qua các hoạt động thực hành, khám phá thiên nhiên và phát triển tư duy sáng tạo.' if lang == 'vi' else 'Lumora Resort offers a unique STEAM education program, combining Science, Technology, Engineering, Arts and Mathematics. Children will learn through hands-on activities, nature exploration and creative thinking development.') }}
                 </p>
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
+                    {% if sections.steam and sections.steam.section_items %}
+                    {% for item in sections.steam.section_items %}
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <i class="{{ item.icon or 'fas fa-star' }} text-primary text-xl"></i>
+                        </div>
+                        <span class="font-medium text-dark dark:text-white">{{ item.title_vi if lang == 'vi' else item.title_en }}</span>
+                    </div>
+                    {% endfor %}
+                    {% else %}
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                             <i class="fas fa-flask text-primary text-xl"></i>
@@ -377,14 +416,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <span class="font-medium text-dark dark:text-white">{{ 'Nghệ thuật' if lang == 'vi' else 'Arts' }}</span>
                     </div>
+                    {% endif %}
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="/steam/intro?lang={{ lang }}" class="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition text-center">
-                        {{ 'Tìm Hiểu Thêm' if lang == 'vi' else 'Learn More' }}
+                    <a href="{{ sections.steam.button_link if sections.steam and sections.steam.button_link else '/steam/intro' }}?lang={{ lang }}" class="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition text-center">
+                        {{ (sections.steam.button_text_vi if lang == 'vi' else sections.steam.button_text_en) if sections.steam and (sections.steam.button_text_vi or sections.steam.button_text_en) else ('Tìm Hiểu Thêm' if lang == 'vi' else 'Learn More') }}
                     </a>
-                    <a href="/steam/register?lang={{ lang }}" class="border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition text-center">
-                        {{ 'Đăng Ký Ngay' if lang == 'vi' else 'Register Now' }}
+                    <a href="{{ sections.steam.button2_link if sections.steam and sections.steam.button2_link else '/steam/register' }}?lang={{ lang }}" class="border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition text-center">
+                        {{ (sections.steam.button2_text_vi if lang == 'vi' else sections.steam.button2_text_en) if sections.steam and (sections.steam.button2_text_vi or sections.steam.button2_text_en) else ('Đăng Ký Ngay' if lang == 'vi' else 'Register Now') }}
                     </a>
                 </div>
             </div>
@@ -392,12 +432,12 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="order-1 lg:order-2">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-4">
-                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop" alt="STEAM Education" class="rounded-2xl shadow-lg w-full h-40 object-cover">
-                        <img src="https://images.unsplash.com/photo-1567168544813-cc03465b4fa8?w=400&h=400&fit=crop" alt="Science Activities" class="rounded-2xl shadow-lg w-full h-52 object-cover">
+                        <img src="{{ sections.steam.image1_url if sections.steam and sections.steam.image1_url else 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop' }}" alt="STEAM Education" class="rounded-2xl shadow-lg w-full h-40 object-cover">
+                        <img src="{{ sections.steam.image2_url if sections.steam and sections.steam.image2_url else 'https://images.unsplash.com/photo-1567168544813-cc03465b4fa8?w=400&h=400&fit=crop' }}" alt="Science Activities" class="rounded-2xl shadow-lg w-full h-52 object-cover">
                     </div>
                     <div class="space-y-4 pt-8">
-                        <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=400&fit=crop" alt="Kids Learning" class="rounded-2xl shadow-lg w-full h-52 object-cover">
-                        <img src="https://images.unsplash.com/photo-1596496181871-9681eacf9764?w=400&h=300&fit=crop" alt="Nature Exploration" class="rounded-2xl shadow-lg w-full h-40 object-cover">
+                        <img src="{{ sections.steam.image3_url if sections.steam and sections.steam.image3_url else 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=400&fit=crop' }}" alt="Kids Learning" class="rounded-2xl shadow-lg w-full h-52 object-cover">
+                        <img src="{{ sections.steam.image4_url if sections.steam and sections.steam.image4_url else 'https://images.unsplash.com/photo-1596496181871-9681eacf9764?w=400&h=300&fit=crop' }}" alt="Nature Exploration" class="rounded-2xl shadow-lg w-full h-40 object-cover">
                     </div>
                 </div>
             </div>

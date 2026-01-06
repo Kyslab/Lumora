@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     }
 }
 
-from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner, Newsletter, SiteSetting
+from models import db, User, Contact, Room, RoomImage, Restaurant, RestaurantImage, MenuItem, Amenity, AmenityImage, Experience, ExperienceImage, ExperienceVideo, SteamProgram, SteamImage, SteamVideo, Event, EventImage, News, GalleryItem, Banner, Newsletter, SiteSetting, HomeSection, HomeSectionItem
 db.init_app(app)
 
 csrf = CSRFProtect(app)
@@ -174,6 +174,31 @@ def get_category_label(category, lang):
     }
     return labels.get(category, {}).get(lang, category or "")
 
+def get_home_section(section_key):
+    section = HomeSection.query.filter_by(section_key=section_key, is_active=True).first()
+    if section:
+        return {
+            'title_vi': section.title_vi or '',
+            'title_en': section.title_en or '',
+            'subtitle_vi': section.subtitle_vi or '',
+            'subtitle_en': section.subtitle_en or '',
+            'description_vi': section.description_vi or '',
+            'description_en': section.description_en or '',
+            'button_text_vi': section.button_text_vi or '',
+            'button_text_en': section.button_text_en or '',
+            'button_link': section.button_link or '',
+            'button2_text_vi': section.button2_text_vi or '',
+            'button2_text_en': section.button2_text_en or '',
+            'button2_link': section.button2_link or '',
+            'image1_url': section.image1_url or '',
+            'image2_url': section.image2_url or '',
+            'image3_url': section.image3_url or '',
+            'image4_url': section.image4_url or '',
+            'extra_data': section.extra_data or '',
+            'section_items': [{'title_vi': i.title_vi, 'title_en': i.title_en, 'icon': i.icon, 'image_url': i.image_url} for i in section.items if i.is_active]
+        }
+    return None
+
 @app.route('/')
 def home():
     lang = request.args.get('lang', 'vi')
@@ -188,12 +213,22 @@ def home():
     
     banners = Banner.query.filter_by(is_active=True).order_by(Banner.sort_order, Banner.created_at).all()
     
+    home_sections = {
+        'intro': get_home_section('intro'),
+        'rooms_section': get_home_section('rooms_section'),
+        'amenities_section': get_home_section('amenities_section'),
+        'steam': get_home_section('steam'),
+        'newsletter': get_home_section('newsletter'),
+        'location': get_home_section('location')
+    }
+    
     return render_template('home.html', 
                          lang=lang,
                          rooms=rooms_data,
                          amenities=amenities_data,
                          news=news_data,
-                         banners=banners)
+                         banners=banners,
+                         sections=home_sections)
 
 @app.route('/accommodation')
 def accommodation():

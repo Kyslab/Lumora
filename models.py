@@ -307,3 +307,46 @@ class SiteSetting(db.Model):
     key = db.Column(db.String(100), unique=True, nullable=False)
     value = db.Column(db.Text)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class HomeSection(db.Model):
+    __tablename__ = 'home_sections'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    section_key = db.Column(db.String(50), unique=True, nullable=False)
+    title_vi = db.Column(db.String(200))
+    title_en = db.Column(db.String(200))
+    subtitle_vi = db.Column(db.String(300))
+    subtitle_en = db.Column(db.String(300))
+    description_vi = db.Column(db.Text)
+    description_en = db.Column(db.Text)
+    button_text_vi = db.Column(db.String(100))
+    button_text_en = db.Column(db.String(100))
+    button_link = db.Column(db.String(500))
+    button2_text_vi = db.Column(db.String(100))
+    button2_text_en = db.Column(db.String(100))
+    button2_link = db.Column(db.String(500))
+    image1_url = db.Column(db.String(500))
+    image2_url = db.Column(db.String(500))
+    image3_url = db.Column(db.String(500))
+    image4_url = db.Column(db.String(500))
+    icon = db.Column(db.String(50))
+    extra_data = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    items = db.relationship('HomeSectionItem', backref='section', lazy=True, cascade='all, delete-orphan')
+
+class HomeSectionItem(db.Model):
+    __tablename__ = 'home_section_items'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    section_id = db.Column(db.Integer, db.ForeignKey('home_sections.id'), nullable=False)
+    title_vi = db.Column(db.String(200))
+    title_en = db.Column(db.String(200))
+    description_vi = db.Column(db.Text)
+    description_en = db.Column(db.Text)
+    icon = db.Column(db.String(50))
+    image_url = db.Column(db.String(500))
+    link = db.Column(db.String(500))
+    sort_order = db.Column(db.Integer, default=0)
+    is_active = db.Column(db.Boolean, default=True)

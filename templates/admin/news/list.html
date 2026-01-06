@@ -38,7 +38,7 @@
                     <td class="px-6 py-4 text-sm text-gray-500">{{ news.created_at.strftime('%d/%m/%Y') }}</td>
                     <td class="px-6 py-4 text-right">
                         <a href="{{ url_for('admin.news_edit', id=news.id) }}" class="text-blue-600 mr-3"><i class="fas fa-edit"></i></a>
-                        <form action="{{ url_for('admin.news_delete', id=news.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa?')"><button type="submit" class="text-red-600"><i class="fas fa-trash"></i></button></form>
+                        <form action="{{ url_for('admin.news_delete', id=news.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="text-red-600"><i class="fas fa-trash"></i></button></form>
                     </td>
                 </tr>
                 {% else %}

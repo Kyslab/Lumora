@@ -1,0 +1,141 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Chỉnh Sửa {{ section_labels.get(section_key, section_key) }} - Admin{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <a href="{{ url_for('admin.home_sections_list') }}" class="text-blue-500 hover:underline mb-2 inline-block">
+            <i class="fas fa-arrow-left mr-1"></i> Quay lại
+        </a>
+        <h1 class="text-2xl font-bold text-gray-800">Chỉnh Sửa: {{ section_labels.get(section_key, section_key) }}</h1>
+    </div>
+</div>
+
+<form action="{{ url_for('admin.home_sections_edit', section_key=section_key) }}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4 border-b pb-2">Nội dung chính</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề (Tiếng Việt)</label>
+                <input type="text" name="title_vi" value="{{ section.title_vi or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề (English)</label>
+                <input type="text" name="title_en" value="{{ section.title_en or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Phụ đề (Tiếng Việt)</label>
+                <input type="text" name="subtitle_vi" value="{{ section.subtitle_vi or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Phụ đề (English)</label>
+                <input type="text" name="subtitle_en" value="{{ section.subtitle_en or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mô tả (Tiếng Việt)</label>
+                <textarea name="description_vi" rows="4" 
+                          class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ section.description_vi or '' }}</textarea>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mô tả (English)</label>
+                <textarea name="description_en" rows="4" 
+                          class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ section.description_en or '' }}</textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4 border-b pb-2">Nút bấm</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nút 1 - Text (VI)</label>
+                <input type="text" name="button_text_vi" value="{{ section.button_text_vi or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nút 1 - Text (EN)</label>
+                <input type="text" name="button_text_en" value="{{ section.button_text_en or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nút 1 - Link</label>
+                <input type="text" name="button_link" value="{{ section.button_link or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nút 2 - Text (VI)</label>
+                <input type="text" name="button2_text_vi" value="{{ section.button2_text_vi or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nút 2 - Text (EN)</label>
+                <input type="text" name="button2_text_en" value="{{ section.button2_text_en or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nút 2 - Link</label>
+                <input type="text" name="button2_link" value="{{ section.button2_link or '' }}" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4 border-b pb-2">Hình ảnh</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for i in range(1, 5) %}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Hình {{ i }}</label>
+                {% set img_url = section['image' ~ i ~ '_url'] if section else '' %}
+                {% if img_url %}
+                <div class="mb-2">
+                    <img src="{{ img_url }}" alt="Image {{ i }}" class="w-32 h-32 object-cover rounded border">
+                </div>
+                {% endif %}
+                <input type="file" name="image{{ i }}_file" accept="image/*" 
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" name="image{{ i }}_url" value="{{ img_url or '' }}" 
+                       placeholder="Hoặc nhập URL hình ảnh"
+                       class="w-full border rounded-lg px-4 py-2 mt-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% if section_key == 'location' %}
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4 border-b pb-2">Dữ liệu bổ sung (Bản đồ)</h2>
+        <p class="text-sm text-gray-500 mb-2">Nhập iframe embed code của Google Maps:</p>
+        <textarea name="extra_data" rows="4" 
+                  class="w-full border rounded-lg px-4 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ section.extra_data or '' }}</textarea>
+    </div>
+    {% endif %}
+    
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center">
+            <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if section.is_active else '' }}
+                   class="w-5 h-5 text-blue-500 rounded focus:ring-blue-500">
+            <label for="is_active" class="ml-2 text-gray-700">Kích hoạt phần này</label>
+        </div>
+    </div>
+    
+    <div class="flex gap-4">
+        <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">
+            <i class="fas fa-save mr-2"></i> Lưu thay đổi
+        </button>
+        <a href="{{ url_for('admin.home_sections_list') }}" class="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition">
+            Hủy
+        </a>
+    </div>
+</form>
+{% endblock %}
