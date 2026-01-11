@@ -57,8 +57,34 @@
                 <input type="number" name="area" value="{{ room.area if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Sức Chứa (người)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Sức Chứa Tổng (người)</label>
                 <input type="number" name="capacity" value="{{ room.capacity if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Số Người Lớn</label>
+                <input type="number" name="adults_capacity" value="{{ room.adults_capacity if room else 2 }}" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Số Trẻ Em</label>
+                <input type="number" name="children_capacity" value="{{ room.children_capacity if room else 0 }}" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Số Giường</label>
+                <input type="number" name="bed_count" value="{{ room.bed_count if room else 1 }}" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Loại Giường (Tiếng Việt)</label>
+                <input type="text" name="bed_type_vi" value="{{ room.bed_type_vi if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Giường đôi, Giường đơn, Giường tầng...">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Loại Giường (Tiếng Anh)</label>
+                <input type="text" name="bed_type_en" value="{{ room.bed_type_en if room else '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Double bed, Single bed, Bunk bed...">
             </div>
         </div>
         

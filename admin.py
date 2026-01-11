@@ -106,6 +106,11 @@ def rooms_create():
             price=int(request.form.get('price', 0)) if request.form.get('price') else None,
             area=int(request.form.get('area', 0)) if request.form.get('area') else None,
             capacity=int(request.form.get('capacity', 0)) if request.form.get('capacity') else None,
+            adults_capacity=int(request.form.get('adults_capacity', 2)) if request.form.get('adults_capacity') else 2,
+            children_capacity=int(request.form.get('children_capacity', 0)) if request.form.get('children_capacity') else 0,
+            bed_count=int(request.form.get('bed_count', 1)) if request.form.get('bed_count') else 1,
+            bed_type_vi=request.form.get('bed_type_vi'),
+            bed_type_en=request.form.get('bed_type_en'),
             room_type=request.form.get('room_type'),
             amenities=request.form.get('amenities'),
             video_url=request.form.get('video_url'),
@@ -154,6 +159,11 @@ def rooms_edit(id):
         room.price = int(request.form.get('price', 0)) if request.form.get('price') else None
         room.area = int(request.form.get('area', 0)) if request.form.get('area') else None
         room.capacity = int(request.form.get('capacity', 0)) if request.form.get('capacity') else None
+        room.adults_capacity = int(request.form.get('adults_capacity', 2)) if request.form.get('adults_capacity') else 2
+        room.children_capacity = int(request.form.get('children_capacity', 0)) if request.form.get('children_capacity') else 0
+        room.bed_count = int(request.form.get('bed_count', 1)) if request.form.get('bed_count') else 1
+        room.bed_type_vi = request.form.get('bed_type_vi')
+        room.bed_type_en = request.form.get('bed_type_en')
         room.room_type = request.form.get('room_type')
         room.amenities = request.form.get('amenities')
         room.video_url = request.form.get('video_url')
@@ -814,8 +824,8 @@ def news_edit(id):
             url = save_uploaded_file(uploaded_file, 'news')
             if url:
                 news.image_url = url
-        elif request.form.get('image_url'):
-            news.image_url = request.form.get('image_url')
+        else:
+            news.image_url = request.form.get('image_url', '')
         
         news.status = request.form.get('status', 'draft')
         if news.status == 'published' and not news.published_at:

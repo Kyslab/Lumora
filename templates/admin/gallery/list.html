@@ -20,9 +20,10 @@
                 </div>
             {% endif %}
             <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition rounded-lg flex items-center justify-center space-x-2">
-                <a href="{{ url_for('admin.gallery_edit', id=item.id) }}" class="bg-white text-gray-800 p-2 rounded-full hover:bg-blue-100"><i class="fas fa-edit"></i></a>
+                <button onclick="copyUrl('{{ item.url }}')" class="bg-white text-green-600 p-2 rounded-full hover:bg-green-100" title="Copy URL"><i class="fas fa-link"></i></button>
+                <a href="{{ url_for('admin.gallery_edit', id=item.id) }}" class="bg-white text-gray-800 p-2 rounded-full hover:bg-blue-100" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
                 <form action="{{ url_for('admin.gallery_delete', id=item.id) }}" method="POST" class="inline" onsubmit="return confirm('Xóa?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="bg-white text-red-600 p-2 rounded-full hover:bg-red-100"><i class="fas fa-trash"></i></button>
+                    <button type="submit" class="bg-white text-red-600 p-2 rounded-full hover:bg-red-100" title="Xóa"><i class="fas fa-trash"></i></button>
                 </form>
             </div>
             <div class="mt-2 text-sm text-gray-600 truncate">{{ item.title_vi or 'Không có tiêu đề' }}</div>
@@ -32,4 +33,16 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyUrl(url) {
+    navigator.clipboard.writeText(url).then(function() {
+        alert('Đã copy URL: ' + url);
+    }).catch(function() {
+        prompt('Copy URL này:', url);
+    });
+}
+</script>
 {% endblock %}
