@@ -3,7 +3,7 @@
 {% block title %}{{ article.title[lang] }} - Tin Tức Lumora Resort{% endblock %}
 {% block header_class %}header-scrolled{% endblock %}
 {% block transparent_header %}false{% endblock %}
-{% block main_padding %}pt-7 lg:pt-10{% endblock %}
+{% block main_padding %}pt-14 lg:pt-16{% endblock %}
 
 {% block meta_description %}{{ article.excerpt[lang][:160] }}{% endblock %}
 {% block meta_keywords %}{{ article.title[lang] }}, tin tức Lumora Resort, {{ article.category[lang] }}{% endblock %}
@@ -64,7 +64,7 @@
 {% endblock %}
 
 {% block content %}
-<section class="pt-4 pb-2 bg-white">
+<section class="pb-2 bg-white">
     <div class="container mx-auto px-4">
         <nav class="text-sm text-gray-500">
             <a href="/?lang={{ lang }}" class="hover:text-primary">{{ 'Trang chủ' if lang == 'vi' else 'Home' }}</a>

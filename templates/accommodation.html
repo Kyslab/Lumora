@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% block main_padding %}pt-0{% endblock %}
 
 {% block title %}{{ 'Lưu Trú - Lumora Resort' if lang == 'vi' else 'Accommodation - Lumora Resort' }}{% endblock %}
 
 {% block content %}
-<section class="relative h-[50vh] min-h-[400px] -mt-28 lg:-mt-32">
+<section class="relative h-[55vh] min-h-[400px] -mt-28 lg:-mt-32">
     <div class="absolute inset-0">
         <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1920" alt="Accommodation" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
     </div>
-    <div class="relative h-full flex items-center justify-center text-center">
+    <div class="relative h-full flex items-end justify-center text-center pb-16">
         <div>
             <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
                 {{ 'Lưu Trú' if lang == 'vi' else 'Accommodation' }}
@@ -45,49 +46,35 @@
             {% for key, room in rooms.items() %}
             {% if not selected_type or selected_type == key %}
             <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
-                <div class="relative overflow-hidden">
-                    <img src="{{ room.images[0] }}" alt="{{ room.name[lang] }}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute top-4 right-4 bg-accent text-dark px-4 py-2 rounded-full font-semibold">
+                <div class="relative overflow-hidden h-64">
+                    <img src="{{ room.images[0] }}" alt="{{ room.name[lang] }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 right-4 bg-accent text-dark px-4 py-2 rounded-full font-semibold z-10 group-hover:opacity-0 transition-opacity duration-300">
                         {{ '{:,.0f}'.format(room.price) }}đ/{{ 'đêm' if lang == 'vi' else 'night' }}
+                    </div>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-4">
+                        <div class="text-white space-y-2">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-ruler-combined text-accent w-5"></i>
+                                <span class="text-sm">{{ room.area }}m²</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-bed text-accent w-5"></i>
+                                <span class="text-sm">{{ room.bed_count or 1 }} {{ room.bed_type[lang] if room.bed_type and room.bed_type[lang] else ('giường' if lang == 'vi' else 'bed') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-user text-accent w-5"></i>
+                                <span class="text-sm">{{ room.adults_capacity or room.capacity or 2 }} {{ 'người lớn' if lang == 'vi' else 'adults' }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-child text-accent w-5"></i>
+                                <span class="text-sm">{{ room.children_capacity or 0 }} {{ 'trẻ em' if lang == 'vi' else 'children' }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-display font-bold text-dark mb-2">{{ room.name[lang] }}</h3>
-                    <p class="text-gray-600 mb-4">{{ room.description[lang] }}</p>
-                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                        <span><i class="fas fa-ruler-combined mr-1"></i> {{ room.area }}m²</span>
-                        <span><i class="fas fa-user mr-1"></i> {{ room.capacity }} {{ 'người' if lang == 'vi' else 'guests' }}</span>
-                    </div>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        {% for amenity in room.amenities[:4] %}
-                        {% if amenity and amenity.strip() %}
-                        <span class="bg-light text-gray-600 px-3 py-1 rounded-full text-xs flex items-center gap-1">
-                            {% if 'wifi' in amenity.lower() %}
-                            <i class="fas fa-wifi"></i>
-                            {% elif 'điều hòa' in amenity.lower() or 'ac' in amenity.lower() %}
-                            <i class="fas fa-snowflake"></i>
-                            {% elif 'tv' in amenity.lower() %}
-                            <i class="fas fa-tv"></i>
-                            {% elif 'minibar' in amenity.lower() %}
-                            <i class="fas fa-glass-martini"></i>
-                            {% elif 'phòng tắm' in amenity.lower() or 'bathroom' in amenity.lower() %}
-                            <i class="fas fa-bath"></i>
-                            {% elif 'ngoài trời' in amenity.lower() or 'outdoor' in amenity.lower() %}
-                            <i class="fas fa-tree"></i>
-                            {% elif 'bbq' in amenity.lower() %}
-                            <i class="fas fa-fire"></i>
-                            {% elif 'bếp' in amenity.lower() or 'kitchen' in amenity.lower() %}
-                            <i class="fas fa-utensils"></i>
-                            {% elif 'vườn' in amenity.lower() or 'garden' in amenity.lower() or 'sân' in amenity.lower() %}
-                            <i class="fas fa-leaf"></i>
-                            {% else %}
-                            <i class="fas fa-check"></i>
-                            {% endif %}
-                            {{ amenity.strip() }}
-                        </span>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ room.description[lang] }}</p>
                     <div class="flex gap-2">
                         <a href="/accommodation/{{ room.id }}?lang={{ lang }}" class="flex-1 bg-primary text-white text-center py-3 rounded-full hover:bg-opacity-90 transition">
                             {{ 'Xem Chi Tiết' if lang == 'vi' else 'View Details' }}

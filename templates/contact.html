@@ -1,17 +1,15 @@
 {% extends "base.html" %}
-{% block header_class %}header-scrolled{% endblock %}
-{% block transparent_header %}false{% endblock %}
-{% block main_padding %}pt-7 lg:pt-10{% endblock %}
+{% block main_padding %}pt-0{% endblock %}
 
 {% block title %}{{ 'Liên Hệ & Đặt Phòng - Lumora Resort' if lang == 'vi' else 'Contact & Booking - Lumora Resort' }}{% endblock %}
 
 {% block content %}
-<section class="relative h-[40vh] min-h-[300px] -mt-28 lg:-mt-32">
+<section class="relative h-[55vh] min-h-[400px] -mt-28 lg:-mt-32">
     <div class="absolute inset-0">
         <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920" alt="Contact" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-dark bg-opacity-50"></div>
     </div>
-    <div class="relative h-full flex items-center justify-center text-center">
+    <div class="relative h-full flex items-end justify-center text-center pb-16">
         <div>
             <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
                 {{ 'Liên Hệ' if lang == 'vi' else 'Contact' }}

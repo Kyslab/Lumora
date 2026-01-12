@@ -1,14 +1,12 @@
 {% extends "base.html" %}
-{% block header_class %}header-scrolled{% endblock %}
-{% block transparent_header %}false{% endblock %}
-{% block main_padding %}pt-7 lg:pt-10{% endblock %}
+{% block main_padding %}pt-0{% endblock %}
 
 {% block title %}{{ experience.name[lang] }} - Lumora Resort{% endblock %}
 
 {% block meta_description %}{{ experience.short_desc[lang] }}{% endblock %}
 
 {% block content %}
-<section class="relative h-[50vh] min-h-[400px] -mt-28 lg:-mt-32 flex items-center justify-center">
+<section class="relative h-[55vh] min-h-[420px] -mt-28 lg:-mt-32 flex items-end justify-center pb-16">
     <div class="absolute inset-0">
         <img src="{{ experience.images[0] }}" alt="{{ experience.name[lang] }}" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-black bg-opacity-40"></div>

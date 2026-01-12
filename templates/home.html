@@ -322,62 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<section class="py-20 bg-light">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <span class="text-accent font-medium uppercase tracking-wider">{{ (sections.rooms_section.subtitle_vi if lang == 'vi' else sections.rooms_section.subtitle_en) if sections.rooms_section and (sections.rooms_section.subtitle_vi or sections.rooms_section.subtitle_en) else ('Lưu Trú' if lang == 'vi' else 'Accommodation') }}</span>
-            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ (sections.rooms_section.title_vi if lang == 'vi' else sections.rooms_section.title_en) if sections.rooms_section and (sections.rooms_section.title_vi or sections.rooms_section.title_en) else ('Phòng Nghỉ Của Chúng Tôi' if lang == 'vi' else 'Our Rooms') }}</h2>
-            {% if sections.rooms_section and (sections.rooms_section.description_vi or sections.rooms_section.description_en) %}
-            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">{{ sections.rooms_section.description_vi if lang == 'vi' else sections.rooms_section.description_en }}</p>
-            {% endif %}
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {% for key, room in rooms.items() %}
-            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
-                <div class="relative overflow-hidden h-64">
-                    <img src="{{ room.images[0] }}" alt="{{ room.name[lang] }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute top-4 right-4 bg-accent text-dark px-4 py-2 rounded-full font-semibold z-10 group-hover:opacity-0 transition-opacity duration-300">
-                        {{ '{:,.0f}'.format(room.price) }}đ/{{ 'đêm' if lang == 'vi' else 'night' }}
-                    </div>
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-4">
-                        <div class="text-white space-y-2">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-ruler-combined text-accent w-5"></i>
-                                <span class="text-sm">{{ room.area }}m²</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-bed text-accent w-5"></i>
-                                <span class="text-sm">{{ room.bed_count or 1 }} {{ room.bed_type[lang] if room.bed_type and room.bed_type[lang] else ('giường' if lang == 'vi' else 'bed') }}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-user text-accent w-5"></i>
-                                <span class="text-sm">{{ room.adults_capacity or room.capacity or 2 }} {{ 'người lớn' if lang == 'vi' else 'adults' }}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-child text-accent w-5"></i>
-                                <span class="text-sm">{{ room.children_capacity or 0 }} {{ 'trẻ em' if lang == 'vi' else 'children' }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-display font-bold text-dark mb-2">{{ room.name[lang] }}</h3>
-                    <p class="text-gray-600 mb-4 line-clamp-2">{{ room.description[lang] }}</p>
-                    <a href="/accommodation/{{ room.id }}?lang={{ lang }}" class="block w-full bg-primary text-white text-center py-3 rounded-full hover:bg-opacity-90 transition">
-                        {{ 'Xem Chi Tiết' if lang == 'vi' else 'View Details' }}
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="text-center mt-10">
-            <a href="/accommodation?lang={{ lang }}" class="inline-block border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition">
-                {{ 'Xem Tất Cả Phòng' if lang == 'vi' else 'View All Rooms' }}
-            </a>
-        </div>
-    </div>
-</section>
-
 <section class="py-20 bg-primary">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
@@ -511,6 +455,62 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="text-accent font-medium uppercase tracking-wider">{{ (sections.rooms_section.subtitle_vi if lang == 'vi' else sections.rooms_section.subtitle_en) if sections.rooms_section and (sections.rooms_section.subtitle_vi or sections.rooms_section.subtitle_en) else ('Lưu Trú' if lang == 'vi' else 'Accommodation') }}</span>
+            <h2 class="text-4xl font-display font-bold text-dark mt-2">{{ (sections.rooms_section.title_vi if lang == 'vi' else sections.rooms_section.title_en) if sections.rooms_section and (sections.rooms_section.title_vi or sections.rooms_section.title_en) else ('Phòng Nghỉ Của Chúng Tôi' if lang == 'vi' else 'Our Rooms') }}</h2>
+            {% if sections.rooms_section and (sections.rooms_section.description_vi or sections.rooms_section.description_en) %}
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">{{ sections.rooms_section.description_vi if lang == 'vi' else sections.rooms_section.description_en }}</p>
+            {% endif %}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for key, room in rooms.items() %}
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition group">
+                <div class="relative overflow-hidden h-64">
+                    <img src="{{ room.images[0] }}" alt="{{ room.name[lang] }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute top-4 right-4 bg-accent text-dark px-4 py-2 rounded-full font-semibold z-10 group-hover:opacity-0 transition-opacity duration-300">
+                        {{ '{:,.0f}'.format(room.price) }}đ/{{ 'đêm' if lang == 'vi' else 'night' }}
+                    </div>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-4">
+                        <div class="text-white space-y-2">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-ruler-combined text-accent w-5"></i>
+                                <span class="text-sm">{{ room.area }}m²</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-bed text-accent w-5"></i>
+                                <span class="text-sm">{{ room.bed_count or 1 }} {{ room.bed_type[lang] if room.bed_type and room.bed_type[lang] else ('giường' if lang == 'vi' else 'bed') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-user text-accent w-5"></i>
+                                <span class="text-sm">{{ room.adults_capacity or room.capacity or 2 }} {{ 'người lớn' if lang == 'vi' else 'adults' }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-child text-accent w-5"></i>
+                                <span class="text-sm">{{ room.children_capacity or 0 }} {{ 'trẻ em' if lang == 'vi' else 'children' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-display font-bold text-dark mb-2">{{ room.name[lang] }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ room.description[lang] }}</p>
+                    <a href="/accommodation/{{ room.id }}?lang={{ lang }}" class="block w-full bg-primary text-white text-center py-3 rounded-full hover:bg-opacity-90 transition">
+                        {{ 'Xem Chi Tiết' if lang == 'vi' else 'View Details' }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-10">
+            <a href="/accommodation?lang={{ lang }}" class="inline-block border-2 border-primary text-primary px-8 py-3 rounded-full font-semibold hover:bg-primary hover:text-white transition">
+                {{ 'Xem Tất Cả Phòng' if lang == 'vi' else 'View All Rooms' }}
+            </a>
         </div>
     </div>
 </section>
