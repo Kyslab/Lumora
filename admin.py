@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, send_file
+import zipfile
+import io
 from flask_login import login_user, logout_user, login_required, current_user
 from functools import wraps
 from models import db, User, Room, RoomImage, Restaurant, RestaurantImage, MenuItem
@@ -927,6 +929,33 @@ def gallery_delete(id):
     db.session.commit()
     flash('Đã xóa mục gallery thành công!', 'success')
     return redirect(url_for('admin.gallery_list'))
+
+@admin_bp.route('/gallery/download')
+@admin_required
+def gallery_download():
+    gallery_folder = os.path.join('static', 'uploads', 'gallery')
+    
+    if not os.path.exists(gallery_folder):
+        flash('Thư mục gallery không tồn tại hoặc trống.', 'error')
+        return redirect(url_for('admin.gallery_list'))
+    
+    memory_file = io.BytesIO()
+    
+    with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for root, dirs, files in os.walk(gallery_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, gallery_folder)
+                zf.write(file_path, arcname)
+    
+    memory_file.seek(0)
+    
+    return send_file(
+        memory_file,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name='gallery.zip'
+    )
 
 @admin_bp.route('/contacts')
 @admin_required
