@@ -580,9 +580,11 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                 <div>
-                    <h3 class="text-2xl font-display font-bold text-accent mb-4">Lumora Resort</h3>
+                    <h3 class="text-2xl font-display font-bold text-accent mb-4">{{ 'Khu trải nghiệm giáo dục Lumora.' if lang == 'vi' else 'Lumora Educational Experience Center.' }}</h3>
+
+
                     <p class="text-gray-400 mb-4">
-                        {{ 'Khu nghỉ dưỡng cao cấp với không gian xanh mát, tiện nghi hiện đại và dịch vụ tận tâm.' if lang == 'vi' else 'Premium resort with green space, modern amenities and dedicated service.' }}
+                        {{ 'Lumora – nơi trí tuệ gặp trải nghiệm' if lang == 'vi' else 'Lumora – where intellect meets experience' }}
                     </p>
                     <div class="flex space-x-4">
                         <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-accent transition">
@@ -612,7 +614,7 @@
                     <ul class="space-y-3 text-gray-400">
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-map-marker-alt mt-1 text-accent"></i>
-                            <span>Khu trải nghiệm Bigsun, xã Hữu Bằng, Hải Phòng</span>
+                            <span>Khu trải nghiệm giáo dục Lumora, xã Hữu Bằng, Hải Phòng</span>
                         </li>
                         <li class="flex items-center space-x-3">
                             <i class="fas fa-phone text-accent"></i>
